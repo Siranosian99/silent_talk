@@ -84,7 +84,7 @@ class ChatScreen extends StatelessWidget {
 
           TextFormField(
             decoration: InputDecoration(
-              hintText: "Type a message...",
+              hintText: "Type a message.",
               filled: true,
               fillColor: Colors.grey[100],
               contentPadding: const EdgeInsets.symmetric(
