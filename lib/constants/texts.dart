@@ -16,4 +16,6 @@ class AppTexts {
   final String forgetPass="Forget Password?";
   final String dntHveAccount = "Don’t have an account?";
   final String signUp = "Sign Up";
+  final String  userName="Username";
+  final String settings="Settings";
 }

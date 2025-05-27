@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:silent_talk/screens/chat_screen.dart';
 import 'package:silent_talk/screens/main_screen.dart';
+import 'package:silent_talk/screens/people_screen.dart';
+import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
 
 void main() {
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SignUpScreen(),
+      home: ChatScreen(),
     );
   }
 }
