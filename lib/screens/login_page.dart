@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
+
+import '../mixins/navigator_mixins.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with NavigatorMixin{
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // Login Button
               ElevatedButton(
                 onPressed: () {
-                  // Handle login
+                  GoRouter.of(context).goNamed('people');
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
@@ -73,7 +76,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(AppTexts.instance.dntHveAccount),
                   TextButton(
                     onPressed: () {
-                      // Navigate to Sign Up Screen
+                      GoRouter.of(context).goNamed('signUp');
+
                     },
                     child: Text(AppTexts.instance.signUp),
                   ),

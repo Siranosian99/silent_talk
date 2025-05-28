@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:silent_talk/routes.dart';
 import 'package:silent_talk/screens/chat_screen.dart';
 import 'package:silent_talk/screens/login_page.dart';
 import 'package:silent_talk/screens/main_screen.dart';
@@ -17,12 +18,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
       title: 'Silent Talk',
       theme: AppThemeData.lightTheme,
-      home: MainScreen(),
     );
   }
 }
 
+// Widget build(BuildContext context) {
+//   return MaterialApp(
+//     debugShowCheckedModeBanner: false,
+//     title: 'Silent Talk',
+//     theme: AppThemeData.lightTheme,
+//     home: MainScreen(),
+//   );
+// }

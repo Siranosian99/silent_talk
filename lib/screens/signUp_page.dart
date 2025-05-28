@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
@@ -60,7 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Text(AppTexts.instance.dntHveAccount),
                   TextButton(
                     onPressed: () {
-                      // Navigate to Sign Up Screen
+                      GoRouter.of(context).goNamed('login');
                     },
                     child: Text(AppTexts.instance.login),
                   ),

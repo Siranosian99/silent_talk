@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:silent_talk/screens/signUp_page.dart';
 
 import 'login_page.dart';
 
@@ -7,8 +8,9 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isTrue=false;
     return Scaffold(
-      body:LoginScreen(),
+      body: LoginScreen(),
     );
   }
 }
