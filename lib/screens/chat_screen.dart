@@ -30,82 +30,88 @@ class ChatScreen extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 12,
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  constraints: const BoxConstraints(maxWidth: 250),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(12),
-                      topLeft: Radius.circular(12),
-                      bottomRight: Radius.circular(12),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 6,
+                      horizontal: 12,
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    constraints: const BoxConstraints(maxWidth: 250),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(12),
+                        topLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Hello!.........?",
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
-                  child: const Text(
-                    "Hello!.........?",
-                    style: TextStyle(fontSize: 16),
-                  ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 12,
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  constraints: const BoxConstraints(maxWidth: 250),
-                  decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                      bottomLeft: Radius.circular(12),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 6,
+                      horizontal: 12,
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    constraints: const BoxConstraints(maxWidth: 250),
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                        bottomLeft: Radius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Heeeeey",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                  child: const Text(
-                    "Heeeeey",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: "Type a message...",
-              filled: true,
-              fillColor: Colors.grey[100],
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 16,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide.none,
-              ),
-              prefixIcon: IconButton(
-                icon: const Icon(Icons.attach_file),
-                onPressed: () {
-                  // Select file logic
-                },
-              ),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () {
-                  // Send message logic
-                },
+          Spacer(flex: 1),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: "Type a message...",
+                filled: true,
+                fillColor: Colors.grey[100],
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: IconButton(
+                  icon: const Icon(Icons.attach_file),
+                  onPressed: () {
+                    // Select file logic
+                  },
+                ),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
+                    // Send message logic
+                  },
+                ),
               ),
             ),
           ),
