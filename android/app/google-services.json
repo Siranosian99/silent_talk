@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "156704193316",
+    "project_id": "silenttalk-53850",
+    "storage_bucket": "silenttalk-53850.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156704193316:android:12088ea8a9934d143211b1",
+        "android_client_info": {
+          "package_name": "com.example.silent_talk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatsGridView extends StatelessWidget {
-  const ChatsGridView({
-    super.key,
-    required this.users,
-  });
+  const ChatsGridView({super.key, required this.users});
 
   final List<Map<String, String>> users;
 
@@ -23,9 +21,14 @@ class ChatsGridView extends StatelessWidget {
         final user = users[index];
         return Column(
           children: [
-            CircleAvatar(
-              radius: 35,
-              backgroundImage: NetworkImage(user['image']!),
+            InkWell(
+              onTap: () {
+                GoRouter.of(context).pushNamed('chat');
+              },
+              child: CircleAvatar(
+                radius: 35,
+                backgroundImage: NetworkImage(user['image']!),
+              ),
             ),
             const SizedBox(height: 8),
             Text(

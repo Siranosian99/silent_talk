@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -11,25 +14,38 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            height: 150,
-            color: Colors.blue,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: NetworkImage(imgLink),
+          Stack(
+            alignment:Alignment.bottomLeft,
+            children: [
+
+              Container(
+                width: double.infinity,
+                height: 150,
+                color: Colors.blue,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(imgLink),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      userName,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 15),
-                Text(
-                  userName,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-              ],
-            ),
+              ),
+              IconButton(onPressed: (){
+                context.goNamed('people');
+              }, icon: Icon(Icons.navigate_before,size: 30,)),
+            ],
           ),
+
           Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -103,7 +119,7 @@ class ChatScreen extends StatelessWidget {
                 prefixIcon: IconButton(
                   icon: const Icon(Icons.attach_file),
                   onPressed: () {
-                    // Select file logic
+                    showCustomBottomSheet(context);
                   },
                 ),
                 suffixIcon: IconButton(

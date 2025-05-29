@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../widgets/chats_gridView.dart';
 import '../widgets/chats_searchBar.dart';
@@ -18,6 +19,11 @@ class PeopleScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Chats'),
         centerTitle: true,
+        actions: [
+          IconButton(onPressed: (){
+            context.goNamed('settings');
+          }, icon: Icon(Icons.settings))
+        ],
       ),
       body: Column(
         children: [

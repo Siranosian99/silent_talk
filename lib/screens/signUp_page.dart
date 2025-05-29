@@ -33,7 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               LoginSignupTextfields(icon: Icon(Icons.email), labelText: AppTexts.instance.email,isOn: false,),
               SizedBox(height: 16),
               LoginSignupTextfields(icon: Icon(Icons.password), labelText: AppTexts.instance.password,isOn: true,),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               // Login Button
               ElevatedButton(
                 onPressed: () {
