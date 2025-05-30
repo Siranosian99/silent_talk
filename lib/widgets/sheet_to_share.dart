@@ -1,37 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:silent_talk/image_picker/image_camera_picker.dart';
 
 void showCustomBottomSheet(BuildContext context) {
+  final  picker=Picker();
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (context) => Padding(
-      padding: const EdgeInsets.all(16),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 24,
-        runSpacing: 24,
-        children: [
-          _buildOption(Icons.photo, 'Photo',(){}),
-          _buildOption(Icons.camera_alt, 'Camera',(){}),
-          _buildOption(Icons.location_on, 'Location',(){}),
-          _buildOption(Icons.contacts, 'Contact',(){}),
-          _buildOption(Icons.insert_drive_file, 'Document',(){}),
-          _buildOption(Icons.event, 'Event',(){}),
-          _buildOption(Icons.poll, 'Poll',(){}),
-          _buildOption(FontAwesomeIcons.spotify, 'Spotify',(){}),
-          _buildOption(Icons.share, 'Share',(){}),
-        ],
-      ),
-    ),
+    builder:
+        (context) => Padding(
+          padding: const EdgeInsets.all(16),
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 24,
+            runSpacing: 24,
+            children: [
+              _buildOption(Icons.photo, 'Photo', () {
+                picker.galleryPicker();
+              }),
+              _buildOption(Icons.camera_alt, 'Camera', () {
+                picker.cameraPicker();
+              }),
+              _buildOption(Icons.location_on, 'Location', () {}),
+              _buildOption(Icons.contacts, 'Contact', () {}),
+              _buildOption(Icons.insert_drive_file, 'Document', () {}),
+              _buildOption(Icons.event, 'Event', () {}),
+              _buildOption(Icons.poll, 'Poll', () {}),
+              _buildOption(FontAwesomeIcons.spotify, 'Spotify', () {}),
+              _buildOption(Icons.share, 'Share', () {}),
+            ],
+          ),
+        ),
   );
 }
 
-Widget _buildOption(IconData icon, String label,VoidCallback onTap) {
+Widget _buildOption(IconData icon, String label, VoidCallback onTap) {
   return InkWell(
-    onTap: (){},
+    onTap: onTap,
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
