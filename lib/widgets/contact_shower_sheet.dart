@@ -54,7 +54,7 @@ class _ContactScreenState extends State<ContactScreen> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('fast_contacts'),
+          title: const Text('Search Contact'),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -144,12 +144,12 @@ class _ContactScreenState extends State<ContactScreen> {
                 controller: _ctrl,
                 interactive: true,
                 thickness: 24,
-                child: ListView.builder(
+                child: ListView.separated(
                   controller: _ctrl,
                   itemCount: _contacts.length,
-                  itemExtent: _ContactItem.height,
+                  // itemExtent: _ContactItem.height,
                   itemBuilder: (_, index) =>
-                      _ContactItem(contact: _contacts[index]),
+                      _ContactItem(contact: _contacts[index]), separatorBuilder: (BuildContext context, int index) =>SizedBox(height: 50,),
                 ),
               ),
             ),
