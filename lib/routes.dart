@@ -6,6 +6,7 @@ import 'package:silent_talk/screens/main_screen.dart';
 import 'package:silent_talk/screens/people_screen.dart';
 import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
+import 'package:silent_talk/widgets/contact_shower_sheet.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -36,5 +37,6 @@ final GoRouter router = GoRouter(
       name: 'chat',
       builder: (context, state) => ChatScreen(),
     ),
+    GoRoute(path: '/contact',name: 'contact',builder: (context,state)=>ContactScreen())
   ],
 );

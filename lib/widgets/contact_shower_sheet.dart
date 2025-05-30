@@ -7,16 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void main() {
-  runApp(MyApp());
-}
 
-class MyApp extends StatefulWidget {
+
+class ContactScreen extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _ContactScreenState createState() => _ContactScreenState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _ContactScreenState extends State<ContactScreen> {
   List<Contact> _contacts = const [];
   String? _text;
 
