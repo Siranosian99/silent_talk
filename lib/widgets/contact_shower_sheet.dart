@@ -5,6 +5,7 @@ import 'dart:typed_data' as td;
 import 'package:fast_contacts/fast_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
@@ -21,9 +22,12 @@ class _ContactScreenState extends State<ContactScreen> {
   bool _isLoading = false;
 
   List<ContactField> _fields = ContactField.values.toList();
-
+@override
+  void initState() {
+  loadContacts();
+    super.initState();
+  }
   final _ctrl = ScrollController();
-
   Future<void> loadContacts() async {
     try {
       await Permission.contacts.request();
@@ -33,7 +37,7 @@ class _ContactScreenState extends State<ContactScreen> {
       _contacts = await FastContacts.getAllContacts(fields: _fields);
       sw.stop();
       _text =
-      'Contacts: ${_contacts.length}\nTook: ${sw.elapsedMilliseconds}ms';
+      'Contacts: ${_contacts.length}';
     } on PlatformException catch (e) {
       _text = 'Failed to get contacts:\n${e.details}';
     } finally {
@@ -46,6 +50,7 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scrollbarTheme: ScrollbarThemeData(
           trackVisibility: WidgetStateProperty.all(true),
@@ -54,88 +59,17 @@ class _ContactScreenState extends State<ContactScreen> {
       ),
       home: Scaffold(
         appBar: AppBar(
+          leading:IconButton(onPressed: (){
+
+            GoRouter.of(context).goNamed('chat');
+          }, icon: Icon(Icons.navigate_before)),
           title: const Text('Search Contact'),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextButton(
-              onPressed: loadContacts,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 24,
-                    width: 24,
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: _isLoading
-                          ? CircularProgressIndicator()
-                          : Icon(Icons.refresh),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text('Load contacts'),
-                ],
-              ),
-            ),
-            ExpansionTile(
-              title: Row(
-                children: [
-                  Text('Fields:'),
-                  const SizedBox(width: 8),
-                  const Spacer(),
-                  TextButton(
-                    child: Row(
-                      children: [
-                        if (_fields.length == ContactField.values.length) ...[
-                          Icon(Icons.check),
-                          const SizedBox(width: 8),
-                        ],
-                        Text('All'),
-                      ],
-                    ),
-                    onPressed: () => setState(() {
-                      _fields = ContactField.values.toList();
-                    }),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    child: Row(
-                      children: [
-                        if (_fields.length == 0) ...[
-                          Icon(Icons.check),
-                          const SizedBox(width: 8),
-                        ],
-                        Text('None'),
-                      ],
-                    ),
-                    onPressed: () => setState(() {
-                      _fields.clear();
-                    }),
-                  ),
-                ],
-              ),
-              children: [
-                Wrap(
-                  spacing: 4,
-                  children: [
-                    for (final field in ContactField.values)
-                      ChoiceChip(
-                        label: Text(field.name),
-                        selected: _fields.contains(field),
-                        onSelected: (selected) => setState(() {
-                          if (selected) {
-                            _fields.add(field);
-                          } else {
-                            _fields.remove(field);
-                          }
-                        }),
-                      ),
-                  ],
-                ),
-              ],
-            ),
+
+
             const SizedBox(height: 8),
             Text(_text ?? 'Tap to load contacts', textAlign: TextAlign.center),
             const SizedBox(height: 8),
@@ -332,6 +266,7 @@ class _ContactDetailsPageState extends State<_ContactDetailsPage> {
 
           final contactJson =
           JsonEncoder.withIndent('  ').convert(contact.toMap());
+          final convertToText=jsonDecode(contactJson);
 
           return SingleChildScrollView(
             child: Padding(
@@ -341,8 +276,6 @@ class _ContactDetailsPageState extends State<_ContactDetailsPage> {
                 children: [
                   _ContactImage(contact: contact),
                   const SizedBox(height: 16),
-                  if (_timeTaken != null)
-                    Text('Took: ${_timeTaken!.inMilliseconds}ms'),
                   const SizedBox(height: 16),
                   Text(contactJson),
                 ],
