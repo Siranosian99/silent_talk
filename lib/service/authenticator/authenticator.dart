@@ -33,4 +33,5 @@ class Authenticator {
   Future<void> login()async{
 
   }
-}
+  Future<void> resetPassword()async{}
+
