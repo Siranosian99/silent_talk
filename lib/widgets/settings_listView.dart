@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:silent_talk/widgets/settings_listTile.dart';
 import 'package:silent_talk/widgets/settings_section_title.dart';
 
@@ -112,7 +113,9 @@ class SettingsListView extends StatelessWidget {
         SettingsListtile(
           leading: const Icon(Icons.logout, color: Colors.red),
           title: const Text('Log Out'),
-          onTap: () {},
+          onTap: () {
+            context.goNamed('/');
+          },
         ),
         SettingsListtile(
           leading: const Icon(Icons.delete_forever, color: Colors.red),

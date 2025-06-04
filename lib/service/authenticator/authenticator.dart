@@ -1,15 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+import '../model/user_model.dart';
 
 class Authenticator {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final user = FirebaseAuth.instance.currentUser;
+  static FirebaseFirestore firestore = FirebaseFirestore.instance;
+  static FirebaseAuth auth = FirebaseAuth.instance;
+  CollectionReference users = firestore.collection('users');
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-  Future<void> createUser(String email, String password) async {
+  Future<void> createUser(
+    String name,
+    String userName,
+    String email,
+    String password,
+  ) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      String uid = userCredential.user!.uid;
+      Users userInfo = Users(
+        name: name,
+        userName: userName,
         email: email,
         password: password,
+        token: '',
       );
+      if (auth.currentUser != null && auth.currentUser!.emailVerified) {
+        await auth.currentUser?.sendEmailVerification();
+        await users
+            .doc(uid)
+            .set(userInfo.toMap(userInfo) as Map<String, dynamic>);
+      }
     } on FirebaseAuthException catch (e) {
       // Handle specific FirebaseAuth errors
       switch (e.code) {
@@ -26,12 +51,37 @@ class Authenticator {
       throw Exception('An unexpected error occurred: $e');
     }
   }
-  Future<bool?> checkVerify()async{
+
+  Future<bool?> checkVerify() async {
     bool? isVerified = user?.emailVerified;
     return isVerified;
   }
-  Future<void> login()async{
 
+  Future<void> login(String email, String password) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
   }
-  Future<void> resetPassword()async{}
 
+  Future<void> resetPassword(String email) async {
+    // String? userEmail=user?.email;
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+  }
+
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  Future<void> deleteAccount() async {
+    await user?.delete();
+  }
+}

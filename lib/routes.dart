@@ -4,6 +4,7 @@ import 'package:silent_talk/screens/chat_screen.dart';
 import 'package:silent_talk/screens/login_page.dart';
 import 'package:silent_talk/screens/main_screen.dart';
 import 'package:silent_talk/screens/people_screen.dart';
+import 'package:silent_talk/screens/reset_password.dart';
 import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
 import 'package:silent_talk/widgets/contact_shower_sheet.dart';
@@ -11,7 +12,7 @@ import 'package:silent_talk/widgets/contact_shower_sheet.dart';
 final GoRouter router = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(path: '/', builder: (context, state) => MainScreen()),
+    GoRoute(path: '/', name: '/', builder: (context, state) => MainScreen()),
     GoRoute(
       path: '/people',
       name: 'people',
@@ -37,6 +38,15 @@ final GoRouter router = GoRouter(
       name: 'chat',
       builder: (context, state) => ChatScreen(),
     ),
-    GoRoute(path: '/contact',name: 'contact',builder: (context,state)=>ContactScreen())
+    GoRoute(
+      path: '/contact',
+      name: 'contact',
+      builder: (context, state) => ContactScreen(),
+    ),
+    GoRoute(
+      path: '/resetPassword',
+      name: 'resetPassword',
+      builder: (context, state) => ResetPasswordScreen(),
+    ),
   ],
 );

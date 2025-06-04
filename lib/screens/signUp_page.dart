@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
+import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -9,6 +10,9 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  Authenticator auth= Authenticator();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +34,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               SizedBox(height: 40),
-              LoginSignupTextfields(icon: Icon(Icons.email), labelText: AppTexts.instance.email,isOn: false,),
+              LoginSignupTextfields(
+                icon: Icon(Icons.person),
+                labelText: AppTexts.instance.userName,
+                isOn: false,
+              ),
               SizedBox(height: 16),
-              LoginSignupTextfields(icon: Icon(Icons.password), labelText: AppTexts.instance.password,isOn: true,),
+              LoginSignupTextfields(
+                icon: Icon(Icons.nature_people),
+                labelText: AppTexts.instance.name,
+                isOn: false,
+              ),
+              SizedBox(height: 16),
+              LoginSignupTextfields(
+                icon: Icon(Icons.email),
+                labelText: AppTexts.instance.email,
+                isOn: false,
+              ),
+              SizedBox(height: 16),
+              LoginSignupTextfields(
+                icon: Icon(Icons.password),
+                labelText: AppTexts.instance.password,
+                isOn: true,
+              ),
               SizedBox(height: 40),
               // Login Button
               ElevatedButton(
-                onPressed: () {
-                  // Handle login
+                onPressed: () async{
+                await  auth.createUser("name", "userName", _emailController.text, _passwordController.text);
                 },
                 style: ElevatedButton.styleFrom(
-
                   padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

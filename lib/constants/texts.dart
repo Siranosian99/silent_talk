@@ -9,6 +9,8 @@ class AppTexts {
   static AppTexts get instance => _instance;
 
   // Text values
+  final String name="Name";
+  final String uName="Username";
   final String appName = "Silent Talk";
   final String email = "Email";
   final String password = "Password";
