@@ -12,7 +12,11 @@ import 'package:silent_talk/themes/app_themes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    // options: DefaultFirebaseOptions.currentPlatform,
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc",
+          appId: "1:156704193316:android:12088ea8a9934d143211b1",
+          messagingSenderId: "156704193316",
+          projectId: "silenttalk-53850")
   );
   runApp(MyApp());
 }

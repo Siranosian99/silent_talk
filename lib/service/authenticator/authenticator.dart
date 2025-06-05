@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../model/user_model.dart';
 
@@ -29,12 +31,10 @@ class Authenticator {
         password: password,
         token: '',
       );
-      if (auth.currentUser != null && auth.currentUser!.emailVerified) {
-        await auth.currentUser?.sendEmailVerification();
-        await users
-            .doc(uid)
-            .set(userInfo.toMap(userInfo) as Map<String, dynamic>);
-      }
+      userCredential.user?.sendEmailVerification();
+      await users
+          .doc(uid)
+          .set(userInfo.toMap(userInfo) as Map<String, dynamic>);
     } on FirebaseAuthException catch (e) {
       // Handle specific FirebaseAuth errors
       switch (e.code) {
@@ -57,12 +57,21 @@ class Authenticator {
     return isVerified;
   }
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(String email, String password, BuildContext ctx) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      // Check if the user's email is verified
+      if (!userCredential.user!.emailVerified) {
+        ScaffoldMessenger.of(
+          ctx,
+        ).showSnackBar(SnackBar(content: Text('Verify Email')));
+        userCredential.user?.sendEmailVerification();
+      } else {
+        ctx.goNamed('chat');
+        print('Login successful!');
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');

@@ -6,11 +6,15 @@ class LoginSignupTextfields extends StatelessWidget {
   String labelText;
   Widget icon;
   bool isOn;
-   LoginSignupTextfields({super.key,required this.icon,required this.labelText,required this.isOn});
+  TextEditingController? controller;
+   String? Function(String?)? validator;
+   LoginSignupTextfields({super.key,required this.icon,required this.labelText,required this.isOn, this.controller, this.validator});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: validator,
+        controller:controller,
         obscureText: isOn,
         decoration: InputDecoration(
         labelText: labelText,

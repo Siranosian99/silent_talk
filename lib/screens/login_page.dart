@@ -12,8 +12,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // ✅ Form Key
 
   @override
   Widget build(BuildContext context) {
@@ -22,82 +23,104 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // App Title
-              Text(
-                AppTexts.instance.appName,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
+          child: Form(
+            key: _formKey, // ✅ Add Form widget
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // App Title
+                Text(
+                  AppTexts.instance.appName,
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent,
+                  ),
                 ),
-              ),
-              SizedBox(height: 40),
-              LoginSignupTextfields(
-                icon: Icon(Icons.email),
-                labelText: AppTexts.instance.email,
-                isOn: false,
-              ),
-              SizedBox(height: 16),
-              LoginSignupTextfields(
-                icon: Icon(Icons.password),
-                labelText: AppTexts.instance.password,
-                isOn: true,
-              ),
-              SizedBox(height: 10),
-
-              // Forgot Password
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    context.goNamed('resetPassword');
+                SizedBox(height: 40),
+                // Email Field
+                LoginSignupTextfields(
+                  controller: _emailController,
+                  icon: Icon(Icons.email),
+                  labelText: AppTexts.instance.email,
+                  isOn: false,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
                   },
-                  child: Text(AppTexts.instance.forgetPass),
                 ),
-              ),
-
-              SizedBox(height: 20),
-
-              // Login Button
-              ElevatedButton(
-                onPressed: () {
-                  GoRouter.of(context).goNamed('people');
-                  Authenticator().login(
-                    _emailController.text,
-                    _passwordController.text,
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                SizedBox(height: 16),
+                // Password Field
+                LoginSignupTextfields(
+                  controller: _passwordController,
+                  icon: Icon(Icons.password),
+                  labelText: AppTexts.instance.password,
+                  isOn: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
                 ),
-                child: Text(
-                  AppTexts.instance.login,
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-
-              SizedBox(height: 30),
-
-              // Sign Up Option
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(AppTexts.instance.dntHveAccount),
-                  TextButton(
+                SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
                     onPressed: () {
-                      GoRouter.of(context).goNamed('signUp');
+                      context.goNamed('resetPassword');
                     },
-                    child: Text(AppTexts.instance.signUp),
+                    child: Text(AppTexts.instance.forgetPass),
                   ),
-                ],
-              ),
-            ],
+                ),
+                SizedBox(height: 20),
+
+                // Login Button
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Authenticator().login(
+                        _emailController.text.trim(),
+                        _passwordController.text.trim(),
+                        context,
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    AppTexts.instance.login,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(AppTexts.instance.dntHveAccount),
+                    TextButton(
+                      onPressed: () {
+                        GoRouter.of(context).goNamed('signUp');
+                      },
+                      child: Text(AppTexts.instance.signUp),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

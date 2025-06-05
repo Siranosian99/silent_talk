@@ -11,6 +11,8 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   Authenticator auth= Authenticator();
+  TextEditingController _nameController=TextEditingController();
+  TextEditingController _userNameController=TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -35,24 +37,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               SizedBox(height: 40),
               LoginSignupTextfields(
+                controller: _userNameController,
                 icon: Icon(Icons.person),
                 labelText: AppTexts.instance.userName,
                 isOn: false,
               ),
               SizedBox(height: 16),
               LoginSignupTextfields(
+                controller:_nameController,
                 icon: Icon(Icons.nature_people),
                 labelText: AppTexts.instance.name,
                 isOn: false,
               ),
               SizedBox(height: 16),
               LoginSignupTextfields(
+                controller: _emailController,
                 icon: Icon(Icons.email),
                 labelText: AppTexts.instance.email,
                 isOn: false,
               ),
               SizedBox(height: 16),
               LoginSignupTextfields(
+                controller:_passwordController,
                 icon: Icon(Icons.password),
                 labelText: AppTexts.instance.password,
                 isOn: true,
@@ -61,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // Login Button
               ElevatedButton(
                 onPressed: () async{
-                await  auth.createUser("name", "userName", _emailController.text, _passwordController.text);
+                await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
