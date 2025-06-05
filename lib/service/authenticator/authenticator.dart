@@ -69,7 +69,7 @@ class Authenticator {
         ).showSnackBar(SnackBar(content: Text('Verify Email')));
         userCredential.user?.sendEmailVerification();
       } else {
-        ctx.goNamed('chat');
+        ctx.goNamed('people');
         print('Login successful!');
       }
     } on FirebaseAuthException catch (e) {
