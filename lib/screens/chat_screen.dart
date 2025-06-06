@@ -4,10 +4,12 @@ import 'package:go_router/go_router.dart';
 import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+  String? message;
+   ChatScreen({super.key,this.message});
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController messageController=TextEditingController();
     String imgLink =
         "https://i1.sndcdn.com/artworks-000693861175-aj6nwe-t500x500.jpg";
     String userName = "Name Lastname";
@@ -104,6 +106,7 @@ class ChatScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(20),
             child: TextFormField(
+              controller: messageController,
               decoration: InputDecoration(
                 hintText: "Type a message...",
                 filled: true,
@@ -125,7 +128,7 @@ class ChatScreen extends StatelessWidget {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
-                    // Send message logic
+
                   },
                 ),
               ),

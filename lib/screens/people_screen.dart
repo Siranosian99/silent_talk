@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../contact/get_permissions.dart';
+import '../contact/send_contact.dart';
 import '../widgets/chats_gridView.dart';
 import '../widgets/chats_searchBar.dart';
 

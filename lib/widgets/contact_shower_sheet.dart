@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-
+import 'package:silent_talk/contact/send_contact.dart';
 
 class ContactScreen extends StatefulWidget {
   @override
@@ -22,12 +21,15 @@ class _ContactScreenState extends State<ContactScreen> {
   bool _isLoading = false;
 
   List<ContactField> _fields = ContactField.values.toList();
-@override
+
+  @override
   void initState() {
-  loadContacts();
+    loadContacts();
     super.initState();
   }
+
   final _ctrl = ScrollController();
+
   Future<void> loadContacts() async {
     try {
       await Permission.contacts.request();
@@ -36,8 +38,7 @@ class _ContactScreenState extends State<ContactScreen> {
       final sw = Stopwatch()..start();
       _contacts = await FastContacts.getAllContacts(fields: _fields);
       sw.stop();
-      _text =
-      'Contacts: ${_contacts.length}';
+      _text = 'Contacts: ${_contacts.length}';
     } on PlatformException catch (e) {
       _text = 'Failed to get contacts:\n${e.details}';
     } finally {
@@ -59,17 +60,17 @@ class _ContactScreenState extends State<ContactScreen> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          leading:IconButton(onPressed: (){
-
-            GoRouter.of(context).goNamed('chat');
-          }, icon: Icon(Icons.navigate_before)),
+          leading: IconButton(
+            onPressed: () {
+              GoRouter.of(context).goNamed('chat');
+            },
+            icon: Icon(Icons.navigate_before),
+          ),
           title: const Text('Search Contact'),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-
-
             const SizedBox(height: 8),
             Text(_text ?? 'Tap to load contacts', textAlign: TextAlign.center),
             const SizedBox(height: 8),
@@ -82,8 +83,13 @@ class _ContactScreenState extends State<ContactScreen> {
                   controller: _ctrl,
                   itemCount: _contacts.length,
                   // itemExtent: _ContactItem.height,
-                  itemBuilder: (_, index) =>
-                      _ContactItem(contact: _contacts[index]), separatorBuilder: (BuildContext context, int index) =>SizedBox(height: 50,),
+                  itemBuilder:
+                      (_, index) {
+                     return   _ContactItem(contact: _contacts[index]);
+
+                      },
+                  separatorBuilder:
+                      (BuildContext context, int index) => SizedBox(height: 50),
                 ),
               ),
             ),
@@ -95,49 +101,56 @@ class _ContactScreenState extends State<ContactScreen> {
 }
 
 class _ContactItem extends StatelessWidget {
-  const _ContactItem({
-    Key? key,
-    required this.contact,
-  }) : super(key: key);
+  const _ContactItem({Key? key, required this.contact}) : super(key: key);
 
   static final height = 86.0;
 
   final Contact contact;
+
 
   @override
   Widget build(BuildContext context) {
     final phones = contact.phones.map((e) => e.number).join(', ');
     final emails = contact.emails.map((e) => e.address).join(', ');
     final name = contact.structuredName;
-    final nameStr = name != null
-        ? [
-      if (name.namePrefix.isNotEmpty) name.namePrefix,
-      if (name.givenName.isNotEmpty) name.givenName,
-      if (name.middleName.isNotEmpty) name.middleName,
-      if (name.familyName.isNotEmpty) name.familyName,
-      if (name.nameSuffix.isNotEmpty) name.nameSuffix,
-    ].join(', ')
-        : '';
+    final nameStr =
+        name != null
+            ? [
+              if (name.namePrefix.isNotEmpty) name.namePrefix,
+              if (name.givenName.isNotEmpty) name.givenName,
+              if (name.middleName.isNotEmpty) name.middleName,
+              if (name.familyName.isNotEmpty) name.familyName,
+              if (name.nameSuffix.isNotEmpty) name.nameSuffix,
+            ].join(', ')
+            : '';
     final organization = contact.organization;
-    final organizationStr = organization != null
-        ? [
-      if (organization.company.isNotEmpty) organization.company,
-      if (organization.department.isNotEmpty) organization.department,
-      if (organization.jobDescription.isNotEmpty)
-        organization.jobDescription,
-    ].join(', ')
-        : '';
+    final organizationStr =
+        organization != null
+            ? [
+              if (organization.company.isNotEmpty) organization.company,
+              if (organization.department.isNotEmpty) organization.department,
+              if (organization.jobDescription.isNotEmpty)
+                organization.jobDescription,
+            ].join(', ')
+            : '';
 
     return SizedBox(
       height: height,
       child: ListTile(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => _ContactDetailsPage(
-              contactId: contact.id,
-            ),
-          ),
-        ),
+        onTap:
+            () {
+              String contactName=contact.displayName;
+              String contactNumber=contact.phones.toString();
+              String message = '📞 Contact:\nName: $contactName\nPhone: $contactNumber';
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder:
+            //         (context) => _ContactDetailsPage(contactId: contact.id),
+            //   ),
+            // );
+           print(message);
+            context.pop(message); // like Navigator.pop()
+           },
         leading: _ContactImage(contact: contact),
         title: Text(
           contact.displayName,
@@ -148,23 +161,11 @@ class _ContactItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (phones.isNotEmpty)
-              Text(
-                phones,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(phones, maxLines: 1, overflow: TextOverflow.ellipsis),
             if (emails.isNotEmpty)
-              Text(
-                emails,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(emails, maxLines: 1, overflow: TextOverflow.ellipsis),
             if (nameStr.isNotEmpty)
-              Text(
-                nameStr,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(nameStr, maxLines: 1, overflow: TextOverflow.ellipsis),
             if (organizationStr.isNotEmpty)
               Text(
                 organizationStr,
@@ -179,10 +180,7 @@ class _ContactItem extends StatelessWidget {
 }
 
 class _ContactImage extends StatefulWidget {
-  const _ContactImage({
-    Key? key,
-    required this.contact,
-  }) : super(key: key);
+  const _ContactImage({Key? key, required this.contact}) : super(key: key);
 
   final Contact contact;
 
@@ -203,22 +201,22 @@ class __ContactImageState extends State<_ContactImage> {
   Widget build(BuildContext context) {
     return FutureBuilder<td.Uint8List?>(
       future: _imageFuture,
-      builder: (context, snapshot) => Container(
-        width: 56,
-        height: 56,
-        child: snapshot.hasData
-            ? Image.memory(snapshot.data!, gaplessPlayback: true)
-            : Icon(Icons.account_box_rounded),
-      ),
+      builder:
+          (context, snapshot) => Container(
+            width: 56,
+            height: 56,
+            child:
+                snapshot.hasData
+                    ? Image.memory(snapshot.data!, gaplessPlayback: true)
+                    : Icon(Icons.account_box_rounded),
+          ),
     );
   }
 }
 
 class _ContactDetailsPage extends StatefulWidget {
-  const _ContactDetailsPage({
-    Key? key,
-    required this.contactId,
-  }) : super(key: key);
+  const _ContactDetailsPage({Key? key, required this.contactId})
+    : super(key: key);
 
   final String contactId;
 
@@ -244,9 +242,7 @@ class _ContactDetailsPageState extends State<_ContactDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Contact details: ${widget.contactId}'),
-      ),
+      appBar: AppBar(title: Text('Contact details: ${widget.contactId}')),
       body: FutureBuilder<Contact?>(
         future: _contactFuture,
         builder: (context, snapshot) {
@@ -264,9 +260,10 @@ class _ContactDetailsPageState extends State<_ContactDetailsPage> {
             return const Center(child: Text('Contact not found'));
           }
 
-          final contactJson =
-          JsonEncoder.withIndent('  ').convert(contact.toMap());
-          final convertToText=jsonDecode(contactJson);
+          final contactJson = JsonEncoder.withIndent(
+            '  ',
+          ).convert(contact.toMap());
+          final convertToText = jsonDecode(contactJson);
 
           return SingleChildScrollView(
             child: Padding(
