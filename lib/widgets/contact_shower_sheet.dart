@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:silent_talk/contact/send_contact.dart';
 
+import 'contact_dialog.dart';
+
 class ContactScreen extends StatefulWidget {
   @override
   _ContactScreenState createState() => _ContactScreenState();
@@ -101,7 +103,7 @@ class _ContactScreenState extends State<ContactScreen> {
 }
 
 class _ContactItem extends StatelessWidget {
-  const _ContactItem({Key? key, required this.contact}) : super(key: key);
+   _ContactItem({Key? key, required this.contact}) : super(key: key);
 
   static final height = 86.0;
 
@@ -139,18 +141,30 @@ class _ContactItem extends StatelessWidget {
       child: ListTile(
         onTap:
             () {
-              String contactName=contact.displayName;
-              String contactNumber=contact.phones.toString();
-              String message = '📞 Contact:\nName: $contactName\nPhone: $contactNumber';
-            // Navigator.of(context).push(
-            //   MaterialPageRoute(
-            //     builder:
-            //         (context) => _ContactDetailsPage(contactId: contact.id),
-            //   ),
-            // );
-           print(message);
-            context.pop(message); // like Navigator.pop()
-           },
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder:
+              //         (context) => _ContactDetailsPage(contactId: contact.id),
+              //   ),
+              // );
+              String contactName = contact.displayName; // "John Smith"
+              String contactNumber = contact.phones.first.number; // assuming phones is a list
+              List<String> nameParts = contactName.split(' ');
+
+// Handle missing last name safely
+              String firstName = nameParts.isNotEmpty ? nameParts[0] : '';
+              String lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+              context.goNamed('chat');
+              String formattedContact = 'Name: $firstName\nLastName: $lastName\nNumber: $contactNumber';
+              Future.delayed(Duration(seconds: 1),()
+              {
+                showContactDialog(context, formattedContact);
+              }
+              // GoRouter.of(context).goNamed('cha', pathParameters: {'name': formattedContact});
+
+
+
+              );},
         leading: _ContactImage(contact: contact),
         title: Text(
           contact.displayName,

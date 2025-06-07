@@ -26,7 +26,7 @@ void showCustomBottomSheet(BuildContext context) {
               }),
               _buildOption(Icons.location_on, 'Location', () {}),
               _buildOption(Icons.contacts, 'Contact', () {
-                context.goNamed('contact');
+                 context.goNamed('contact');
               }),
               _buildOption(Icons.insert_drive_file, 'Document', () {}),
               _buildOption(Icons.event, 'Event', () {}),

@@ -3,13 +3,27 @@ import 'package:go_router/go_router.dart';
 
 import '../widgets/sheet_to_share.dart';
 
-class ChatScreen extends StatelessWidget {
-  String? message;
-   ChatScreen({super.key,this.message});
+class ChatScreen extends StatefulWidget {
+  String? contactId;
+   ChatScreen({super.key, this.contactId});
 
   @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  TextEditingController messageController=TextEditingController();
+  @override
+  void didChangeDependencies() {
+    selectedContact();
+    super.didChangeDependencies();
+  }
+  void selectedContact(){
+    messageController.text= widget.contactId?? '';
+  }
+  @override
   Widget build(BuildContext context) {
-    TextEditingController messageController=TextEditingController();
+
     String imgLink =
         "https://i1.sndcdn.com/artworks-000693861175-aj6nwe-t500x500.jpg";
     String userName = "Name Lastname";
@@ -19,7 +33,6 @@ class ChatScreen extends StatelessWidget {
           Stack(
             alignment:Alignment.bottomLeft,
             children: [
-
               Container(
                 width: double.infinity,
                 height: 150,

@@ -34,10 +34,21 @@ final GoRouter router = GoRouter(
       builder: (context, state) => LoginScreen(),
     ),
     GoRoute(
-      path: '/chat',
       name: 'chat',
-      builder: (context, state) => ChatScreen(),
+      path: '/chat',
+      builder: (context, state) => ChatScreen(), // without parameter
     ),
+    GoRoute(
+      name: 'chatWithName',
+      path: '/chat/:name',
+      builder: (context, state) {
+        final name = state.pathParameters['name']!;
+        return ChatScreen(contactId: name); // with parameter
+      },
+    ),
+
+
+
     GoRoute(
       path: '/contact',
       name: 'contact',
