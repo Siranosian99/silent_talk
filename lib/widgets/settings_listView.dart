@@ -21,7 +21,7 @@ class SettingsListView extends StatelessWidget {
         Center(
           child: CircleAvatar(
             radius: 50,
-            backgroundImage: AssetImage('assets/default_avatar.png'),
+            backgroundImage: AssetImage('assets/images/noProfile.png'),
           ),
         ),
         const SizedBox(height: 12),

@@ -27,6 +27,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // App Title
+              CircleAvatar(
+                radius: 60,
+                backgroundImage: AssetImage('assets/images/noProfile.png')
+              ),
               Text(
                 AppTexts.instance.appName,
                 style: TextStyle(
@@ -67,7 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // Login Button
               ElevatedButton(
                 onPressed: () async{
-                await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text);
+                await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,'');
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),

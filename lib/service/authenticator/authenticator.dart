@@ -19,12 +19,15 @@ class Authenticator {
     String userName,
     String email,
     String password,
+      String image
   ) async {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       String uid = userCredential.user!.uid;
       Users userInfo = Users(
+        id: uid,
+        image: image,
         name: name,
         userName: userName,
         email: email,
@@ -93,4 +96,20 @@ class Authenticator {
   Future<void> deleteAccount() async {
     await user?.delete();
   }
+
+
+  Future<void> updateImageField(String uid, String path) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({
+        'image': path,
+      });
+      print('Image updated successfully');
+    } catch (e) {
+      print('Failed to update image: $e');
+    }
+  }
+
 }

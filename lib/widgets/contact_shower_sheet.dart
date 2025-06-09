@@ -141,12 +141,7 @@ class _ContactItem extends StatelessWidget {
       child: ListTile(
         onTap:
             () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder:
-              //         (context) => _ContactDetailsPage(contactId: contact.id),
-              //   ),
-              // );
+
               String contactName = contact.displayName; // "John Smith"
               String contactNumber = contact.phones.first.number; // assuming phones is a list
               List<String> nameParts = contactName.split(' ');
@@ -156,15 +151,12 @@ class _ContactItem extends StatelessWidget {
               String lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
               context.goNamed('chat');
               String formattedContact = 'Name: $firstName\nLastName: $lastName\nNumber: $contactNumber';
-              Future.delayed(Duration(seconds: 1),()
-              {
+
                 showContactDialog(context, formattedContact);
-              }
-              // GoRouter.of(context).goNamed('cha', pathParameters: {'name': formattedContact});
 
+              GoRouter.of(context).goNamed('chatWithName', pathParameters: {'name': formattedContact});
 
-
-              );},
+              },
         leading: _ContactImage(contact: contact),
         title: Text(
           contact.displayName,
