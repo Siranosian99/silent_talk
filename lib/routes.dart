@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/screens/chat_screen.dart';
@@ -35,14 +37,19 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       name: 'chat',
-      path: '/chat',
-      builder: (context, state) => ChatScreen(), // without parameter
+      path: '/chat/:id',
+      builder: (context, state) {
+        final idString = state.pathParameters['id'];
+        final id = int.tryParse(idString ?? '') ?? 0; // Fallback to 0 or handle error
+        return ChatScreen(id:id );
+      },
     ),
     GoRoute(
       name: 'chatWithName',
       path: '/chat/:name',
       builder: (context, state) {
         final name = state.pathParameters['name']!;
+
         return ChatScreen(contactId: name); // with parameter
       },
     ),

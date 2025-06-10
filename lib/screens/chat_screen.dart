@@ -1,22 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:silent_talk/service/users/users_service.dart';
 
+import '../service/model/user_model.dart';
 import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
   String? contactId;
-   ChatScreen({super.key, this.contactId});
-
+  int? id;
+   ChatScreen({super.key, this.contactId, this.id});
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageController=TextEditingController();
+  List <Users> _users=[];
+  UsersService _usersService =UsersService();
+  @override
+  void initState() {
+    getUsersDetails();
+    super.initState();
+  }
   @override
   void didChangeDependencies() {
     selectedContact();
     super.didChangeDependencies();
+  }
+  Future<void> getUsersDetails()async{
+    _users=await _usersService.fetchAllUsers();
+    setState(() {
+      _users;
+    });
   }
   void selectedContact(){
     messageController.text= widget.contactId?? '';
@@ -24,9 +39,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
 
-    String imgLink =
-        "https://i1.sndcdn.com/artworks-000693861175-aj6nwe-t500x500.jpg";
-    String userName = "Name Lastname";
     return Scaffold(
       body: Column(
         children: [
@@ -42,11 +54,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: NetworkImage(imgLink),
+                      backgroundImage: _users[widget.id!].image.isEmpty ?AssetImage("assets/images/noProfile.png"):NetworkImage('imgLink'),
                     ),
                     SizedBox(height: 15),
                     Text(
-                      userName,
+                      _users[widget.id!].userName,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,

@@ -4,20 +4,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../model/user_model.dart';
 
 class UsersService {
-  CollectionReference categories = FirebaseFirestore.instance.collection(
+  CollectionReference users = FirebaseFirestore.instance.collection(
     'users',
   );
 
-  Future<List<Users>> fetchAllCategories() async {
+  Future<List<Users>> fetchAllUsers() async {
     try {
       // Fetch all documents from the Category collection
       QuerySnapshot snapshot =
-          await categories.orderBy("key", descending: false).get();
+          await users.get();
 
       // Map each document to its data
       return snapshot.docs.map((doc) {
         return Users(
-          // Assign document ID
           id: doc['id'],
           name: doc['name'],
           userName: doc['userName'],
