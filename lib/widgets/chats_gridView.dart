@@ -45,10 +45,7 @@ class _ChatsGridViewState extends State<ChatsGridView> {
           children: [
             InkWell(
               onTap: () {
-                final id = index;
-                Future.delayed(Duration(seconds: 2), () {
-                  GoRouter.of(context).goNamed('chat', pathParameters: {'id':'${index}'});
-                });
+                GoRouter.of(context).goNamed('chat', pathParameters: {'id':'$index'});
 
               },
               child: CircleAvatar(

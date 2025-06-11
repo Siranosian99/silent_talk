@@ -40,7 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: Column(
+      body:_users.isEmpty?CircularProgressIndicator(): Column(
         children: [
           Stack(
             alignment:Alignment.bottomLeft,

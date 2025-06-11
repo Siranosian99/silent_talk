@@ -25,10 +25,10 @@ class _PeopleScreenState extends State<PeopleScreen> {
   Future<void> callUsers()async{
     users=await _usersService.fetchAllUsers();
   }
-@override
-  void initState() {
-  callUsers();
-    super.initState();
+  @override
+  void didChangeDependencies() {
+    callUsers();
+    super.didChangeDependencies();
   }
   @override
   Widget build(BuildContext context) {
