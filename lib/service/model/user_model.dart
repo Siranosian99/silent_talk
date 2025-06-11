@@ -6,6 +6,7 @@ class Users {
   String email;
   String password;
   String token;
+  bool isOnline;
 
   Users({
     required this.id,
@@ -15,6 +16,7 @@ class Users {
     required this.email,
     required this.password,
     required this.token,
+    required this.isOnline,
   });
 
   Map toMap(Users user){
@@ -26,6 +28,7 @@ class Users {
     data['email'] = user.email;
     data['password'] = user.password;
     data['token']=user.token;
+    data['isOnline']=user.isOnline;
     return data;
 
   }

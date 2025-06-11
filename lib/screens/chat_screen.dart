@@ -54,7 +54,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: _users[widget.id!].image.isEmpty ?AssetImage("assets/images/noProfile.png"):NetworkImage('imgLink'),
+                      backgroundImage: _users[widget.id!].image.isEmpty ?AssetImage("assets/images/noProfile.png"):NetworkImage(_users[widget.id!].image),
                     ),
                     SizedBox(height: 15),
                     Text(

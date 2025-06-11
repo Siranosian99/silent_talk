@@ -50,7 +50,7 @@ class _ChatsGridViewState extends State<ChatsGridView> {
               },
               child: CircleAvatar(
                 radius: 35,
-                backgroundImage: user.image.isEmpty?AssetImage('assets/images/noProfile.png'):NetworkImage('src') ,
+                backgroundImage: user.image.isEmpty?AssetImage('assets/images/noProfile.png'):NetworkImage(user.image) ,
               ),
             ),
             const SizedBox(height: 8),

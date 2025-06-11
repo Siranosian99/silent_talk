@@ -23,7 +23,8 @@ class UsersService {
           email: doc['email'],
           password: doc['password'],
           token: doc['token'],
-          image: doc['image'],// Assuming there’s a 'key' field in the category
+          image: doc['image'],
+          isOnline: doc['isOnline']
         );
       }).toList();
     } catch (e) {

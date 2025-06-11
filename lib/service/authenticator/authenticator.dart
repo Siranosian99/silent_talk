@@ -33,6 +33,7 @@ class Authenticator {
         email: email,
         password: password,
         token: '',
+        isOnline: false,
       );
       userCredential.user?.sendEmailVerification();
       await users

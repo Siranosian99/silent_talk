@@ -1,37 +1,35 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:silent_talk/service/model/user_model.dart';
-
 class ChatModel {
-  final String chatId;
-  final List<Users> users;
-  final String? lastMessage;
-  final DateTime? lastUpdated;
+  String chatId;
+  String senderId;
+  String receiverId;
+  String message;
+  String messageTime;
 
   ChatModel({
     required this.chatId,
-    required this.users,
-    this.lastMessage,
-    this.lastUpdated,
+    required this.senderId,
+    required this.receiverId,
+    required this.message,
+    required this.messageTime,
   });
 
-  // From Firestore
-  factory ChatModel.fromMap(String id, Map<String, dynamic> map) {
+  factory ChatModel.fromMap(Map<String, dynamic> map) {
     return ChatModel(
-      chatId: id,
-      users: List<Users>.from(map['users']),
-      lastMessage: map['lastMessage'],
-      lastUpdated: map['lastUpdated'] != null
-          ? (map['lastUpdated'] as Timestamp).toDate()
-          : null,
+      chatId: map['chatId'],
+      senderId: map['senderId'],
+      receiverId: map['receiverId'],
+      message: map['message'],
+      messageTime: map['messageTime'],
     );
   }
 
-  // To Firestore
   Map<String, dynamic> toMap() {
     return {
-      'users': users,
-      'lastMessage': lastMessage,
-      'lastUpdated': lastUpdated,
+      'chatId': chatId,
+      'senderId': senderId,
+      'receiverId': receiverId,
+      'message': message,
+      'messageTime': messageTime,
     };
   }
 }
