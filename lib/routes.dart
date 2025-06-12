@@ -37,11 +37,13 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       name: 'chat',
-      path: '/chat/:id',
+      path: '/chat/:id/:senderId/:receiverId',
       builder: (context, state) {
+        final senderId = state.pathParameters['senderId'];
+        final receiverId = state.pathParameters['receiverId'];
         final idString = state.pathParameters['id'];
         final id = int.tryParse(idString ?? '') ?? 0; // Fallback to 0 or handle error
-        return ChatScreen(id:id );
+        return ChatScreen(id:id,senderId:senderId,receiverId: receiverId, );
       },
     ),
     GoRoute(

@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:silent_talk/service/ids/get_userIds.dart';
 import 'package:silent_talk/service/model/chat_model.dart';
 
 class GetMessageService{
   List<ChatModel> chats=[];
-  Future<List<ChatModel>> getChats() async {
+  Future<List<ChatModel>> getChats(String uid1,String uid2) async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('chats')
-        .doc('7ouy2IIWmkZz0jhWvKtJnTuk0j62_jrBpZPFsMfYz2j8h8FM9HKBQ9QG3') // Chat ID
+        .doc(getChatId(uid1, uid2)) // Chat ID
         .collection('messages')
         .get();
 
