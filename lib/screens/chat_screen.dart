@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 
 import '../service/model/user_model.dart';
@@ -153,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
-
+                    MessageService().sendMessage(messageController.text, "7ouy2IIWmkZz0jhWvKtJnTuk0j62", "jrBpZPFsMfYz2j8h8FM9HKBQ9QG3");
                   },
                 ),
               ),
