@@ -8,7 +8,7 @@ import '../model/user_model.dart';
 
 class Authenticator {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final user = FirebaseAuth.instance.currentUser;
+  static final user = FirebaseAuth.instance.currentUser;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseAuth auth = FirebaseAuth.instance;
   CollectionReference users = firestore.collection('users');

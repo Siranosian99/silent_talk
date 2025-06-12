@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:silent_talk/service/authenticator/authenticator.dart';
+import 'package:silent_talk/service/messages/get_messages.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
+import 'package:silent_talk/service/model/chat_model.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 
 import '../service/model/user_model.dart';
@@ -17,6 +20,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageController=TextEditingController();
   List <Users> _users=[];
+  List<ChatModel> _chats=[];
   UsersService _usersService =UsersService();
   @override
   void initState() {
@@ -26,6 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void didChangeDependencies() {
     selectedContact();
+    getChat();
     super.didChangeDependencies();
   }
   Future<void> getUsersDetails()async{
@@ -36,6 +41,9 @@ class _ChatScreenState extends State<ChatScreen> {
   }
   void selectedContact(){
     messageController.text= widget.contactId?? '';
+  }
+  Future<void> getChat()async{
+    _chats=await GetMessageService().getChats();
   }
   @override
   Widget build(BuildContext context) {
@@ -96,9 +104,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         bottomRight: Radius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      "Hello!.........?",
-                      style: TextStyle(fontSize: 16),
+                    child: Text(
+                      _chats[2].message,
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                 ),
@@ -154,7 +162,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
-                    MessageService().sendMessage(messageController.text, "7ouy2IIWmkZz0jhWvKtJnTuk0j62", "jrBpZPFsMfYz2j8h8FM9HKBQ9QG3");
+                    MessageService().sendMessage(messageController.text, Authenticator.user!.uid, _users[widget.id!].id);
                   },
                 ),
               ),
