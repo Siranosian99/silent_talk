@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
@@ -6,6 +7,7 @@ import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/service/model/chat_model.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 
+import '../service/ids/get_userIds.dart';
 import '../service/model/user_model.dart';
 import '../widgets/sheet_to_share.dart';
 
@@ -36,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void didChangeDependencies() {
     selectedContact();
-    getChat();
+    // getChat();
     super.didChangeDependencies();
   }
 
@@ -51,9 +53,9 @@ class _ChatScreenState extends State<ChatScreen> {
     messageController.text = widget.contactId ?? '';
   }
 
-  Future<void> getChat() async {
-    _chats = await GetMessageService().getChats(widget.senderId!,widget.receiverId!);
-  }
+  // Future<void> getChat() async {
+  //   _chats = await GetMessageService().getChats(widget.senderId!,widget.receiverId!);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -101,39 +103,54 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemBuilder:
-                          (context, index) => Align(
-                            alignment:Authenticator.user?.uid == widget.senderId ?Alignment.topLeft: Alignment.topRight,
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 6,
-                                horizontal: 12,
+                  StreamBuilder<QuerySnapshot>(stream:FirebaseFirestore.instance
+                      .collection('chats')
+                      .doc(getChatId(Authenticator.user!.uid, widget.receiverId!)) // Chat ID
+                      .collection('messages').orderBy('messageTime')
+                      .snapshots(), builder: (context,snapshot){
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error loading messages'));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    final messages = snapshot.data!.docs;
+                    return   Expanded(
+                      child: ListView.builder(
+                        itemBuilder:
+                            (context, index) => Align(
+                          alignment:messages[index]['senderId'] == Authenticator.user?.uid?Alignment.topRight: Alignment.topLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 6,
+                              horizontal: 12,
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            constraints: const BoxConstraints(maxWidth: 250),
+                            decoration: BoxDecoration(
+                              color:messages[index]['senderId'] == Authenticator.user?.uid?Colors.blueAccent: Colors.green,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(12),
+                                topRight: Radius.circular(12),
+                                bottomLeft: Radius.circular(12),
                               ),
-                              padding: const EdgeInsets.all(12),
-                              constraints: const BoxConstraints(maxWidth: 250),
-                              decoration: BoxDecoration(
-                                color:Authenticator.user?.uid == widget.receiverId?Colors.blueAccent: Colors.green,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(12),
-                                  topRight: Radius.circular(12),
-                                  bottomLeft: Radius.circular(12),
-                                ),
-                              ),
-                              child: Text(
-                                _chats[index].message,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
+                            ),
+                            child: Text(
+                              messages[index]['message'],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
                               ),
                             ),
                           ),
+                        ),
 
-                      itemCount: _chats.length,
-                    ),
-                  ),
+                        itemCount: messages.length,
+                      ),
+                    );
+                  }),
+
                   // Padding(
                   //   padding: const EdgeInsets.all(10),
                   //   child: Column(
@@ -187,8 +204,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   //       ),
                   //     ],
                   //   ),
-                  // ),
-                  Spacer(flex: 1),
+                  // ),7
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: TextFormField(

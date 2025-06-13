@@ -7,7 +7,7 @@ class UsersService {
   CollectionReference users = FirebaseFirestore.instance.collection(
     'users',
   );
-
+  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   Future<List<Users>> fetchAllUsers() async {
     try {
       // Fetch all documents from the Category collection
@@ -15,7 +15,8 @@ class UsersService {
           await users.get();
 
       // Map each document to its data
-      return snapshot.docs.map((doc) {
+      return snapshot.docs.where((doc) => doc.id != currentUserId) // hide current user
+        .map((doc) {
         return Users(
           id: doc['id'],
           name: doc['name'],
