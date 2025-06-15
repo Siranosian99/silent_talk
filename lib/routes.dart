@@ -50,9 +50,8 @@ final GoRouter router = GoRouter(
       name: 'chatWithName',
       path: '/chat/:name',
       builder: (context, state) {
-        final name = state.pathParameters['name']!;
-
-        return ChatScreen(contactId: name); // with parameter
+        final name = state.pathParameters['name'];
+        return ChatScreen(contactId:name); // with parameter
       },
     ),
 

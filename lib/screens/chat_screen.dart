@@ -39,6 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void didChangeDependencies() {
     selectedContact();
     // getChat();
+    getUsersDetails();
     super.didChangeDependencies();
   }
 

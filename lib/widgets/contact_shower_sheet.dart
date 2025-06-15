@@ -142,19 +142,7 @@ class _ContactItem extends StatelessWidget {
         onTap:
             () {
 
-              String contactName = contact.displayName; // "John Smith"
-              String contactNumber = contact.phones.first.number; // assuming phones is a list
-              List<String> nameParts = contactName.split(' ');
-
-// Handle missing last name safely
-              String firstName = nameParts.isNotEmpty ? nameParts[0] : '';
-              String lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
-              context.goNamed('chat');
-              String formattedContact = 'Name: $firstName\nLastName: $lastName\nNumber: $contactNumber';
-
-                showContactDialog(context, formattedContact);
-
-              GoRouter.of(context).goNamed('chatWithName', pathParameters: {'name': formattedContact});
+              GoRouter.of(context).goNamed('chatWithName', pathParameters: {'name': contact.displayName,});
 
               },
         leading: _ContactImage(contact: contact),
