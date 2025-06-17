@@ -12,12 +12,12 @@ import '../service/model/user_model.dart';
 import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
-  String? contactId;
+  String? name;
   int? id;
   String? senderId;
   String? receiverId;
 
-  ChatScreen({super.key, this.contactId, this.id,this.senderId,this.receiverId});
+  ChatScreen({super.key, this.name, this.id,this.senderId,this.receiverId});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -51,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void selectedContact() {
-    messageController.text = widget.contactId ?? '';
+    messageController.text = widget.name ?? '';
   }
 
   // Future<void> getChat() async {
@@ -231,11 +231,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.send),
                           onPressed: () {
-                            MessageService().sendMessage(
-                              messageController.text,
-                              Authenticator.user!.uid,
-                              _users[widget.id!].id,
-                            );
+                            // MessageService().sendMessage(
+                            //   messageController.text,
+                            //   Authenticator.user!.uid,
+                            //   _users[widget.id!].id,
+                            // );
+                            print('Contact ID:${widget.name} Sender ID:${widget.senderId}  Receiver ID:${widget.receiverId} ID Normal${widget.id}');
                           },
                         ),
                       ),

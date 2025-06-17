@@ -86,14 +86,14 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                 // Login Button
                 ElevatedButton(
                   onPressed: () {
-                    context.goNamed('people');
-                    // if (_formKey.currentState!.validate()) {
-                    //   Authenticator().login(
-                    //     _emailController.text.trim(),
-                    //     _passwordController.text.trim(),
-                    //     context,
-                    //   );
-                    // }
+                    // context.goNamed('people');
+                    if (_formKey.currentState!.validate()) {
+                      Authenticator().login(
+                        _emailController.text.trim(),
+                        _passwordController.text.trim(),
+                        context,
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),

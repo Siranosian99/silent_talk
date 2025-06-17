@@ -37,25 +37,37 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       name: 'chat',
-      path: '/chat/:id/:senderId/:receiverId',
+      path: '/chat',
       builder: (context, state) {
-        final senderId = state.pathParameters['senderId'];
-        final receiverId = state.pathParameters['receiverId'];
-        final idString = state.pathParameters['id'];
-        final id = int.tryParse(idString ?? '') ?? 0; // Fallback to 0 or handle error
-        return ChatScreen(id:id,senderId:senderId,receiverId: receiverId, );
-      },
-    ),
-    GoRoute(
-      name: 'chatWithName',
-      path: '/chat/:name',
-      builder: (context, state) {
-        final name = state.pathParameters['name'];
-        return ChatScreen(contactId:name); // with parameter
+        final id = int.tryParse(state.uri.queryParameters['id'] ?? '');
+        final senderId = state.uri.queryParameters['senderId'];
+        final receiverId = state.uri.queryParameters['receiverId'];
+        final name = state.uri.queryParameters['name'];
+
+        return ChatScreen(
+          id: id, // nullable
+          senderId: senderId,
+          receiverId: receiverId,
+          name: name,
+        );
       },
     ),
 
 
+// GoRoute(
+    //   name: 'chatWithName',
+    //   path: '/chat/withName/:name',
+    //   builder: (context, state) {
+    //     final name = state.pathParameters['name'];
+    //     return ChatScreen(contactId: name);
+    //   },
+    // ),
+
+    // GoRoute(
+    //   path: '/chat',
+    //   name: 'chatWithoutParams',
+    //   builder: (context, state) => ChatScreen(),
+    // ),
 
     GoRoute(
       path: '/contact',

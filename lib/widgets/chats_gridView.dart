@@ -48,12 +48,13 @@ class _ChatsGridViewState extends State<ChatsGridView> {
             InkWell(
               onTap: () {
                 GoRouter.of(context).goNamed(
-                  'chat',
-                  pathParameters: {
-                    'id': '$index',
-                    'senderId': Authenticator.user!.uid,
-                    'receiverId': user.id,
-                  },
+                  'chat',queryParameters:      {
+                'id': '0',
+                'senderId':'1',
+                'receiverId': '1',
+                  'name':"asd"
+                },
+
                 );
               },
               child: CircleAvatar(

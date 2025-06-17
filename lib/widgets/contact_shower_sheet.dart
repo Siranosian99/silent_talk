@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:silent_talk/contact/send_contact.dart';
 
+import '../service/authenticator/authenticator.dart';
 import 'contact_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -64,7 +65,15 @@ class _ContactScreenState extends State<ContactScreen> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              GoRouter.of(context).goNamed('chat');
+              GoRouter.of(context).goNamed(
+                'chat',queryParameters:      {
+                'id': 0,
+                'senderId': Authenticator.user!.uid,
+                'receiverId': 'user.id',
+                'name':'ads'
+              },
+
+              );
             },
             icon: Icon(Icons.navigate_before),
           ),
@@ -142,7 +151,15 @@ class _ContactItem extends StatelessWidget {
         onTap:
             () {
 
-              GoRouter.of(context).goNamed('chatWithName', pathParameters: {'name': contact.displayName,});
+              GoRouter.of(context).goNamed(
+                'chat',queryParameters:      {
+                'id': '',
+                'senderId': Authenticator.user!.uid,
+                'receiverId': '',
+                'name':contact.displayName
+              },
+
+              );
 
               },
         leading: _ContactImage(contact: contact),
