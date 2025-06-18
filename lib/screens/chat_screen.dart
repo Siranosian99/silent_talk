@@ -242,7 +242,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         prefixIcon: IconButton(
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
-                            showCustomBottomSheet(context);
+                            showCustomBottomSheet(context,widget.id!);
                           },
                         ),
                         suffixIcon: IconButton(

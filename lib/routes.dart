@@ -78,7 +78,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/contact',
       name: 'contact',
-      builder: (context, state) => ContactScreen(),
+      builder: (context, state) {
+        final index = state.extra as int?;
+        return ContactScreen(index: index!);
+      },
     ),
     GoRoute(
       path: '/resetPassword',

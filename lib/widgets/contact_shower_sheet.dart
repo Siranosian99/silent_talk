@@ -13,7 +13,9 @@ import '../service/authenticator/authenticator.dart';
 import 'contact_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
+  final int index;
   @override
+  ContactScreen({required this.index});
   _ContactScreenState createState() => _ContactScreenState();
 }
 
@@ -89,7 +91,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   // itemExtent: _ContactItem.height,
                   itemBuilder:
                       (_, index) {
-                     return   _ContactItem(contact: _contacts[index],index:index);
+                     return   _ContactItem(contact: _contacts[index],index:widget.index);
 
                       },
                   separatorBuilder:

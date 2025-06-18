@@ -3,7 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/image_picker/image_camera_picker.dart';
 
-void showCustomBottomSheet(BuildContext context) {
+import 'contact_shower_sheet.dart';
+
+void showCustomBottomSheet(BuildContext context,int index) {
   final  picker=Picker();
   showModalBottomSheet(
     context: context,
@@ -26,7 +28,10 @@ void showCustomBottomSheet(BuildContext context) {
               }),
               _buildOption(Icons.location_on, 'Location', () {}),
               _buildOption(Icons.contacts, 'Contact', () {
-                context.pushNamed('contact');
+                context.pushNamed(
+                  'contact',
+                  extra: index, // Passing index here
+                );
               }),
               _buildOption(Icons.insert_drive_file, 'Document', () {}),
               _buildOption(Icons.event, 'Event', () {}),
