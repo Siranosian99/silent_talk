@@ -65,15 +65,8 @@ class _ContactScreenState extends State<ContactScreen> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              GoRouter.of(context).goNamed(
-                'chat',queryParameters:      {
-                'id': 0,
-                'senderId': Authenticator.user!.uid,
-                'receiverId': 'user.id',
-                'name':'ads'
-              },
+              context.pop(); // ✅ This works because the original ChatScreen is still in memory
 
-              );
             },
             icon: Icon(Icons.navigate_before),
           ),
@@ -96,7 +89,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   // itemExtent: _ContactItem.height,
                   itemBuilder:
                       (_, index) {
-                     return   _ContactItem(contact: _contacts[index]);
+                     return   _ContactItem(contact: _contacts[index],index:index);
 
                       },
                   separatorBuilder:
@@ -112,11 +105,13 @@ class _ContactScreenState extends State<ContactScreen> {
 }
 
 class _ContactItem extends StatelessWidget {
-   _ContactItem({Key? key, required this.contact}) : super(key: key);
+
+   const _ContactItem({Key? key, required this.contact,required this.index}) : super(key: key);
 
   static final height = 86.0;
 
-  final Contact contact;
+   final Contact contact;
+   final int index;
 
 
   @override
@@ -150,17 +145,15 @@ class _ContactItem extends StatelessWidget {
       child: ListTile(
         onTap:
             () {
-
-              GoRouter.of(context).goNamed(
-                'chat',queryParameters:      {
-                'id': '',
-                'senderId': Authenticator.user!.uid,
-                'receiverId': '',
-                'name':contact.displayName
-              },
-
+              context.pushNamed(
+                'chat',
+                extra: {
+                  'id': index,
+                  'senderId': '',
+                  'receiverId': '',
+                  'name': contact.displayName,
+                },
               );
-
               },
         leading: _ContactImage(contact: contact),
         title: Text(
@@ -224,74 +217,74 @@ class __ContactImageState extends State<_ContactImage> {
     );
   }
 }
-
-class _ContactDetailsPage extends StatefulWidget {
-  const _ContactDetailsPage({Key? key, required this.contactId})
-    : super(key: key);
-
-  final String contactId;
-
-  @override
-  State<_ContactDetailsPage> createState() => _ContactDetailsPageState();
-}
-
-class _ContactDetailsPageState extends State<_ContactDetailsPage> {
-  late Future<Contact?> _contactFuture;
-
-  Duration? _timeTaken;
-
-  @override
-  void initState() {
-    super.initState();
-    final sw = Stopwatch()..start();
-    _contactFuture = FastContacts.getContact(widget.contactId).then((value) {
-      _timeTaken = (sw..stop()).elapsed;
-      return value;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Contact details: ${widget.contactId}')),
-      body: FutureBuilder<Contact?>(
-        future: _contactFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final error = snapshot.error;
-          if (error != null) {
-            return Center(child: Text('Error: $error'));
-          }
-
-          final contact = snapshot.data;
-          if (contact == null) {
-            return const Center(child: Text('Contact not found'));
-          }
-
-          final contactJson = JsonEncoder.withIndent(
-            '  ',
-          ).convert(contact.toMap());
-          final convertToText = jsonDecode(contactJson);
-
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ContactImage(contact: contact),
-                  const SizedBox(height: 16),
-                  const SizedBox(height: 16),
-                  Text(contactJson),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
+//
+// class _ContactDetailsPage extends StatefulWidget {
+//   const _ContactDetailsPage({Key? key, required this.contactId})
+//     : super(key: key);
+//
+//   final String contactId;
+//
+//   @override
+//   State<_ContactDetailsPage> createState() => _ContactDetailsPageState();
+// }
+//
+// class _ContactDetailsPageState extends State<_ContactDetailsPage> {
+//   late Future<Contact?> _contactFuture;
+//
+//   Duration? _timeTaken;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     final sw = Stopwatch()..start();
+//     _contactFuture = FastContacts.getContact(widget.contactId).then((value) {
+//       _timeTaken = (sw..stop()).elapsed;
+//       return value;
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Contact details: ${widget.contactId}')),
+//       body: FutureBuilder<Contact?>(
+//         future: _contactFuture,
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Center(child: CircularProgressIndicator());
+//           }
+//
+//           final error = snapshot.error;
+//           if (error != null) {
+//             return Center(child: Text('Error: $error'));
+//           }
+//
+//           final contact = snapshot.data;
+//           if (contact == null) {
+//             return const Center(child: Text('Contact not found'));
+//           }
+//
+//           final contactJson = JsonEncoder.withIndent(
+//             '  ',
+//           ).convert(contact.toMap());
+//           final convertToText = jsonDecode(contactJson);
+//
+//           return SingleChildScrollView(
+//             child: Padding(
+//               padding: const EdgeInsets.all(16),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   _ContactImage(contact: contact),
+//                   const SizedBox(height: 16),
+//                   const SizedBox(height: 16),
+//                   Text(contactJson),
+//                 ],
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

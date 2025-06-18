@@ -39,19 +39,25 @@ final GoRouter router = GoRouter(
       name: 'chat',
       path: '/chat',
       builder: (context, state) {
-        final id = int.tryParse(state.uri.queryParameters['id'] ?? '');
-        final senderId = state.uri.queryParameters['senderId'];
-        final receiverId = state.uri.queryParameters['receiverId'];
-        final name = state.uri.queryParameters['name'];
+        final extra = state.extra as Map<String, dynamic>?;
 
         return ChatScreen(
-          id: id, // nullable
-          senderId: senderId,
-          receiverId: receiverId,
-          name: name,
+          id: extra?['id'],
+          senderId: extra?['senderId'],
+          receiverId: extra?['receiverId'],
+          name: extra?['name'],
         );
       },
     ),
+
+    GoRoute(
+      path: '/chatScreen',
+      name: 'chatScreen',
+      builder: (context, state) {
+        return ChatScreen();
+      },
+    ),
+
 
 
 // GoRoute(

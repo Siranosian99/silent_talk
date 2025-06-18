@@ -12,12 +12,12 @@ import '../service/model/user_model.dart';
 import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
-  String? name;
-  int? id;
-  String? senderId;
-  String? receiverId;
+  final String? name;
+  final int? id;
+  final String? senderId;
+  final  String? receiverId;
 
-  ChatScreen({super.key, this.name, this.id,this.senderId,this.receiverId});
+ const ChatScreen({super.key, this.name, this.id,this.senderId,this.receiverId});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -26,13 +26,26 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageController = TextEditingController();
   List<Users> _users = [];
-  List<ChatModel> _chats = [];
+  // List<ChatModel> _chats = [];
   UsersService _usersService = UsersService();
+
+  late final String? _senderId;
+  late final String? _receiverId;
+  late final String? _name;
+  late final int? _id;
 
   @override
   void initState() {
-    getUsersDetails();
     super.initState();
+    _senderId = widget.senderId;
+    _receiverId = widget.receiverId;
+    _name = widget.name;
+    _id = widget.id;
+
+    print("Contact name: $_name");
+    print("Sender ID: $_senderId");
+    print("Receiver ID: $_receiverId");
+    print("ID index: $_id");
   }
 
   @override
@@ -40,6 +53,10 @@ class _ChatScreenState extends State<ChatScreen> {
     selectedContact();
     // getChat();
     getUsersDetails();
+    print("Contact name: $_name");
+    print("Sender ID: $_senderId");
+    print("Receiver ID: $_receiverId");
+    print("ID index: $_id");
     super.didChangeDependencies();
   }
 
@@ -231,11 +248,11 @@ class _ChatScreenState extends State<ChatScreen> {
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.send),
                           onPressed: () {
-                            // MessageService().sendMessage(
-                            //   messageController.text,
-                            //   Authenticator.user!.uid,
-                            //   _users[widget.id!].id,
-                            // );
+                            MessageService().sendMessage(
+                              messageController.text,
+                              Authenticator.user!.uid,
+                              _users[widget.id!].id,
+                            );
                             print('Contact ID:${widget.name} Sender ID:${widget.senderId}  Receiver ID:${widget.receiverId} ID Normal${widget.id}');
                           },
                         ),
