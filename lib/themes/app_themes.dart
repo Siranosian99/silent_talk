@@ -12,9 +12,8 @@ class AppThemeData{
         borderSide:BorderSide(color: Colors.black),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red),
-      )
-    )
+        borderSide: BorderSide(color: Colors.red),)
+    ),
 
   );
 

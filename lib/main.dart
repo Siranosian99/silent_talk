@@ -8,6 +8,7 @@ import 'package:silent_talk/screens/people_screen.dart';
 import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
 import 'package:silent_talk/themes/app_themes.dart';
+import 'package:silent_talk/utils/themes/light_dark_themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       routerConfig: router,
       debugShowCheckedModeBanner: false,
       title: 'Silent Talk',
-      theme: AppThemeData.lightTheme,
+      theme: AppTheme.lightTheme,
     );
   }
 }

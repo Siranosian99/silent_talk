@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:silent_talk/contact/send_contact.dart';
 
 import '../service/authenticator/authenticator.dart';
 import 'contact_dialog.dart';
@@ -153,7 +152,7 @@ class _ContactItem extends StatelessWidget {
                   'id': index,
                   'senderId': '',
                   'receiverId': '',
-                  'name': contact.displayName,
+                  'name': contact.structuredName?.familyName,
                 },
               );
               },

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 
-import '../contact/send_contact.dart';
 import '../service/model/user_model.dart';
 import '../widgets/chats_gridView.dart';
 import '../widgets/chats_searchBar.dart';
@@ -45,8 +44,10 @@ class _PeopleScreenState extends State<PeopleScreen> {
       body: Column(
         children: [
           // Search bar
-          ChatsSearchBar(),
-
+          ChatSearchBar(controller:TextEditingController(), onChanged:(value){
+            value = 'asd';
+          }),
+          SizedBox(height: 20,),
           // Grid of users
           Expanded(
             child: ChatsGridView(),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:silent_talk/image_picker/image_camera_picker.dart';
 
+import '../utils/file_picker/file_picker.dart';
+import '../utils/image_picker/image_camera_picker.dart';
 import 'contact_shower_sheet.dart';
 
 void showCustomBottomSheet(BuildContext context,int index) {
@@ -33,7 +34,9 @@ void showCustomBottomSheet(BuildContext context,int index) {
                   extra: index, // Passing index here
                 );
               }),
-              _buildOption(Icons.insert_drive_file, 'Document', () {}),
+              _buildOption(Icons.insert_drive_file, 'Document', () {
+                pickDocumentFile();
+              }),
               _buildOption(Icons.event, 'Event', () {}),
               _buildOption(Icons.poll, 'Poll', () {}),
               _buildOption(FontAwesomeIcons.spotify, 'Spotify', () {}),

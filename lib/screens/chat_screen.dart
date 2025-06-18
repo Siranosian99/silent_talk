@@ -89,8 +89,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       Container(
                         width: double.infinity,
                         height: 150,
-                        color: Colors.blue,
-                        child: Column(
+                        color:  Color.fromRGBO(52, 136, 176, 0.91),
+            child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircleAvatar(
@@ -147,7 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             padding: const EdgeInsets.all(12),
                             constraints: const BoxConstraints(maxWidth: 250),
                             decoration: BoxDecoration(
-                              color:messages[index]['senderId'] == Authenticator.user?.uid?Colors.blueAccent: Colors.green,
+                              color:messages[index]['senderId'] == Authenticator.user?.uid?Color.fromRGBO(24, 85, 115, 0.91): Color.fromRGBO(40, 174, 39, 0.91),
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(12),
                                 topRight: Radius.circular(12),
