@@ -48,7 +48,7 @@ class _ChatsGridViewState extends State<ChatsGridView> {
             InkWell(
               onTap: () {
                 GoRouter.of(context).goNamed(
-                  'chat',queryParameters:      {
+                  'chat',queryParameterrs:      {
                 'id': '0',
                 'senderId':'1',
                 'receiverId': '1',
