@@ -4,15 +4,42 @@ import 'package:silent_talk/widgets/settings_listTile.dart';
 import 'package:silent_talk/widgets/settings_section_title.dart';
 
 import '../constants/texts.dart';
+import '../service/model/user_model.dart';
+import '../service/users/users_service.dart';
 
-class SettingsListView extends StatelessWidget {
+class SettingsListView extends StatefulWidget {
   const SettingsListView({
     super.key,
   });
 
   @override
+  State<SettingsListView> createState() => _SettingsListViewState();
+}
+
+class _SettingsListViewState extends State<SettingsListView> {
+
+  late final data;
+  final UsersService _usersService=UsersService();
+
+  Future<void> callImageLink() async {
+    data = await _usersService.getUserData();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    callImageLink();
+  }
+
+  @override
+  void didChangeDependencies() {
+    callImageLink();
+    super.didChangeDependencies();
+  }
+  @override
   Widget build(BuildContext context) {
-    return ListView(
+    return data?['image'].isEmpty?CircularProgressIndicator(): ListView(
       padding: const EdgeInsets.all(16),
       children: [
         const SizedBox(height: 16),
@@ -21,7 +48,9 @@ class SettingsListView extends StatelessWidget {
         Center(
           child: CircleAvatar(
             radius: 50,
-            backgroundImage: AssetImage('assets/images/noProfile.png'),
+            backgroundImage: data?['image'].isEmpty
+                ? AssetImage('assets/images/noProfile.png')
+                : NetworkImage(data?['image']),
           ),
         ),
         const SizedBox(height: 12),
@@ -40,7 +69,9 @@ class SettingsListView extends StatelessWidget {
         SettingsListtile(
           leading: const Icon(Icons.lock_outline),
           title: const Text('Change Password'),
-          onTap: () {},
+          onTap: () {
+            context.goNamed('resetPassword');
+          },
         ),
         // Section: Appearance
         sectionTitle('Appearance'),

@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       routerConfig: router,
       debugShowCheckedModeBanner: false,
       title: 'Silent Talk',
-      theme: AppTheme.lightTheme,
+      theme: AppTheme.darkTheme,
     );
   }
 }

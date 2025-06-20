@@ -12,28 +12,23 @@ class ChatSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
+    return  Padding(
+      padding: const EdgeInsets.all(20),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
         style: TextStyle(fontSize: 16),
         decoration: InputDecoration(
-          icon: Icon(Icons.search, color: Colors.grey.shade600),
+          prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
           hintText: "Search...",
-          border: InputBorder.none,
+          hintStyle: TextStyle(color: Colors.grey.shade500),
+          filled: true,
+          fillColor: Colors.grey.shade100,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(21),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
       ),
     );

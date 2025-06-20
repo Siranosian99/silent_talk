@@ -29,23 +29,12 @@ class _ChatScreenState extends State<ChatScreen> {
   // List<ChatModel> _chats = [];
   UsersService _usersService = UsersService();
 
-  late final String? _senderId;
-  late final String? _receiverId;
-  late final String? _name;
-  late final int? _id;
+
 
   @override
   void initState() {
     super.initState();
-    _senderId = widget.senderId;
-    _receiverId = widget.receiverId;
-    _name = widget.name;
-    _id = widget.id;
 
-    print("Contact name: $_name");
-    print("Sender ID: $_senderId");
-    print("Receiver ID: $_receiverId");
-    print("ID index: $_id");
   }
 
   @override
@@ -53,10 +42,6 @@ class _ChatScreenState extends State<ChatScreen> {
     selectedContact();
     // getChat();
     getUsersDetails();
-    print("Contact name: $_name");
-    print("Sender ID: $_senderId");
-    print("Receiver ID: $_receiverId");
-    print("ID index: $_id");
     super.didChangeDependencies();
   }
 
@@ -121,6 +106,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     ],
                   ),
+
                   StreamBuilder<QuerySnapshot>(stream:FirebaseFirestore.instance
                       .collection('chats')
                       .doc(getChatId(Authenticator.user!.uid, widget.receiverId!)) // Chat ID
@@ -135,7 +121,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                     final messages = snapshot.data!.docs;
                     return   Expanded(
-                      child: ListView.builder(
+                      child: messages.isNotEmpty?  ListView.builder(
                         itemBuilder:
                             (context, index) => Align(
                           alignment:messages[index]['senderId'] == Authenticator.user?.uid?Alignment.topRight: Alignment.topLeft,
@@ -165,7 +151,21 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
 
                         itemCount: messages.length,
-                      ),
+                      ):Center(
+                        child: Text(
+                          "No messages yet. Start the conversation!",
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600, // Semi-bold
+                            color: Color.fromRGBO(97, 119, 138, 1), // Make it fully opaque
+                            fontStyle: FontStyle.italic, // Optional: gives it a stylish slant
+                            letterSpacing: 0.3, // Slight spacing for polish
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+
+                      )
+                      ,
                     );
                   }),
 

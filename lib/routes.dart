@@ -88,5 +88,6 @@ final GoRouter router = GoRouter(
       name: 'resetPassword',
       builder: (context, state) => ResetPasswordScreen(),
     ),
+
   ],
 );

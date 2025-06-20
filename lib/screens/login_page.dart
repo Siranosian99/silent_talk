@@ -19,8 +19,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
@@ -95,12 +94,6 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                       );
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
                   child: Text(
                     AppTexts.instance.login,
                     style: TextStyle(fontSize: 18),

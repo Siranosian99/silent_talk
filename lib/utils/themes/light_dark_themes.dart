@@ -6,6 +6,16 @@ class AppTheme {
     brightness: Brightness.light,
     primarySwatch: Colors.indigo,
     scaffoldBackgroundColor: Colors.white,
+    elevatedButtonTheme:ElevatedButtonThemeData(
+      style:ElevatedButton.styleFrom(
+        backgroundColor: Color.fromRGBO(220, 255, 0, 0.8),
+        foregroundColor: Colors.blue ,
+        padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ), // button color
+      )
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.indigo,
       foregroundColor: Colors.white,
@@ -42,6 +52,16 @@ class AppTheme {
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
+    ),
+    elevatedButtonTheme:ElevatedButtonThemeData(
+        style:ElevatedButton.styleFrom(
+          backgroundColor: Color.fromRGBO(169, 14, 218, 0.8),
+          foregroundColor: Colors.white ,
+          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ), // button color
+        )
     ),
     textTheme: TextTheme(
       bodyLarge: TextStyle(color: Colors.white70),
