@@ -20,4 +20,9 @@ class AppTexts {
   final String signUp = "Sign Up";
   final String  userName="Username";
   final String settings="Settings";
+  final String currentPass="Current Password";
+  final String newPassword="New Password";
+  final String passChange= "Change the Password";
+  final String changeEmail= "Update the Email";
+  final String changeUserName="Update UserName";
 }

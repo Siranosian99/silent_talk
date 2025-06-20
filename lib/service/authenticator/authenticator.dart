@@ -19,7 +19,7 @@ class Authenticator {
     String userName,
     String email,
     String password,
-      String image
+    String image,
   ) async {
     try {
       UserCredential userCredential = await _auth
@@ -86,8 +86,78 @@ class Authenticator {
   }
 
   Future<void> resetPassword(String email) async {
-    // String? userEmail=user?.email;
     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .update({'lastPasswordReset': FieldValue.serverTimestamp()});
+    }
+  }
+
+  Future<void> updateEmail(String email) async {
+
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .update({'email':email});
+    }
+  }
+  Future<void> updateUserName(String userName) async {
+
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .update({'userName':userName});
+    }
+  }
+  // Future<void> fuckingPassword(String txt) async {
+  //
+  //   if (user != null) {
+  //     await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(user?.uid)
+  //         .update({'password':txt});
+  //   }
+  // }
+  Future<void> updateUserPassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      if (user == null) {
+        throw FirebaseAuthException(
+          code: 'no-user',
+          message: 'No user is currently signed in.',
+        );
+      }
+
+      // Re-authenticate with current password
+      final credential = EmailAuthProvider.credential(
+        email: user?.email ?? '',
+        password: currentPassword,
+      );
+
+      await user?.reauthenticateWithCredential(credential);
+
+      // Now update to new password
+      await user?.updatePassword(newPassword);
+
+      print('✅ Password updated successfully');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        print('❌ The current password is incorrect.');
+      } else if (e.code == 'requires-recent-login') {
+        print('❌ You need to re-login before updating your password.');
+      } else {
+        print('❌ FirebaseAuth error: ${e.message}');
+      }
+    } catch (e) {
+      print('❌ Unexpected error: $e');
+    }
   }
 
   Future<void> signOut() async {
@@ -98,13 +168,9 @@ class Authenticator {
     await user?.delete();
   }
 
-
   Future<void> updateImageField(String uid, String path) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .update({
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
         'image': path,
       });
       print('Image updated successfully');
@@ -112,5 +178,4 @@ class Authenticator {
       print('Failed to update image: $e');
     }
   }
-
 }

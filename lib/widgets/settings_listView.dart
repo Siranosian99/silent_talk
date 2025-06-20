@@ -64,13 +64,17 @@ class _SettingsListViewState extends State<SettingsListView> {
 
         // Section: Account
         sectionTitle('Account'),
-        SettingsListtile(title: const Text('Edit Username'), leading: const Icon(Icons.edit), onTap: () {},),
-        SettingsListtile(title: const Text('Change Email'), leading:  const Icon(Icons.email), onTap: () {},),
+        SettingsListtile(title: const Text('Edit Username'), leading: const Icon(Icons.edit), onTap: () {
+          context.goNamed('updateUserName');
+        },),
+        SettingsListtile(title: const Text('Change Email'), leading:  const Icon(Icons.email), onTap: () {
+          context.goNamed('updateEmail');
+        },),
         SettingsListtile(
           leading: const Icon(Icons.lock_outline),
           title: const Text('Change Password'),
           onTap: () {
-            context.goNamed('resetPassword');
+            context.goNamed('insideApp');
           },
         ),
         // Section: Appearance

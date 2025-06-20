@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:silent_talk/constants/texts.dart';
 
 import '../service/authenticator/authenticator.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({Key? key}) : super(key: key);
+class UpdateEmailScreen extends StatefulWidget {
+  const UpdateEmailScreen({Key? key}) : super(key: key);
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  State<UpdateEmailScreen> createState() => _UpdateEmailScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -17,7 +18,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Reset Password')),
+      appBar: AppBar(title: Text('Update Email')),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -35,7 +36,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 decoration: InputDecoration(
                   labelText: "Email",
                   border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: Icon(Icons.lock_open_outlined),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
@@ -47,11 +48,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               ),
               SizedBox(height: 30),
               ElevatedButton.icon(
-               onPressed: (){
-                 Authenticator().resetPassword(_emailController.text);
-               },
-                icon: Icon(Icons.send),
-                label: Text("Send Reset Link"),
+                onPressed: (){
+                  Authenticator().updateEmail(_emailController.text,);
+                },
+                icon: Icon(Icons.update),
+                label: Text(AppTexts.instance.changeEmail),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                 ),

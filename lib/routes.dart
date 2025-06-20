@@ -6,9 +6,12 @@ import 'package:silent_talk/screens/chat_screen.dart';
 import 'package:silent_talk/screens/login_page.dart';
 import 'package:silent_talk/screens/main_screen.dart';
 import 'package:silent_talk/screens/people_screen.dart';
-import 'package:silent_talk/screens/reset_password.dart';
+import 'package:silent_talk/screens/reset_email.dart';
+import 'package:silent_talk/screens/reset_password_inside.dart';
 import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
+import 'package:silent_talk/screens/update_email_screen.dart';
+import 'package:silent_talk/screens/userName_update.dart';
 import 'package:silent_talk/widgets/contact_shower_sheet.dart';
 
 final GoRouter router = GoRouter(
@@ -88,6 +91,20 @@ final GoRouter router = GoRouter(
       name: 'resetPassword',
       builder: (context, state) => ResetPasswordScreen(),
     ),
-
+    GoRoute(
+      path: '/insideApp',
+      name: 'insideApp',
+      builder: (context, state) => ResetInsideApp(),
+    ),
+    GoRoute(
+      path: '/updateEmail',
+      name: 'updateEmail',
+      builder: (context, state) => UpdateEmailScreen(),
+    ),
+    GoRoute(
+      path: '/updateUserName',
+      name: 'updateUserName',
+      builder: (context, state) => UpdateUserNameScreen(),
+    ),
   ],
 );
