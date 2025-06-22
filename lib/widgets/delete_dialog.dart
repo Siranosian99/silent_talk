@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 
 void showDeleteAccountDialog(BuildContext context) {
@@ -36,7 +37,8 @@ void showDeleteAccountDialog(BuildContext context) {
                   ),),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Authenticator().deleteAccount(context);
+                  GoRouter.of(context).goNamed('login');
+                  Authenticator().deleteAccount();
                 },
               ),
             ],
