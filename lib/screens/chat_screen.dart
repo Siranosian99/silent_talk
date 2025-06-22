@@ -57,8 +57,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(_usersService.user?.uid)
-          .update({'isOnline': false});
+          .update({'isOnline': false,
+        'lastSeen': DateTime.now(),});
     }
+
   }
 
   @override
@@ -152,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 fontSize: 20,
                               ),
                             ),
-                            Text("Last seen: 12-00"),
+                            Text(_users[widget.id!].lastSeen.toString()),
                           ],
                         ),
                       ),

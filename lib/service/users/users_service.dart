@@ -29,7 +29,8 @@ class UsersService {
             password: doc['password'],
             token: doc['token'],
             image: doc['image'],
-            isOnline: doc['isOnline']
+            isOnline: doc['isOnline'],
+            lastSeen: doc['lastSeen']
         );
       }).toList();
     } catch (e) {
