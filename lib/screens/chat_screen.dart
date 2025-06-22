@@ -64,6 +64,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    setOfflineStatus();
     super.dispose();
   }
 
