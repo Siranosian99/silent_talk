@@ -97,13 +97,29 @@ class Authenticator {
   }
 
   Future<void> updateEmail(String email) async {
-
-    if (user != null) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user?.uid)
-          .update({'email':email});
+    try {
+      await user?.verifyBeforeUpdateEmail(email);
+      await user?.reload();
+      print('📨 Verification email sent to $email. Email will update after verification.');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        print('❌ This email is already registered.');
+      } else if (e.code == 'requires-recent-login') {
+        print('❌ Please re-authenticate before updating email.');
+      } else {
+        print('❌ Error: ${e.message}');
+      }
     }
+
+
+
+    // if (user != null) {
+    //   await FirebaseFirestore.instance
+    //       .collection('users')
+    //       .doc(user?.uid)
+    //       .update({'email':email});
+    // }
+
   }
   Future<void> updateUserName(String userName) async {
 
@@ -164,8 +180,26 @@ class Authenticator {
     await FirebaseAuth.instance.signOut();
   }
 
-  Future<void> deleteAccount() async {
-    await user?.delete();
+  Future<void> deleteAccount(BuildContext context) async {
+
+    try {
+      final uid = user?.uid;
+
+      if (uid == null) return;
+      // 1. Delete user document from Firestore
+      await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+      // 2. Delete user from Firebase Authentication
+      await user?.delete();
+      context.goNamed('login');
+      print('✅ User deleted from Auth and Firestore');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        print('❌ Please re-authenticate before deleting your account.');
+        // You may want to redirect the user to a re-authentication screen here
+      } else {
+        print('❌ Error deleting account: ${e.message}');
+      }
+    }
   }
 
   Future<void> updateImageField(String uid, String path) async {

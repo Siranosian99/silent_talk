@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/widgets/settings_listTile.dart';
 import 'package:silent_talk/widgets/settings_section_title.dart';
 
 import '../constants/texts.dart';
 import '../service/model/user_model.dart';
 import '../service/users/users_service.dart';
+import 'delete_dialog.dart';
 
 class SettingsListView extends StatefulWidget {
   const SettingsListView({
@@ -20,7 +22,7 @@ class _SettingsListViewState extends State<SettingsListView> {
 
   late final data;
   final UsersService _usersService=UsersService();
-
+  late final Authenticator _auth;
   Future<void> callImageLink() async {
     data = await _usersService.getUserData();
     setState(() {});
@@ -29,6 +31,7 @@ class _SettingsListViewState extends State<SettingsListView> {
   @override
   void initState() {
     super.initState();
+    _auth =Authenticator();
     callImageLink();
   }
 
@@ -155,7 +158,10 @@ class _SettingsListViewState extends State<SettingsListView> {
         SettingsListtile(
           leading: const Icon(Icons.delete_forever, color: Colors.red),
           title: const Text('Delete Account'),
-          onTap: () {},
+          onTap: () {
+            showDeleteAccountDialog(context);
+
+          },
         ),
 
         const SizedBox(height: 40),
