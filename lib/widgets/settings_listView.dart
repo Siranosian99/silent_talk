@@ -1,28 +1,33 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
+import 'package:silent_talk/service/database/sqflite_imagesave.dart';
 import 'package:silent_talk/widgets/settings_listTile.dart';
 import 'package:silent_talk/widgets/settings_section_title.dart';
+import 'package:silent_talk/widgets/show_image_dialog.dart';
 
 import '../constants/texts.dart';
 import '../service/model/user_model.dart';
 import '../service/users/users_service.dart';
+import '../utils/image_picker/image_camera_picker.dart';
 import 'delete_dialog.dart';
 
 class SettingsListView extends StatefulWidget {
-  const SettingsListView({
-    super.key,
-  });
+  const SettingsListView({super.key});
 
   @override
   State<SettingsListView> createState() => _SettingsListViewState();
 }
 
 class _SettingsListViewState extends State<SettingsListView> {
-
   late final data;
-  final UsersService _usersService=UsersService();
+  final UsersService _usersService = UsersService();
   late final Authenticator _auth;
+  final _picker = Picker();
+  late final picture;
+
   Future<void> callImageLink() async {
     data = await _usersService.getUserData();
     setState(() {});
@@ -30,30 +35,58 @@ class _SettingsListViewState extends State<SettingsListView> {
 
   @override
   void initState() {
-    super.initState();
-    _auth =Authenticator();
+    getDataFromSql();
+    _auth = Authenticator();
     callImageLink();
+    super.initState();
   }
 
   @override
   void didChangeDependencies() {
     callImageLink();
+    getDataFromSql();
     super.didChangeDependencies();
   }
+
+  Future<void> getDataFromSql() async {
+    picture = await ImageSaverOffline.getPhotoByUserId(Authenticator.user!.uid);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return data?['image'].isEmpty?CircularProgressIndicator(): ListView(
+    return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         const SizedBox(height: 16),
 
         // Profile Section
         Center(
-          child: CircleAvatar(
-            radius: 50,
-            backgroundImage: data?['image'].isEmpty
-                ? AssetImage('assets/images/noProfile.png')
-                : NetworkImage(data?['image']),
+          child: GestureDetector(
+            onTap: () async {
+              showImageSourceDialog(context);
+              await ImageSaverOffline.savePhotoOffline(
+                Authenticator.user!.uid,
+                _picker.imgPath!,
+              );
+
+              print("path is :${_picker.imgPath!}");
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child:
+                  _picker.imgPath != null
+                      ? Image.file(File(picture['path']), fit: BoxFit.cover)
+                      : Image.asset(
+                        'assets/images/noProfile.png',
+                        fit: BoxFit.cover,
+                      ),
+              // CircleAvatar(
+              //   radius: 50,
+              //   backgroundImage: data?['image'].isEmpty
+              //       ? AssetImage('assets/images/noProfile.png')
+              //       :  NetworkImage(data?['image']),
+              // ),
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -67,12 +100,20 @@ class _SettingsListViewState extends State<SettingsListView> {
 
         // Section: Account
         sectionTitle('Account'),
-        SettingsListtile(title: const Text('Edit Username'), leading: const Icon(Icons.edit), onTap: () {
-          context.goNamed('updateUserName');
-        },),
-        SettingsListtile(title: const Text('Change Email'), leading:  const Icon(Icons.email), onTap: () {
-          context.goNamed('updateEmail');
-        },),
+        SettingsListtile(
+          title: const Text('Edit Username'),
+          leading: const Icon(Icons.edit),
+          onTap: () {
+            context.goNamed('updateUserName');
+          },
+        ),
+        SettingsListtile(
+          title: const Text('Change Email'),
+          leading: const Icon(Icons.email),
+          onTap: () {
+            context.goNamed('updateEmail');
+          },
+        ),
         SettingsListtile(
           leading: const Icon(Icons.lock_outline),
           title: const Text('Change Password'),
@@ -91,7 +132,9 @@ class _SettingsListViewState extends State<SettingsListView> {
           leading: const Icon(Icons.palette),
           title: const Text('App Theme'),
           subtitle: const Text('Light / Dark / System'),
-          onTap: () {},
+          onTap: () {
+            print(_picker.imgPath);
+          },
         ),
 
         // Section: Notifications
@@ -160,7 +203,6 @@ class _SettingsListViewState extends State<SettingsListView> {
           title: const Text('Delete Account'),
           onTap: () {
             showDeleteAccountDialog(context);
-
           },
         ),
 

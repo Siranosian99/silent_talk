@@ -30,7 +30,6 @@ class UsersService {
             token: doc['token'],
             image: doc['image'],
             isOnline: doc['isOnline'],
-            lastSeen: doc['lastSeen']
         );
       }).toList();
     } catch (e) {

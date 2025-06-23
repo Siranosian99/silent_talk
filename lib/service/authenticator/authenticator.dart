@@ -34,7 +34,6 @@ class Authenticator {
         password: password,
         token: '',
         isOnline: false,
-        lastSeen: DateTime.now()
       );
       userCredential.user?.sendEmailVerification();
       await users

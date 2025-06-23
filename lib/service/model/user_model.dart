@@ -7,7 +7,7 @@ class Users {
   String password;
   String token;
   bool isOnline;
-  DateTime lastSeen;
+
 
   Users({
     required this.id,
@@ -18,7 +18,7 @@ class Users {
     required this.password,
     required this.token,
     required this.isOnline,
-    required this.lastSeen,
+
   });
 
   Map toMap(Users user){
@@ -31,7 +31,7 @@ class Users {
     data['password'] = user.password;
     data['token']=user.token;
     data['isOnline']=user.isOnline;
-    data['lastSeen']=user.lastSeen;
+
     return data;
 
   }

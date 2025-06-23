@@ -154,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 fontSize: 20,
                               ),
                             ),
-                            Text(_users[widget.id!].lastSeen.toString()),
+                            // Text(_users[widget.id!].lastSeen.toString()),
                           ],
                         ),
                       ),
