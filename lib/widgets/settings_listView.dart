@@ -78,7 +78,7 @@ class _SettingsListViewState extends State<SettingsListView> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child:
-                  _picker.imgPath != null
+              picture['path'] != null
                       ? Image.file(File(picture['path']), fit: BoxFit.cover)
                       : Image.asset(
                         'assets/images/noProfile.png',
@@ -137,7 +137,7 @@ class _SettingsListViewState extends State<SettingsListView> {
           title: const Text('App Theme'),
           subtitle: const Text('Light / Dark / System'),
           onTap: () {
-            print(picture);
+            print(picture['path']);
           },
         ),
 
