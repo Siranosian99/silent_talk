@@ -49,8 +49,12 @@ class _SettingsListViewState extends State<SettingsListView> {
   }
 
   Future<void> getDataFromSql() async {
-    picture = await ImageSaverOffline.getPhotoByUserId(Authenticator.user!.uid);
+    final test = await ImageSaverOffline.getPhotoByUserId(Authenticator.user!.uid);
+    setState(() {
+      picture = test;
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +137,7 @@ class _SettingsListViewState extends State<SettingsListView> {
           title: const Text('App Theme'),
           subtitle: const Text('Light / Dark / System'),
           onTap: () {
-            print(_picker.imgPath);
+            print(picture);
           },
         ),
 
