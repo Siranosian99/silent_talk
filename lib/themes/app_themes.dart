@@ -9,10 +9,10 @@ class AppThemeData{
     inputDecorationTheme:InputDecorationTheme(
       fillColor: Colors.red[200],
       border:OutlineInputBorder(
-        borderSide:BorderSide(color: Colors.black),
+        borderSide:BorderSide(color: Colors.yellow), //black here
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red),)
+        borderSide: BorderSide(color: Colors.blue),)
     ),
 
   );
