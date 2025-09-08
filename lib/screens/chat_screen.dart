@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/messages/get_messages.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
@@ -9,6 +10,7 @@ import 'package:silent_talk/service/users/users_service.dart';
 
 import '../service/ids/get_userIds.dart';
 import '../service/model/user_model.dart';
+import '../utils/image_picker/image_camera_picker.dart';
 import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -32,7 +34,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   TextEditingController messageController = TextEditingController();
   List<Users> _users = [];
-
+  final Picker _picker=Picker();
   // List<ChatModel> _chats = [];
   final UsersService _usersService = UsersService();
 
@@ -51,7 +53,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           .update({'isOnline': true});
     }
   }
-
   void setOfflineStatus() async {
     if (_usersService.user?.uid != null) {
       await FirebaseFirestore.instance
@@ -87,6 +88,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   void selectedContact() {
     messageController.text = widget.name ?? '';
+  }
+  void selectedPicture(String path) {
+    messageController.text = path;
   }
 
   @override
@@ -178,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               ),
                             ) // Chat ID
                             .collection('messages')
-                            .orderBy('messageTime')
+                            .orderBy('messageTime',descending: false)
                             .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
@@ -328,7 +332,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       decoration: InputDecoration(
                         hintText: "Type a message...",
                         filled: true,
-                        fillColor: Colors.grey[100],
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 12,
                           horizontal: 16,
@@ -341,6 +344,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
                             showCustomBottomSheet(context, widget.id!);
+                            setState(() {
+                              messageController.text= _picker.imgPath ?? '';
+                            });
                           },
                         ),
                         suffixIcon: IconButton(
@@ -351,6 +357,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               Authenticator.user!.uid,
                               _users[widget.id!].id,
                             );
+                            messageController.clear();
                             print(
                               'Contact ID:${widget.name} Sender ID:${widget.senderId}  Receiver ID:${widget.receiverId} ID Normal${widget.id}',
                             );

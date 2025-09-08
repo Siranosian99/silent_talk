@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/database/sqflite_imagesave.dart';
 import 'package:silent_talk/widgets/settings_listTile.dart';
@@ -12,6 +13,7 @@ import '../constants/texts.dart';
 import '../service/model/user_model.dart';
 import '../service/users/users_service.dart';
 import '../utils/image_picker/image_camera_picker.dart';
+import '../utils/themes/theme_provider.dart';
 import 'delete_dialog.dart';
 
 class SettingsListView extends StatefulWidget {
@@ -35,7 +37,7 @@ class _SettingsListViewState extends State<SettingsListView> {
 
   @override
   void initState() {
-    getDataFromSql();
+    // getDataFromSql();
     _auth = Authenticator();
     callImageLink();
     super.initState();
@@ -44,20 +46,21 @@ class _SettingsListViewState extends State<SettingsListView> {
   @override
   void didChangeDependencies() {
     callImageLink();
-    getDataFromSql();
+    // getDataFromSql();
     super.didChangeDependencies();
   }
 
-  Future<void> getDataFromSql() async {
-    final test = await ImageSaverOffline.getPhotoByUserId(Authenticator.user!.uid);
-    setState(() {
-      picture = test;
-    });
-  }
+  // Future<void> getDataFromSql() async {
+  //   final test = await ImageSaverOffline.getPhotoByUserId(Authenticator.user!.uid);
+  //   setState(() {
+  //     picture = test;
+  //   });
+  // }
 
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -66,20 +69,22 @@ class _SettingsListViewState extends State<SettingsListView> {
         // Profile Section
         Center(
           child: GestureDetector(
-            onTap: () async {
-              showImageSourceDialog(context);
-              await ImageSaverOffline.savePhotoOffline(
-                Authenticator.user!.uid,
-                _picker.imgPath!,
-              );
-
-              print("path is :${_picker.imgPath!}");
-            },
+            // onTap: () async {
+            //   showImageSourceDialog(context);
+            //   await ImageSaverOffline.savePhotoOffline(
+            //     Authenticator.user!.uid,
+            //     _picker.imgPath!,
+            //   );
+            //
+            //   print("path is :${_picker.imgPath!}");
+            // },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child:
-              picture['path'] != null
-                      ? Image.file(File(picture['path']), fit: BoxFit.cover)
+        data['image'] != null ?Image.network(data['image'])
+              // picture['path'] != null
+                      // ? Image.file(File(picture['path']), fit: BoxFit.cover)
+
                       : Image.asset(
                         'assets/images/noProfile.png',
                         fit: BoxFit.cover,
@@ -128,19 +133,11 @@ class _SettingsListViewState extends State<SettingsListView> {
         // Section: Appearance
         sectionTitle('Appearance'),
         ListTile(
-          leading: const Icon(Icons.dark_mode),
-          title: const Text('Dark Mode'),
-          trailing: Switch(value: false, onChanged: null),
+          leading: Icon(themeProvider.isDark ? Icons.dark_mode :Icons.light_mode),
+          title: Text(themeProvider.isDark ?'Dark Mode': 'Light Mode'),
+          trailing: Switch(value: themeProvider.isDark, onChanged: (value)=>
+              themeProvider.themeSwitch()),
         ),
-        SettingsListtile(
-          leading: const Icon(Icons.palette),
-          title: const Text('App Theme'),
-          subtitle: const Text('Light / Dark / System'),
-          onTap: () {
-            print(picture['path']);
-          },
-        ),
-
         // Section: Notifications
         sectionTitle('Notifications'),
         SettingsListtile(

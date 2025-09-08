@@ -23,6 +23,7 @@ void showCustomBottomSheet(BuildContext context,int index) {
             children: [
               _buildOption(Icons.photo, 'Photo', () {
                 picker.galleryPicker();
+
               }),
               _buildOption(Icons.camera_alt, 'Camera', () {
                 picker.cameraPicker();

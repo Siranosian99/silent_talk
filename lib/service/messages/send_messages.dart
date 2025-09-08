@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:silent_talk/service/model/chat_model.dart';
 import 'package:intl/intl.dart';
 
+import '../../utils/time_format/time_convertor.dart';
 import '../ids/get_userIds.dart';
 
 class MessageService {
@@ -23,7 +24,7 @@ class MessageService {
         "message": message,
         "senderId": uId1,
         "receiverId": uId2,
-        "messageTime": formatTime(DateTime.now()), // Firestore server time
+        "messageTime": formatTimeWithSeconds(DateTime.now()), // Firestore server time
       });
       print("WORKING");
     } catch (e) {

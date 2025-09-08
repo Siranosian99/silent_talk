@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../service/authenticator/authenticator.dart';
+import '../utils/contact/send_contact.dart';
 import 'contact_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -152,7 +153,7 @@ class _ContactItem extends StatelessWidget {
                   'id': index,
                   'senderId': '',
                   'receiverId': '',
-                  'name': contact.structuredName?.familyName,
+                  'name': contactDetails(contact),
                 },
               );
               },

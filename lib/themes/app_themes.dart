@@ -24,6 +24,7 @@ class AppThemeData{
         foregroundColor: WidgetStateProperty.all(Colors.black),
         backgroundColor:  WidgetStateProperty.all(Colors.yellowAccent),
       )),
+
       inputDecorationTheme:InputDecorationTheme(
           fillColor: Colors.red[200],
           border:OutlineInputBorder(
