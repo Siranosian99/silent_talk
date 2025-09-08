@@ -6,6 +6,7 @@ import '../utils/image_picker/image_camera_picker.dart';
 Future<void> showImageSourceDialog(BuildContext context) async {
   final _picker=Picker();
   showDialog(
+    barrierDismissible: true,
     context: context,
     builder: (context) => AlertDialog(
       title: const Text('Change Image'),
