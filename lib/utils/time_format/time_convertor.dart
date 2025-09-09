@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 String formatTimeWithSeconds(DateTime time) {
-  final formatter = DateFormat('hh:mm:ss a'); // hh = 12-hour, mm = minutes, ss = seconds, a = AM/PM
+  final formatter = DateFormat('yyyy-MM-dd hh:mm:ss a');
   return formatter.format(time);
 }
 

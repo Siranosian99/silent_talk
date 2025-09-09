@@ -9,8 +9,10 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../service/authenticator/authenticator.dart';
+import '../service/messages/send_messages.dart';
 import '../utils/contact/send_contact.dart';
 import 'contact_dialog.dart';
+import 'contact_send_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
   final int index;
@@ -146,16 +148,22 @@ class _ContactItem extends StatelessWidget {
       height: height,
       child: ListTile(
         onTap:
-            () {
-              context.pushNamed(
-                'chat',
-                extra: {
-                  'id': index,
-                  'senderId': '',
-                  'receiverId': '',
-                  'name': contactDetails(contact),
-                },
-              );
+            () { MessageService().sendMessage(
+              contactDetails(contact),
+              Authenticator.user!.uid,
+             "8bTOJVZOT3fqtzpmTiIaX8HVhaF2"
+            );
+
+              showContactDialog(context, contactDetails(contact),
+              );              // context.pushNamed(
+              //   'chat',
+              //   extra: {
+              //     'id': index,
+              //     'senderId': '',
+              //     'receiverId': '',
+              //     'name': contactDetails(contact),
+              //   },
+              // );
               },
         leading: _ContactImage(contact: contact),
         title: Text(

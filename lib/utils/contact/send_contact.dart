@@ -9,10 +9,8 @@ String contactDetails(Contact contact) {
           : 'No number';
 
   return '''
-Contact name: $firstName
+Name & LastName: $firstName $lastName
 
-Contact last name: $lastName
-
-Contact number: $phone
+Phone Number: $phone
 ''';
 }
