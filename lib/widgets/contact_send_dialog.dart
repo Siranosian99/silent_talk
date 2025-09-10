@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-void showContactDialog(BuildContext context, String contactDetials) {
+void showContactDialog(BuildContext context, String contactDetials,VoidCallback onTap,) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -34,6 +34,7 @@ void showContactDialog(BuildContext context, String contactDetials) {
           ),
           ElevatedButton.icon(
             onPressed: () {
+              onTap();
               context.pop();
             },
             icon: Icon(Icons.send),

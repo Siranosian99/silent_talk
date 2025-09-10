@@ -166,17 +166,17 @@ class _ContactItem extends StatelessWidget {
       height: height,
       child: ListTile(
         onTap: () {
-          MessageService().sendMessage(
-            contactDetails(contact),
-            Authenticator.user!.uid,
-            id,
-          );
           context.pop();
-          print(Authenticator.user!.uid);
-
           showContactDialog(
             context,
-            contactDetails(contact),
+            contactDetails(contact),(){
+            MessageService().sendMessage(
+              contactDetails(contact),
+              Authenticator.user!.uid,
+              id,
+            );
+
+          }
           ); // context.pushNamed(
           //   'chat',
           //   extra: {
@@ -186,6 +186,7 @@ class _ContactItem extends StatelessWidget {
           //     'name': contactDetails(contact),
           //   },
           // );
+
         },
         leading: _ContactImage(contact: contact),
         title: Text(

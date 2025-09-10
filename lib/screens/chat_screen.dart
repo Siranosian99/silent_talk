@@ -231,16 +231,19 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                     ),
                                             borderRadius:
                                                 const BorderRadius.only(
-                                                  topLeft: Radius.circular(12),
-                                                  topRight: Radius.circular(12),
+                                                  topLeft: Radius.circular(20),
+                                                  topRight: Radius.circular(20),
                                                   bottomLeft: Radius.circular(
-                                                    12,
+                                                    20,
                                                   ),
                                                 ),
                                           ),
                                           child: Text(
                                             messages[index]['message'],
-                                            style: TextStyle(
+                                            style: messages[index]['message'].contains("Name & LastName:")?TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                            ): TextStyle(
                                               color: Colors.white,
                                               fontSize: 16,
                                             ),
