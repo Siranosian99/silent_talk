@@ -30,6 +30,7 @@ void showCustomBottomSheet(BuildContext context,int index) {
               }),
               _buildOption(Icons.location_on, 'Location', () {}),
               _buildOption(Icons.contacts, 'Contact', () {
+                print("this is INdex:$index");
                 context.pushNamed(
                   'contact',
                   extra: index, // Passing index here

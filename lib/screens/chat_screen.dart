@@ -358,9 +358,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               _users[widget.id!].id,
                             );
                             messageController.clear();
-                            print(
-                              'Contact ID:${widget.name} Sender ID:${widget.senderId}  Receiver ID:${widget.receiverId} ID Normal${widget.id}',
-                            );
+
                           },
                         ),
                       ),

@@ -10,32 +10,44 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../service/authenticator/authenticator.dart';
 import '../service/messages/send_messages.dart';
+import '../service/model/user_model.dart';
+import '../service/users/users_service.dart';
 import '../utils/contact/send_contact.dart';
 import 'contact_dialog.dart';
 import 'contact_send_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
   final int index;
+
   @override
   ContactScreen({required this.index});
+
   _ContactScreenState createState() => _ContactScreenState();
 }
 
 class _ContactScreenState extends State<ContactScreen> {
+  final UsersService _usersService = UsersService();
+  List<Users> _users = [];
   List<Contact> _contacts = const [];
   String? _text;
-
   bool _isLoading = false;
-
   List<ContactField> _fields = ContactField.values.toList();
 
   @override
   void initState() {
     loadContacts();
+    getUsersDetails();
     super.initState();
   }
 
   final _ctrl = ScrollController();
+
+  Future<void> getUsersDetails() async {
+    _users = await _usersService.fetchAllUsers();
+    setState(() {
+      _users;
+    });
+  }
 
   Future<void> loadContacts() async {
     try {
@@ -69,8 +81,8 @@ class _ContactScreenState extends State<ContactScreen> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              context.pop(); // ✅ This works because the original ChatScreen is still in memory
-
+              context
+                  .pop(); // ✅ This works because the original ChatScreen is still in memory
             },
             icon: Icon(Icons.navigate_before),
           ),
@@ -91,11 +103,13 @@ class _ContactScreenState extends State<ContactScreen> {
                   controller: _ctrl,
                   itemCount: _contacts.length,
                   // itemExtent: _ContactItem.height,
-                  itemBuilder:
-                      (_, index) {
-                     return   _ContactItem(contact: _contacts[index],index:widget.index);
-
-                      },
+                  itemBuilder: (_, index) {
+                    return _ContactItem(
+                      contact: _contacts[index],
+                      index: widget.index,
+                      id: _users[widget.index].id,
+                    );
+                  },
                   separatorBuilder:
                       (BuildContext context, int index) => SizedBox(height: 50),
                 ),
@@ -109,14 +123,18 @@ class _ContactScreenState extends State<ContactScreen> {
 }
 
 class _ContactItem extends StatelessWidget {
-
-   const _ContactItem({Key? key, required this.contact,required this.index}) : super(key: key);
+  const _ContactItem({
+    Key? key,
+    required this.contact,
+    required this.index,
+    required this.id,
+  }) : super(key: key);
 
   static final height = 86.0;
 
-   final Contact contact;
-   final int index;
-
+  final Contact contact;
+  final int index;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
@@ -147,24 +165,28 @@ class _ContactItem extends StatelessWidget {
     return SizedBox(
       height: height,
       child: ListTile(
-        onTap:
-            () { MessageService().sendMessage(
-              contactDetails(contact),
-              Authenticator.user!.uid,
-             "8bTOJVZOT3fqtzpmTiIaX8HVhaF2"
-            );
+        onTap: () {
+          MessageService().sendMessage(
+            contactDetails(contact),
+            Authenticator.user!.uid,
+            id,
+          );
+          context.pop();
+          print(Authenticator.user!.uid);
 
-              showContactDialog(context, contactDetails(contact),
-              );              // context.pushNamed(
-              //   'chat',
-              //   extra: {
-              //     'id': index,
-              //     'senderId': '',
-              //     'receiverId': '',
-              //     'name': contactDetails(contact),
-              //   },
-              // );
-              },
+          showContactDialog(
+            context,
+            contactDetails(contact),
+          ); // context.pushNamed(
+          //   'chat',
+          //   extra: {
+          //     'id': index,
+          //     'senderId': '',
+          //     'receiverId': '',
+          //     'name': contactDetails(contact),
+          //   },
+          // );
+        },
         leading: _ContactImage(contact: contact),
         title: Text(
           contact.displayName,
@@ -227,6 +249,7 @@ class __ContactImageState extends State<_ContactImage> {
     );
   }
 }
+
 //
 // class _ContactDetailsPage extends StatefulWidget {
 //   const _ContactDetailsPage({Key? key, required this.contactId})
