@@ -13,7 +13,7 @@ import '../service/messages/send_messages.dart';
 import '../service/model/user_model.dart';
 import '../service/users/users_service.dart';
 import '../utils/contact/send_contact.dart';
-import 'contact_dialog.dart';
+
 import 'contact_send_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -169,7 +169,7 @@ class _ContactItem extends StatelessWidget {
           context.pop();
           showContactDialog(
             context,
-            contactDetails(contact),(){
+            contactDetails(contact,nameOnly: true), contactDetails(contact ,phoneOnly: true),(){
             MessageService().sendMessage(
               contactDetails(contact),
               Authenticator.user!.uid,

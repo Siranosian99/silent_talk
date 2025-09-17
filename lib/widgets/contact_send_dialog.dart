@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-void showContactDialog(BuildContext context, String contactDetials,VoidCallback onTap,) {
+void showContactDialog(
+    BuildContext context,
+    String contactName,
+    String contactNumber,
+    VoidCallback onTap,
+    ) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -9,10 +14,10 @@ void showContactDialog(BuildContext context, String contactDetials,VoidCallback 
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        title:const Row(
-          children: [
+        title: Row(
+          children: const [
             CircleAvatar(
-              child: const Icon(Icons.person, color: Colors.white),
+              child: Icon(Icons.person, color: Colors.white),
               backgroundColor: Colors.blue,
             ),
             SizedBox(width: 12),
@@ -23,8 +28,15 @@ void showContactDialog(BuildContext context, String contactDetials,VoidCallback 
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(contactDetials, style: TextStyle(fontSize: 16)),
-            SizedBox(height: 8),
+            Text(
+              "Name: $contactName",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 6),
+            Text(
+              "Phone: $contactNumber",
+              style: TextStyle(fontSize: 16),
+            ),
           ],
         ),
         actions: [

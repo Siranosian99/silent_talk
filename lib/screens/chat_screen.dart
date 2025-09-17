@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fast_contacts/src/model/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,10 +8,12 @@ import 'package:silent_talk/service/messages/get_messages.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/service/model/chat_model.dart';
 import 'package:silent_talk/service/users/users_service.dart';
+import 'package:silent_talk/utils/contact/send_contact.dart';
 
 import '../service/ids/get_userIds.dart';
 import '../service/model/user_model.dart';
 import '../utils/image_picker/image_camera_picker.dart';
+import '../widgets/message_list.dart';
 import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -34,7 +37,8 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   TextEditingController messageController = TextEditingController();
   List<Users> _users = [];
-  final Picker _picker=Picker();
+  final Picker _picker = Picker();
+
   // List<ChatModel> _chats = [];
   final UsersService _usersService = UsersService();
 
@@ -53,15 +57,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           .update({'isOnline': true});
     }
   }
+
   void setOfflineStatus() async {
     if (_usersService.user?.uid != null) {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(_usersService.user?.uid)
-          .update({'isOnline': false,
-        'lastSeen': DateTime.now(),});
+          .update({'isOnline': false, 'lastSeen': DateTime.now()});
     }
-
   }
 
   @override
@@ -74,7 +77,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() {
     selectedContact();
-    // getChat();
     getUsersDetails();
     super.didChangeDependencies();
   }
@@ -89,6 +91,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   void selectedContact() {
     messageController.text = widget.name ?? '';
   }
+
   void selectedPicture(String path) {
     messageController.text = path;
   }
@@ -105,9 +108,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
-  // Future<void> getChat() async {
-  //   _chats = await GetMessageService().getChats(widget.senderId!,widget.receiverId!);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               ),
                             ) // Chat ID
                             .collection('messages')
-                            .orderBy('messageTime',descending: false)
+                            .orderBy('messageTime', descending: false)
                             .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
@@ -196,63 +196,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       return Expanded(
                         child:
                             messages.isNotEmpty
-                                ? ListView.builder(
-                                  itemBuilder:
-                                      (context, index) => Align(
-                                        alignment:
-                                            messages[index]['senderId'] ==
-                                                    Authenticator.user?.uid
-                                                ? Alignment.topRight
-                                                : Alignment.topLeft,
-                                        child: Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 6,
-                                            horizontal: 12,
-                                          ),
-                                          padding: const EdgeInsets.all(12),
-                                          constraints: const BoxConstraints(
-                                            maxWidth: 250,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color:
-                                                messages[index]['senderId'] ==
-                                                        Authenticator.user?.uid
-                                                    ? Color.fromRGBO(
-                                                      24,
-                                                      85,
-                                                      115,
-                                                      0.91,
-                                                    )
-                                                    : Color.fromRGBO(
-                                                      40,
-                                                      174,
-                                                      39,
-                                                      0.91,
-                                                    ),
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                  topLeft: Radius.circular(20),
-                                                  topRight: Radius.circular(20),
-                                                  bottomLeft: Radius.circular(
-                                                    20,
-                                                  ),
-                                                ),
-                                          ),
-                                          child: Text(
-                                            messages[index]['message'],
-                                            style: messages[index]['message'].contains("Name & LastName:")?TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                            ): TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-
-                                  itemCount: messages.length,
-                                )
+                                ? MessageList(messages: messages)
                                 : Center(
                                   child: Text(
                                     "No messages yet. Start the conversation!",
@@ -274,60 +218,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     },
                   ),
 
-                  // Padding(
-                  //   padding: const EdgeInsets.all(10),
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.stretch,
-                  //     children: [
-                  //       Align(
-                  //         alignment: Alignment.topLeft,
-                  //         child: Container(
-                  //           margin: const EdgeInsets.symmetric(
-                  //             vertical: 6,
-                  //             horizontal: 12,
-                  //           ),
-                  //           padding: const EdgeInsets.all(12),
-                  //           constraints: const BoxConstraints(maxWidth: 250),
-                  //           decoration: BoxDecoration(
-                  //             color: Colors.grey.shade200,
-                  //             borderRadius: const BorderRadius.only(
-                  //               topRight: Radius.circular(12),
-                  //               topLeft: Radius.circular(12),
-                  //               bottomRight: Radius.circular(12),
-                  //             ),
-                  //           ),
-                  //           child: Text(
-                  //             _chats[2].message,
-                  //             style: const TextStyle(fontSize: 16),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       Align(
-                  //         alignment: Alignment.topRight,
-                  //         child: Container(
-                  //           margin: const EdgeInsets.symmetric(
-                  //             vertical: 6,
-                  //             horizontal: 12,
-                  //           ),
-                  //           padding: const EdgeInsets.all(12),
-                  //           constraints: const BoxConstraints(maxWidth: 250),
-                  //           decoration: BoxDecoration(
-                  //             color: Colors.blueAccent,
-                  //             borderRadius: const BorderRadius.only(
-                  //               topLeft: Radius.circular(12),
-                  //               topRight: Radius.circular(12),
-                  //               bottomLeft: Radius.circular(12),
-                  //             ),
-                  //           ),
-                  //           child: const Text(
-                  //             "Heeeeey",
-                  //             style: TextStyle(color: Colors.white, fontSize: 16),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),7
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: TextFormField(
@@ -348,20 +238,20 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           onPressed: () {
                             showCustomBottomSheet(context, widget.id!);
                             setState(() {
-                              messageController.text= _picker.imgPath ?? '';
+                              messageController.text = _picker.imgPath ?? '';
                             });
                           },
                         ),
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.send),
                           onPressed: () {
+                            messageController.text.isEmpty? null:
                             MessageService().sendMessage(
                               messageController.text,
                               Authenticator.user!.uid,
                               _users[widget.id!].id,
                             );
                             messageController.clear();
-
                           },
                         ),
                       ),
@@ -372,3 +262,5 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     );
   }
 }
+
+

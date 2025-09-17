@@ -1,3 +1,4 @@
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/database/sqflite_imagesave.dart';
@@ -6,12 +7,15 @@ class Picker{
   static final ImagePicker picker = ImagePicker();
   String? imgPath;
   XFile? pickedImage;
-
+  final cloudinary = CloudinaryPublic('dcmkerxac', 'silent_talk', cache: false);
 
   Future<XFile?> galleryPicker() async {
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
+    if (pickedImage != null && imgPath !=null) {
       imgPath = pickedImage.path;
+      CloudinaryResponse response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(imgPath!, resourceType: CloudinaryResourceType.Image),
+      );
       print('-----------${imgPath}');// If imgPath is a class variable
       return pickedImage;
 
