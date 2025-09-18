@@ -38,6 +38,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   TextEditingController messageController = TextEditingController();
   List<Users> _users = [];
   final Picker _picker = Picker();
+  String? photoLink;
 
   // List<ChatModel> _chats = [];
   final UsersService _usersService = UsersService();
@@ -47,6 +48,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     setOnlineStatus();
     super.initState();
+  }
+  Future<String?> savePhoto()async{
+    final link=await _picker.galleryPicker();
+    setState(() {
+      photoLink=link;
+    });
+    return link;
   }
 
   void setOnlineStatus() async {
@@ -196,7 +204,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       return Expanded(
                         child:
                             messages.isNotEmpty
-                                ? MessageList(messages: messages)
+                                ? MessageList(messages: messages,photo:photoLink?? '')
                                 : Center(
                                   child: Text(
                                     "No messages yet. Start the conversation!",

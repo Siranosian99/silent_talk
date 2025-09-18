@@ -8,9 +8,11 @@ class MessageList extends StatelessWidget {
   const MessageList({
     super.key,
     required this.messages,
+    required this.photo,
   });
 
   final List<QueryDocumentSnapshot<Object?>> messages;
+  final String photo;
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -28,6 +30,7 @@ class MessageList extends StatelessWidget {
         messages[index]['message'].contains(
           "Name:",
         )
+
             ? Container(
           width: 300,
           margin: EdgeInsets.symmetric(
@@ -151,7 +154,57 @@ class MessageList extends StatelessWidget {
             ],
           ),
         )
-            : Container(
+            : messages[index]['message'].contains(
+          "https://res.cloudinary.com:",
+        )?Container(
+          margin:
+          const EdgeInsets.symmetric(
+            vertical: 6,
+            horizontal: 12,
+          ),
+          padding: const EdgeInsets.all(
+            12,
+          ),
+          constraints:
+          const BoxConstraints(
+            maxWidth: 250,
+          ),
+          decoration: BoxDecoration(
+            color:
+            messages[index]['senderId'] ==
+                Authenticator
+                    .user
+                    ?.uid
+                ? Color.fromRGBO(
+              24,
+              85,
+              115,
+              0.91,
+            )
+                : Color.fromRGBO(
+              40,
+              174,
+              39,
+              0.91,
+            ),
+            borderRadius:
+            const BorderRadius.only(
+              topLeft:
+              Radius.circular(
+                20,
+              ),
+              topRight:
+              Radius.circular(
+                20,
+              ),
+              bottomLeft:
+              Radius.circular(
+                20,
+              ),
+            ),
+          ),
+          child: Image.network(photo)
+        ):Container(
           margin:
           const EdgeInsets.symmetric(
             vertical: 6,
