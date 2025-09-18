@@ -25,4 +25,5 @@ class AppTexts {
   final String passChange= "Change the Password";
   final String changeEmail= "Update the Email";
   final String changeUserName="Update UserName";
+  final String addPhoto="Add Photo";
 }

@@ -4,18 +4,28 @@ import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
+import '../utils/image_picker/image_camera_picker.dart';
+
 class SignUpScreen extends StatefulWidget {
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  Authenticator auth= Authenticator();
-  TextEditingController _nameController=TextEditingController();
-  TextEditingController _userNameController=TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-
+  final Authenticator auth= Authenticator();
+  String? photoLink;
+  final TextEditingController _nameController=TextEditingController();
+  final TextEditingController _userNameController=TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final  picker=Picker();
+  Future<String?> savePhoto()async{
+   final link=await picker.galleryPicker();
+      setState(() {
+        photoLink=link;
+      });
+      return link;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +39,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // App Title
               CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('assets/images/noProfile.png')
+                backgroundImage: photoLink!=null?NetworkImage(photoLink ?? ''):AssetImage('assets/images/noProfile.png'),
+                child: Stack(
+                  children: [
+                   TextButton(onPressed: ()async{
+                    savePhoto();
+                   }, child: Text(photoLink == null?AppTexts.instance.addPhoto:''))
+                  ],
+                )
               ),
               Text(
                 AppTexts.instance.appName,
@@ -71,7 +88,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // Login Button
               ElevatedButton(
                 onPressed: () async{
-                await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,'');
+                  if(photoLink != null){
+                    await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,photoLink ??'');
+                  }
+                  else {
+                    return;
+                  }
+
+
+
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),

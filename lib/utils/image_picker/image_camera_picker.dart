@@ -8,24 +8,32 @@ class Picker{
   String? imgPath;
   XFile? pickedImage;
   final cloudinary = CloudinaryPublic('dcmkerxac', 'silent_talk', cache: false);
+  Future<String?> galleryPicker() async {
+    try {
+      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        final localPath = pickedImage.path; // Keep local path if needed
+        CloudinaryResponse response = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(localPath, resourceType: CloudinaryResourceType.Image),
+        );
 
-  Future<XFile?> galleryPicker() async {
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null && imgPath !=null) {
-      imgPath = pickedImage.path;
-      CloudinaryResponse response = await cloudinary.uploadFile(
-        CloudinaryFile.fromFile(imgPath!, resourceType: CloudinaryResourceType.Image),
-      );
-      print('-----------${imgPath}');// If imgPath is a class variable
-      return pickedImage;
-
+        print('Uploaded image URL: ${response.secureUrl}');
+        return response.secureUrl; // Return the Cloudinary link
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
     }
-    return null;
+    return null; // No image picked or upload failed
   }
+
 
   Future<XFile?> cameraPicker() async {
     final pickedImage = await picker.pickImage(source: ImageSource.camera);
     if (pickedImage != null) {
+      imgPath = pickedImage.path;
+      CloudinaryResponse response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(imgPath!, resourceType: CloudinaryResourceType.Image),
+      );
       imgPath = pickedImage.path; // If imgPath is a class variable
       return pickedImage;
     }

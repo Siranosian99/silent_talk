@@ -22,7 +22,7 @@ void showCustomBottomSheet(BuildContext context,int index) {
             runSpacing: 24,
             children: [
               _buildOption(Icons.photo, 'Photo', () {
-                picker.galleryPicker();
+                 picker.galleryPicker();
 
               }),
               _buildOption(Icons.camera_alt, 'Camera', () {
