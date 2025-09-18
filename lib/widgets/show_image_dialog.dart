@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../utils/image_picker/image_camera_picker.dart';
+import '../utils/image_picker/image_picker.dart';
 
 Future<void> showImageSourceDialog(BuildContext context) async {
   final _picker=Picker();

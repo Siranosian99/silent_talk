@@ -12,7 +12,7 @@ import 'package:silent_talk/widgets/show_image_dialog.dart';
 import '../constants/texts.dart';
 import '../service/model/user_model.dart';
 import '../service/users/users_service.dart';
-import '../utils/image_picker/image_camera_picker.dart';
+import '../utils/image_picker/image_picker.dart';
 import '../utils/themes/theme_provider.dart';
 import 'delete_dialog.dart';
 

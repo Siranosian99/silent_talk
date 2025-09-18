@@ -4,7 +4,7 @@ import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
-import '../utils/image_picker/image_camera_picker.dart';
+import '../utils/image_picker/image_picker.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override

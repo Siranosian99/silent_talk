@@ -12,7 +12,7 @@ import 'package:silent_talk/utils/contact/send_contact.dart';
 
 import '../service/ids/get_userIds.dart';
 import '../service/model/user_model.dart';
-import '../utils/image_picker/image_camera_picker.dart';
+import '../utils/image_picker/image_picker.dart';
 import '../widgets/message_list.dart';
 import '../widgets/sheet_to_share.dart';
 
@@ -231,7 +231,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     child: TextFormField(
                       controller: messageController,
                       decoration: InputDecoration(
-                        hintText: "Type a message...",
+                        hint: _picker.isImage ?Image.network("https://picsum.photos/200/300"):Text("Type a message..."),
                         filled: true,
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 12,
@@ -245,22 +245,29 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
                             showCustomBottomSheet(context, widget.id!);
-                            setState(() {
-                              messageController.text = _picker.imgPath ?? '';
-                            });
+
                           },
                         ),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.send),
-                          onPressed: () {
-                            messageController.text.isEmpty? null:
-                            MessageService().sendMessage(
-                              messageController.text,
-                              Authenticator.user!.uid,
-                              _users[widget.id!].id,
-                            );
-                            messageController.clear();
-                          },
+                        suffixIcon: Column(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.send),
+                              onPressed: () {
+                                messageController.text.isEmpty? null:
+                                MessageService().sendMessage(
+                                  messageController.text,
+                                  Authenticator.user!.uid,
+                                  _users[widget.id!].id,
+                                );
+                                messageController.clear();
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.send),
+                              onPressed: () {print(_picker.isImage);
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
