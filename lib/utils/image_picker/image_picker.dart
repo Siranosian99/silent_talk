@@ -8,11 +8,11 @@ class Picker with ChangeNotifier{
   static final ImagePicker picker = ImagePicker();
   String? imgPath;
   XFile? pickedImage;
+  bool? isImage;
   final cloudinary = CloudinaryPublic('dcmkerxac', 'silent_talk', cache: false);
 
   Future<String?> galleryPicker() async {
     try {
-
        pickedImage = await picker.pickImage(source: ImageSource.gallery);
       if (pickedImage != null) {
         final localPath = pickedImage?.path;
@@ -23,6 +23,8 @@ class Picker with ChangeNotifier{
           ),
         );
         imgPath=response.secureUrl;
+        imgPath!.isNotEmpty ?isImage=true: isImage=false;
+        print(isImage);
         notifyListeners();
         print('Uploaded image URL: ${response.secureUrl}');
         return imgPath; // Return the Cloudinary link

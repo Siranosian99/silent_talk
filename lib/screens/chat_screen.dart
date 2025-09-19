@@ -19,6 +19,7 @@ import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
   final String? name;
+  final String? photoLink;
   final int? id;
   final String? senderId;
   final String? receiverId;
@@ -29,6 +30,7 @@ class ChatScreen extends StatefulWidget {
     this.id,
     this.senderId,
     this.receiverId,
+    this.photoLink,
   });
 
   @override
@@ -41,7 +43,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   final Picker _picker = Picker();
   String? photoLink;
 
-
   // List<ChatModel> _chats = [];
   final UsersService _usersService = UsersService();
 
@@ -51,10 +52,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     setOnlineStatus();
     super.initState();
   }
-  Future<String?> savePhoto()async{
-    final link=await _picker.galleryPicker();
+
+  Future<String?> savePhoto() async {
+    final link = await _picker.galleryPicker();
     setState(() {
-      photoLink=link;
+      photoLink = link;
     });
 
     return link;
@@ -119,10 +121,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<Picker>();
+    final provider = Provider.of<Picker>(context);
+
     return Scaffold(
       body:
           _users.isEmpty
@@ -208,7 +210,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       return Expanded(
                         child:
                             messages.isNotEmpty
-                                ? MessageList(messages: messages,photo:photoLink?? '')
+                                ? MessageList(
+                                  messages: messages,
+                                  photo: photoLink ?? '',
+                                )
                                 : Center(
                                   child: Text(
                                     "No messages yet. Start the conversation!",
@@ -234,7 +239,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     child: TextFormField(
                       controller: messageController,
                       decoration: InputDecoration(
-                        hint: true ? Image.network("https://picsum.photos/200/300"):Text("Type a message..."),
+                        hint:
+                            provider.isImage!
+                                ? Image.network(
+                                  provider.imgPath??'',
+                                  scale: 2,
+                                )
+                                : Text("Type a message..."),
                         filled: true,
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 12,
@@ -255,18 +266,20 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             IconButton(
                               icon: const Icon(Icons.send),
                               onPressed: () {
-                                messageController.text.isEmpty? null:
-                                MessageService().sendMessage(
-                                  messageController.text,
-                                  Authenticator.user!.uid,
-                                  _users[widget.id!].id,
-                                );
+                                messageController.text.isEmpty
+                                    ? null
+                                    : MessageService().sendMessage(
+                                      messageController.text,
+                                      Authenticator.user!.uid,
+                                      _users[widget.id!].id,
+                                    );
                                 messageController.clear();
                               },
                             ),
                             IconButton(
                               icon: const Icon(Icons.send),
                               onPressed: () {
+                                print(provider.isImage);
                               },
                             ),
                           ],
@@ -279,5 +292,3 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     );
   }
 }
-
-

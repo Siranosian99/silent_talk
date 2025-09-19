@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/file_picker/file_picker.dart';
 import '../utils/image_picker/image_picker.dart';
 import 'contact_shower_sheet.dart';
 
 void showCustomBottomSheet(BuildContext context,int index) {
-  final  picker=Picker();
+  final picker = Provider.of<Picker>(context, listen: false);
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -23,6 +24,7 @@ void showCustomBottomSheet(BuildContext context,int index) {
             children: [
               _buildOption(Icons.photo, 'Photo', () {
                  picker.galleryPicker();
+                 Navigator.pop(context);
 
               }),
               _buildOption(Icons.camera_alt, 'Camera', () {

@@ -49,6 +49,7 @@ final GoRouter router = GoRouter(
           senderId: extra?['senderId'],
           receiverId: extra?['receiverId'],
           name: extra?['name'],
+          photoLink:  extra?['photoLink'],
         );
       },
     ),
