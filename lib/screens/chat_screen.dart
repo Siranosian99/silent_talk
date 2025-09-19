@@ -3,6 +3,7 @@ import 'package:fast_contacts/src/model/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/messages/get_messages.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
@@ -40,6 +41,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   final Picker _picker = Picker();
   String? photoLink;
 
+
   // List<ChatModel> _chats = [];
   final UsersService _usersService = UsersService();
 
@@ -54,6 +56,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     setState(() {
       photoLink=link;
     });
+
     return link;
   }
 
@@ -119,6 +122,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<Picker>();
     return Scaffold(
       body:
           _users.isEmpty
@@ -225,13 +229,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       );
                     },
                   ),
-
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: TextFormField(
                       controller: messageController,
                       decoration: InputDecoration(
-                        hint: _picker.isImage ?Image.network("https://picsum.photos/200/300"):Text("Type a message..."),
+                        hint: true ? Image.network("https://picsum.photos/200/300"):Text("Type a message..."),
                         filled: true,
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 12,
@@ -245,7 +248,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
                             showCustomBottomSheet(context, widget.id!);
-
                           },
                         ),
                         suffixIcon: Column(
@@ -264,7 +266,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             ),
                             IconButton(
                               icon: const Icon(Icons.send),
-                              onPressed: () {print(_picker.isImage);
+                              onPressed: () {
                               },
                             ),
                           ],

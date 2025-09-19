@@ -10,6 +10,7 @@ import 'package:silent_talk/screens/people_screen.dart';
 import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
 import 'package:silent_talk/themes/app_themes.dart';
+import 'package:silent_talk/utils/image_picker/image_picker.dart';
 import 'package:silent_talk/utils/themes/theme_data.dart';
 import 'package:silent_talk/utils/themes/theme_provider.dart';
 
@@ -20,15 +21,19 @@ void main() async {
   await Firebase.initializeApp(
       options: const FirebaseOptions(
           apiKey: "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc",
-          appId: "1:156704193316:android:12088ea8a9934d143211b1",//1:156704193316:ios:8f808066187c855d3211b1  //1:156704193316:android:12088ea8a9934d143211b1
+          appId: "1:156704193316:ios:8f808066187c855d3211b1",//1:156704193316:ios:8f808066187c855d3211b1  //1:156704193316:android:12088ea8a9934d143211b1
           messagingSenderId: "156704193316",
           projectId: "silenttalk-53850")
   );
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
-      child: const MyApp(),
-    ),
+    MultiProvider(providers: [
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(),),
+  ChangeNotifierProvider(
+  create: (_) => Picker(),
+      ),
+    ],  child: const MyApp(),)
+
   );
 }
 
