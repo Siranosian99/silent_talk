@@ -172,7 +172,7 @@ class _ContactItem extends StatelessWidget {
             contactDetails(contact,nameOnly: true), contactDetails(contact ,phoneOnly: true),(){
             MessageService().sendMessage(
               contactDetails(contact),
-              Authenticator.user!.uid,
+              Authenticator().user!.uid,
               id,
             );
 

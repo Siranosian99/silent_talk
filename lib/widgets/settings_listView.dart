@@ -101,7 +101,7 @@ class _SettingsListViewState extends State<SettingsListView> {
         const SizedBox(height: 12),
         Center(
           child: Text(
-            AppTexts.instance.userName,
+            data['userName'],
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),

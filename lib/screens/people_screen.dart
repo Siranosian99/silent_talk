@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 
 import '../service/model/user_model.dart';

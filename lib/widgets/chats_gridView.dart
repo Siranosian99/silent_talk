@@ -51,7 +51,7 @@ class _ChatsGridViewState extends State<ChatsGridView> {
                   'chat',
                   extra: {
                     'id': index,
-                    'senderId': Authenticator.user?.uid,
+                    'senderId': Authenticator().user?.uid,
                     'receiverId': user.id,
                   },
                 );

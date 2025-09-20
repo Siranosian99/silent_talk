@@ -182,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             .collection('chats')
                             .doc(
                               getChatId(
-                                Authenticator.user!.uid,
+                                Authenticator().user!.uid,
                                 widget.receiverId!,
                               ),
                             ) // Chat ID
@@ -288,7 +288,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                         messageController.text;
                                 MessageService().sendMessage(
                                   messageController.text,
-                                  Authenticator.user!.uid,
+                                  Authenticator().user!.uid,
                                   _users[widget.id!].id,
                                 );
                                 messageController.clear();

@@ -12,7 +12,7 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _emailController = TextEditingController();
   final _passwordController=TextEditingController();
-  final _userId=Authenticator.user?.uid;
+  final _userId=Authenticator().user?.uid;
   final _formKey = GlobalKey<FormState>();
 
 
