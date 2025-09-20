@@ -1,20 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../service/authenticator/authenticator.dart';
 import '../utils/contact/send_contact.dart';
+import '../utils/image_picker/image_picker.dart';
 
 class MessageList extends StatelessWidget {
   const MessageList({
     super.key,
     required this.messages,
-    required this.photo,
+
   });
 
   final List<QueryDocumentSnapshot<Object?>> messages;
-  final String photo;
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<Picker>(context);
     return ListView.builder(
 
       itemBuilder:
@@ -26,7 +28,17 @@ class MessageList extends StatelessWidget {
             : Alignment.topLeft,
 
         //here checkin///
-        child:
+        child: messages[index]['message'].contains(
+          "https://res.cloudinary.com",
+        ) ?Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white, // border color
+              width: 2,            // border thickness
+            ),
+          ),
+        child: Image.network(messages[index]['message']),
+        ):
         messages[index]['message'].contains(
           "Name:",
         )
@@ -203,7 +215,7 @@ class MessageList extends StatelessWidget {
               ),
             ),
           ),
-          child: Image.network(photo)
+          child: Image.network(messages[index]['message'])
         ):Container(
           margin:
           const EdgeInsets.symmetric(

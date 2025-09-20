@@ -53,15 +53,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.initState();
   }
 
-  Future<String?> savePhoto() async {
-    final link = await _picker.galleryPicker();
-    setState(() {
-      photoLink = link;
-    });
-
-    return link;
-  }
-
   void setOnlineStatus() async {
     if (_usersService.user?.uid != null) {
       await FirebaseFirestore.instance
@@ -106,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   void selectedPicture(String path) {
-    messageController.text = path;
+    messageController.text = _picker.imgPath ?? '';
   }
 
   @override
@@ -212,7 +203,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             messages.isNotEmpty
                                 ? MessageList(
                                   messages: messages,
-                                  photo: photoLink ?? '',
+                                  // photo: provider.imgPath ?? '',
                                 )
                                 : Center(
                                   child: Text(
@@ -237,15 +228,39 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: TextFormField(
+                      readOnly:  provider.isImage,
                       controller: messageController,
                       decoration: InputDecoration(
                         hint:
-                            provider.isImage!
-                                ? Image.network(
-                                  provider.imgPath??'',
-                                  scale: 2,
-                                )
-                                : Text("Type a message..."),
+                            provider.isImage
+                                ? Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    provider.imgPath ?? '',
+                                    fit: BoxFit.cover,
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                ),
+                                CircleAvatar(
+                                  backgroundColor: Colors.black.withOpacity(0.6),
+                                  child: IconButton(
+                                    icon: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                    onPressed: (){
+                                     provider.clearImage();
+                                    }
+                                    ),
+                                ),
+                              ],
+                            )
+
+
+                          : Text("Type a message..."),
                         filled: true,
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 12,
@@ -266,22 +281,20 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             IconButton(
                               icon: const Icon(Icons.send),
                               onPressed: () {
-                                messageController.text.isEmpty
-                                    ? null
-                                    : MessageService().sendMessage(
-                                      messageController.text,
-                                      Authenticator.user!.uid,
-                                      _users[widget.id!].id,
-                                    );
+                                provider.isImage
+                                    ? messageController.text =
+                                        provider.imgPath.toString()
+                                    : messageController.text =
+                                        messageController.text;
+                                MessageService().sendMessage(
+                                  messageController.text,
+                                  Authenticator.user!.uid,
+                                  _users[widget.id!].id,
+                                );
                                 messageController.clear();
                               },
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.send),
-                              onPressed: () {
-                                print(provider.isImage);
-                              },
-                            ),
+
                           ],
                         ),
                       ),

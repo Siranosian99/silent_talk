@@ -8,7 +8,7 @@ class Picker with ChangeNotifier{
   static final ImagePicker picker = ImagePicker();
   String? imgPath;
   XFile? pickedImage;
-  bool? isImage;
+  bool isImage=false;
   final cloudinary = CloudinaryPublic('dcmkerxac', 'silent_talk', cache: false);
 
   Future<String?> galleryPicker() async {
@@ -34,6 +34,11 @@ class Picker with ChangeNotifier{
       print('Error uploading image: $e');
     }
     return null; // No image picked or upload failed
+  }
+  void clearImage() {
+    imgPath = null;
+    isImage = false;
+    notifyListeners();
   }
 
   Future<XFile?> cameraPicker() async {
