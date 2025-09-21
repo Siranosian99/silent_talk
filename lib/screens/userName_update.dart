@@ -14,11 +14,10 @@ class _UpdateUserNameScreenState extends State<UpdateUserNameScreen> {
   final _userName = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Update Email')),
+      appBar: AppBar(title: Text('Update Username')),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -26,10 +25,7 @@ class _UpdateUserNameScreenState extends State<UpdateUserNameScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Enter your email to receive a reset link.",
-                style: TextStyle(fontSize: 16),
-              ),
+              Text("Enter your New Username", style: TextStyle(fontSize: 16)),
               SizedBox(height: 20),
               TextFormField(
                 controller: _userName,
@@ -47,12 +43,12 @@ class _UpdateUserNameScreenState extends State<UpdateUserNameScreen> {
                     return "Username must be at least 3 characters";
                   }
                   return null;
-                }
+                },
               ),
               SizedBox(height: 30),
               ElevatedButton.icon(
-                onPressed: (){
-                  Authenticator().updateUserName(_userName.text,);
+                onPressed: () {
+                  Authenticator().updateUserName(_userName.text);
                 },
                 icon: Icon(Icons.update),
                 label: Text(AppTexts.instance.userName),

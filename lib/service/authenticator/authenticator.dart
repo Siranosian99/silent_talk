@@ -101,6 +101,10 @@ class Authenticator {
       await user?.verifyBeforeUpdateEmail(email);
       await user?.reload();
       print('📨 Verification email sent to $email. Email will update after verification.');
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .update({'email': email});
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         print('❌ This email is already registered.');

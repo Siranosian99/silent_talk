@@ -19,7 +19,6 @@ import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
   final String? name;
-  final String? photoLink;
   final int? id;
   final String? senderId;
   final String? receiverId;
@@ -30,7 +29,6 @@ class ChatScreen extends StatefulWidget {
     this.id,
     this.senderId,
     this.receiverId,
-    this.photoLink,
   });
 
   @override
