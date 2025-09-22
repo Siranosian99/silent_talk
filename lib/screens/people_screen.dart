@@ -38,7 +38,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
         centerTitle: true,
         actions: [
           IconButton(onPressed: (){
-            context.goNamed('settings');
+            context.pushNamed('settings');
           }, icon: Icon(Icons.settings))
         ],
       ),

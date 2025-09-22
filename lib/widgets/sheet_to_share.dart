@@ -29,6 +29,7 @@ void showCustomBottomSheet(BuildContext context,int index) {
               }),
               _buildOption(Icons.camera_alt, 'Camera', () {
                 picker.cameraPicker();
+                Navigator.pop(context);
               }),
               _buildOption(Icons.location_on, 'Location', () {}),
               _buildOption(Icons.contacts, 'Contact', () {

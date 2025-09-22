@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
+import '../service/authenticator/authenticator.dart';
 import '../utils/image_picker/image_picker.dart';
 
-Future<void> showImageSourceDialog(BuildContext context) async {
-  final _picker=Picker();
+Future<void> showImageSourceDialog(BuildContext context,String image,bool isPressed) async {
+  final picker = Provider.of<Picker>(context, listen: false);
   showDialog(
     barrierDismissible: true,
     context: context,
@@ -16,16 +18,19 @@ Future<void> showImageSourceDialog(BuildContext context) async {
           ListTile(
             leading: const Icon(Icons.camera_alt),
             title: const Text('Camera'),
-            onTap: (){
-             _picker.cameraPicker();
+            onTap: () {
+              picker.cameraPicker();
+              Navigator.pop(context);
             }
           ),
           ListTile(
             leading: const Icon(Icons.photo_library),
             title: const Text('Gallery'),
-              onTap: (){
-                _picker.galleryPicker();
-              }
+              onTap: ()async{
+                picker.galleryPicker();
+                Navigator.pop(context);
+
+              await Authenticator().updateProilePhoto(image);}
           ),
         ],
       ),
