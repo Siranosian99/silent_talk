@@ -57,7 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Center(
                     child: GestureDetector(
                       onTap: () async {
-                        showImageSourceDialog(context,img,true);
+                       await showImageSourceDialog(context);
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
@@ -89,16 +89,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 24),
 
                   // Section: Account
-                  sectionTitle('Account'),
+                  sectionTitle(AppTexts.instance.account),
                   SettingsListtile(
-                    title: const Text('Edit Username'),
+                    title:  Text(AppTexts.instance.changeUserName),
                     leading: const Icon(Icons.edit),
                     onTap: () {
                       context.pushNamed('updateUserName');
                     },
                   ),
                   SettingsListtile(
-                    title: const Text('Change Email'),
+                    title:  Text(AppTexts.instance.changeEmail),
                     leading: const Icon(Icons.email),
                     onTap: () {
                       context.pushNamed('updateEmail');
@@ -106,19 +106,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.lock_outline),
-                    title: const Text('Change Password'),
+                    title:  Text(AppTexts.instance.passChange),
                     onTap: () {
                       context.pushNamed('insideApp');
                     },
                   ),
                   // Section: Appearance
-                  sectionTitle('Appearance'),
+                  sectionTitle(AppTexts.instance.appearance),
                   ListTile(
                     leading: Icon(
                       themeProvider.isDark ? Icons.dark_mode : Icons.light_mode,
                     ),
                     title: Text(
-                      themeProvider.isDark ? 'Dark Mode' : 'Light Mode',
+                      themeProvider.isDark ? AppTexts.instance.isDark : AppTexts.instance.isLight,
                     ),
                     trailing: Switch(
                       value: themeProvider.isDark,
@@ -126,53 +126,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   // Section: Notifications
-                  sectionTitle('Notifications'),
+                  sectionTitle(AppTexts.instance.notification),
                   SettingsListtile(
                     leading: const Icon(Icons.notifications),
-                    title: const Text('Message Notifications'),
+                    title: Text(AppTexts.instance.messages),
                     trailing: Switch(value: true, onChanged: null),
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.vibration),
-                    title: const Text('Sound & Vibration'),
+                    title:  Text(AppTexts.instance.soundVib),
                     trailing: Switch(value: false, onChanged: null),
                   ),
 
                   // Section: Security & Privacy
-                  sectionTitle('Privacy & Security'),
+                  sectionTitle(AppTexts.instance.security),
                   SettingsListtile(
                     leading: const Icon(Icons.lock),
-                    title: const Text('Enable Security'),
+                    title:  Text(AppTexts.instance.isSecure),
                     trailing: Switch(value: false, onChanged: null),
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.fingerprint),
-                    title: const Text('Biometric Authentication'),
+                    title:  Text(AppTexts.instance.isBioMetric),
                     trailing: Switch(value: false, onChanged: null),
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.visibility),
-                    title: const Text('Last Seen'),
+                    title:  Text(AppTexts.instance.lastSeen),
                     subtitle: const Text('Everyone'),
                     onTap: () {},
                   ),
 
                   // Section: General
-                  sectionTitle('General'),
+                  sectionTitle(AppTexts.instance.general),
                   SettingsListtile(
                     leading: const Icon(Icons.language),
-                    title: const Text('Language'),
+                    title:  Text(AppTexts.instance.language),
                     subtitle: const Text('English'),
                     onTap: () {},
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.info_outline),
-                    title: const Text('About App'),
+                    title:  Text(AppTexts.instance.about),
                     onTap: () {},
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.feedback),
-                    title: const Text('Send Feedback'),
+                    title:  Text(AppTexts.instance.feedBack),
                     onTap: () {},
                   ),
 
@@ -181,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Log Out & Delete
                   SettingsListtile(
                     leading: const Icon(Icons.logout, color: Colors.red),
-                    title: const Text('Log Out'),
+                    title: Text(AppTexts.instance.logOut),
                     onTap: () {
                       context.goNamed('/');
                     },
@@ -191,7 +191,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Icons.delete_forever,
                       color: Colors.red,
                     ),
-                    title: const Text('Delete Account'),
+                    title: Text(AppTexts.instance.deleteAccount),
                     onTap: () {
                       showDeleteAccountDialog(context);
                     },

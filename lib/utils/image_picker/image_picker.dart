@@ -41,20 +41,29 @@ class Picker with ChangeNotifier{
     notifyListeners();
   }
 
-  Future<XFile?> cameraPicker() async {
-    final pickedImage = await picker.pickImage(source: ImageSource.camera);
-    if (pickedImage != null) {
-      imgPath = pickedImage.path;
-      CloudinaryResponse response = await cloudinary.uploadFile(
-        CloudinaryFile.fromFile(
-          imgPath!,
-          resourceType: CloudinaryResourceType.Image,
-        ),
-      );
-      imgPath = pickedImage.path; // If imgPath is a class variable
-      return pickedImage;
+  Future<String?> cameraPicker() async {
+    try {
+      pickedImage = await picker.pickImage(source: ImageSource.camera);
+      if (pickedImage != null) {
+        final localPath = pickedImage?.path;
+        CloudinaryResponse response = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(
+            localPath ?? '',
+            resourceType: CloudinaryResourceType.Image,
+          ),
+        );
+        imgPath=response.secureUrl;
+        imgPath!.isNotEmpty ?isImage=true: isImage=false;
+        print(isImage);
+        notifyListeners();
+        print('Uploaded image URL: ${response.secureUrl}');
+        return imgPath; // Return the Cloudinary link
+
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
     }
-    return null;
+    return null; // No image picked or upload failed
   }
   // bool isImageChanger(bool isImage){
   //   isImage= !isImage;

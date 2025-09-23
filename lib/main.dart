@@ -11,6 +11,7 @@ import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
 import 'package:silent_talk/themes/app_themes.dart';
 import 'package:silent_talk/utils/image_picker/image_picker.dart';
+import 'package:silent_talk/utils/localization/local_provider.dart';
 import 'package:silent_talk/utils/themes/theme_data.dart';
 import 'package:silent_talk/utils/themes/theme_provider.dart';
 
@@ -32,6 +33,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => Picker()),
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
       ],
       child: const MyApp(),
     ),
@@ -45,7 +47,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final localeProvider = Provider.of<LocaleProvider>(context);
     return MaterialApp.router(
+      locale: localeProvider.locale,
+      // dynamic locale
+      localizationsDelegates:  [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('en'), Locale('tr'),Locale('ar'),Locale('hy')],
       routerConfig: router,
       themeMode: themeProvider.themeMode,
       debugShowCheckedModeBanner: false,

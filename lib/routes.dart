@@ -89,7 +89,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/resetPassword',
       name: 'resetPassword',
-      builder: (context, state) => ResetPasswordScreen(),
+      builder: (context, state) => ResetEmailScreen(),
     ),
     GoRoute(
       path: '/insideApp',

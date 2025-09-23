@@ -101,7 +101,9 @@ class Authenticator {
           .collection('users')
           .doc(user?.uid)
           .update({'image':image});
+      print("UPDATE Finished");
     }
+    print("UPDATE Finished");
   }
   Future<void> updateEmail(String email) async {
     try {

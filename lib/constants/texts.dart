@@ -26,4 +26,27 @@ class AppTexts {
   final String changeEmail= "Update the Email";
   final String changeUserName="Update UserName";
   final String addPhoto="Add Photo";
+  final String chats="Chats";
+  final String search="Search";
+  final String isDark="Dark Mode";
+  final String isLight="Light Mode";
+  final String messages="Message Notifications";
+  final String soundVib="Sound & Vibration";
+  final String isSecure="Enable Security";
+  final String isBioMetric="Biometric Authentication";
+  final String lastSeen="Last Seen";
+  final String language="Language";
+  final String about= "About App";
+  final String feedBack="Send Feedback";
+  final String logOut="Log Out";
+  final String deleteAccount="Delete Account";
+  final String general ="General";
+  final String security="Privacy & Security";
+  final String notification="Notifications";
+  final String appearance="Appearance";
+  final String account="Account";
+  final String chaneImg="Change Image";
+  final String camera="Camera";
+  final String gallery="Gallery";
+  final String typemsg="Type a message";
 }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:silent_talk/constants/texts.dart';
 
 import '../service/authenticator/authenticator.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({Key? key}) : super(key: key);
+class ResetEmailScreen extends StatefulWidget {
+  const ResetEmailScreen({Key? key}) : super(key: key);
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  State<ResetEmailScreen> createState() => _ResetEmailScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class _ResetEmailScreenState extends State<ResetEmailScreen> {
   final _emailController = TextEditingController();
   final _passwordController=TextEditingController();
   final _userId=Authenticator().user?.uid;
@@ -19,7 +20,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Reset Password')),
+      appBar: AppBar(title: Text(AppTexts.instance.changeEmail)),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
