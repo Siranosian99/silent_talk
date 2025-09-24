@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:silent_talk/constants/texts.dart';
 
+import '../l10n/app_localizations.dart';
 import '../service/authenticator/authenticator.dart';
 
 class UpdateEmailScreen extends StatefulWidget {
@@ -52,7 +53,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                   Authenticator().updateEmail(_emailController.text,);
                 },
                 icon: Icon(Icons.update),
-                label: Text(AppTexts.instance.changeEmail),
+                label: Text(AppLocalizations.of(context)!.changeEmail),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                 ),

@@ -4,6 +4,7 @@ import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 
+import '../l10n/app_localizations.dart';
 import '../service/model/user_model.dart';
 import '../widgets/chats_gridView.dart';
 import '../widgets/chats_searchBar.dart';
@@ -35,7 +36,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppTexts.instance.chats),
+        title: Text( AppLocalizations.of(context)!.chats),
         centerTitle: true,
         actions: [
           IconButton(onPressed: (){

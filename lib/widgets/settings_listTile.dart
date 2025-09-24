@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SettingsListtile extends StatelessWidget {
-  Widget leading;
-  Widget title;
+  Widget? leading;
+  Widget? title;
   Widget? trailing;
   VoidCallback? onTap;
   Widget? subtitle;
-   SettingsListtile({super.key,required this.title,required this.leading, this.trailing,this.onTap,this.subtitle});
+   SettingsListtile({super.key, this.title, this.leading, this.trailing,this.onTap,this.subtitle});
 
   @override
   Widget build(BuildContext context) {

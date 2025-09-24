@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
+import 'package:silent_talk/widgets/language_dropDown.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
+import '../l10n/app_localizations.dart';
 import '../mixins/navigator_mixins.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,7 +31,8 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
               children: [
                 // App Title
                 Text(
-                  AppTexts.instance.appName,
+                 AppLocalizations.of(context)!.appName
+                  ,
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -41,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                 LoginSignupTextfields(
                   controller: _emailController,
                   icon: Icon(Icons.email),
-                  labelText: AppTexts.instance.email,
+                  labelText:  AppLocalizations.of(context)!.email,
                   isOn: false,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -58,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                 LoginSignupTextfields(
                   controller: _passwordController,
                   icon: Icon(Icons.password),
-                  labelText: AppTexts.instance.password,
+                  labelText:  AppLocalizations.of(context)!.password,
                   isOn: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -77,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                     onPressed: () {
                       context.goNamed('resetPassword');
                     },
-                    child: Text(AppTexts.instance.forgetPass),
+                    child: Text( AppLocalizations.of(context)!.passChange),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -95,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                     }
                   },
                   child: Text(
-                    AppTexts.instance.login,
+                      AppLocalizations.of(context)!.login,
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
@@ -104,15 +107,16 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(AppTexts.instance.dntHveAccount),
+                    Text( AppLocalizations.of(context)!.dntHveAccount),
                     TextButton(
                       onPressed: () {
                         GoRouter.of(context).goNamed('signUp');
                       },
-                      child: Text(AppTexts.instance.signUp),
+                      child: Text( AppLocalizations.of(context)!.signUp),
                     ),
                   ],
                 ),
+                LanguageDropdown(),
               ],
             ),
           ),

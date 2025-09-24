@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/texts.dart';
+import '../l10n/app_localizations.dart';
 import '../service/authenticator/authenticator.dart';
 import '../utils/image_picker/image_picker.dart';
 
@@ -13,13 +14,13 @@ Future<void> showImageSourceDialog(BuildContext context) async {
     context: context,
     builder:
         (context) => AlertDialog(
-          title:  Text(AppTexts.instance.chaneImg),
+          title:  Text(AppLocalizations.of(context)!.chaneImg),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title:  Text(AppTexts.instance.camera),
+                title:  Text(AppLocalizations.of(context)!.camera),
                 onTap: () async {
                   final result =await picker.cameraPicker();
                   if (result != null) {
@@ -31,7 +32,7 @@ Future<void> showImageSourceDialog(BuildContext context) async {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title:  Text(AppTexts.instance.gallery),
+                title:  Text(AppLocalizations.of(context)!.gallery),
                 onTap: () async {
                   final result = await picker.galleryPicker();
                   if (result != null) {

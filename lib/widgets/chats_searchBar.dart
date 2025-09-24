@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 class ChatSearchBar extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
@@ -20,7 +22,7 @@ class ChatSearchBar extends StatelessWidget {
         style: TextStyle(fontSize: 16),
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
-          hintText: "Search...",
+          hintText: AppLocalizations.of(context)!.search,
           hintStyle: TextStyle(color: Colors.grey.shade500),
           filled: true,
           fillColor: Colors.grey.shade100,

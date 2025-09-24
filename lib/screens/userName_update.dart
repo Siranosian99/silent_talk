@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:silent_talk/constants/texts.dart';
 
+import '../l10n/app_localizations.dart';
 import '../service/authenticator/authenticator.dart';
 
 class UpdateUserNameScreen extends StatefulWidget {
@@ -51,7 +52,7 @@ class _UpdateUserNameScreenState extends State<UpdateUserNameScreen> {
                   Authenticator().updateUserName(_userName.text);
                 },
                 icon: Icon(Icons.update),
-                label: Text(AppTexts.instance.userName),
+                label: Text(AppLocalizations.of(context)!.userName),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                 ),

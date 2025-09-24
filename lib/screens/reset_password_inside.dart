@@ -4,6 +4,7 @@ import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
+import '../l10n/app_localizations.dart';
 import '../mixins/navigator_mixins.dart';
 
 class ResetInsideApp extends StatefulWidget {
@@ -32,7 +33,7 @@ class _ResetInsideAppState extends State<ResetInsideApp> with NavigatorMixin {
                 LoginSignupTextfields(
                   controller: _currentController,
                   icon: Icon(Icons.email),
-                  labelText: AppTexts.instance.currentPass,
+                  labelText:  AppLocalizations.of(context)!.currentPass,
                   isOn: false,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -49,7 +50,7 @@ class _ResetInsideAppState extends State<ResetInsideApp> with NavigatorMixin {
                 LoginSignupTextfields(
                   controller: _newController,
                   icon: Icon(Icons.password),
-                  labelText: AppTexts.instance.newPassword,
+                  labelText:  AppLocalizations.of(context)!.newPassword,
                   isOn: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -72,7 +73,7 @@ class _ResetInsideAppState extends State<ResetInsideApp> with NavigatorMixin {
                     }
                   },
                   child: Text(
-                    AppTexts.instance.passChange,
+                    AppLocalizations.of(context)!.passChange,
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
@@ -81,12 +82,12 @@ class _ResetInsideAppState extends State<ResetInsideApp> with NavigatorMixin {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(AppTexts.instance.dntHveAccount),
+                    Text(AppLocalizations.of(context)!.dntHveAccount),
                     TextButton(
                       onPressed: () {
                         GoRouter.of(context).goNamed('login');
                       },
-                      child: Text(AppTexts.instance.login),
+                      child: Text(AppLocalizations.of(context)!.login),
                     ),
                   ],
                 ),

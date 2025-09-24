@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/texts.dart';
+import '../l10n/app_localizations.dart';
 import '../service/authenticator/authenticator.dart';
 import '../service/users/users_service.dart';
 import '../utils/themes/theme_provider.dart';
 import '../widgets/delete_dialog.dart';
+import '../widgets/language_dropDown.dart';
 import '../widgets/settings_listTile.dart';
 import '../widgets/settings_listView.dart';
 import '../widgets/settings_section_title.dart';
@@ -42,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppTexts.instance.settings),
+        title: Text(AppLocalizations.of(context)!.settings),
         centerTitle: true,
       ),
       body:
@@ -89,16 +91,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 24),
 
                   // Section: Account
-                  sectionTitle(AppTexts.instance.account),
+                  sectionTitle(AppLocalizations.of(context)!.account),
                   SettingsListtile(
-                    title:  Text(AppTexts.instance.changeUserName),
+                    title:  Text(AppLocalizations.of(context)!.changeUserName),
                     leading: const Icon(Icons.edit),
                     onTap: () {
                       context.pushNamed('updateUserName');
                     },
                   ),
                   SettingsListtile(
-                    title:  Text(AppTexts.instance.changeEmail),
+                    title:  Text(AppLocalizations.of(context)!.changeEmail),
                     leading: const Icon(Icons.email),
                     onTap: () {
                       context.pushNamed('updateEmail');
@@ -106,19 +108,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.lock_outline),
-                    title:  Text(AppTexts.instance.passChange),
+                    title:  Text(AppLocalizations.of(context)!.passChange),
                     onTap: () {
                       context.pushNamed('insideApp');
                     },
                   ),
                   // Section: Appearance
-                  sectionTitle(AppTexts.instance.appearance),
+                  sectionTitle(AppLocalizations.of(context)!.appearance),
                   ListTile(
                     leading: Icon(
                       themeProvider.isDark ? Icons.dark_mode : Icons.light_mode,
                     ),
                     title: Text(
-                      themeProvider.isDark ? AppTexts.instance.isDark : AppTexts.instance.isLight,
+                      themeProvider.isDark ? AppLocalizations.of(context)!.isDark : AppLocalizations.of(context)!.isLight,
                     ),
                     trailing: Switch(
                       value: themeProvider.isDark,
@@ -126,53 +128,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   // Section: Notifications
-                  sectionTitle(AppTexts.instance.notification),
+                  sectionTitle(AppLocalizations.of(context)!.notification),
                   SettingsListtile(
                     leading: const Icon(Icons.notifications),
-                    title: Text(AppTexts.instance.messages),
+                    title: Text(AppLocalizations.of(context)!.messages),
                     trailing: Switch(value: true, onChanged: null),
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.vibration),
-                    title:  Text(AppTexts.instance.soundVib),
+                    title:  Text(AppLocalizations.of(context)!.soundVib),
                     trailing: Switch(value: false, onChanged: null),
                   ),
 
                   // Section: Security & Privacy
-                  sectionTitle(AppTexts.instance.security),
+                  sectionTitle(AppLocalizations.of(context)!.security),
                   SettingsListtile(
                     leading: const Icon(Icons.lock),
-                    title:  Text(AppTexts.instance.isSecure),
+                    title:  Text(AppLocalizations.of(context)!.isSecure),
                     trailing: Switch(value: false, onChanged: null),
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.fingerprint),
-                    title:  Text(AppTexts.instance.isBioMetric),
+                    title:  Text(AppLocalizations.of(context)!.isBioMetric),
                     trailing: Switch(value: false, onChanged: null),
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.visibility),
-                    title:  Text(AppTexts.instance.lastSeen),
+                    title:  Text(AppLocalizations.of(context)!.lastSeen),
                     subtitle: const Text('Everyone'),
                     onTap: () {},
                   ),
 
                   // Section: General
-                  sectionTitle(AppTexts.instance.general),
+                  sectionTitle(AppLocalizations.of(context)!.general),
                   SettingsListtile(
-                    leading: const Icon(Icons.language),
-                    title:  Text(AppTexts.instance.language),
-                    subtitle: const Text('English'),
+                    subtitle: LanguageDropdown(),
                     onTap: () {},
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.info_outline),
-                    title:  Text(AppTexts.instance.about),
+                    title:  Text(AppLocalizations.of(context)!.about),
                     onTap: () {},
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.feedback),
-                    title:  Text(AppTexts.instance.feedBack),
+                    title:  Text(AppLocalizations.of(context)!.feedBack),
                     onTap: () {},
                   ),
 
@@ -181,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Log Out & Delete
                   SettingsListtile(
                     leading: const Icon(Icons.logout, color: Colors.red),
-                    title: Text(AppTexts.instance.logOut),
+                    title: Text(AppLocalizations.of(context)!.logOut),
                     onTap: () {
                       context.goNamed('/');
                     },
@@ -191,7 +191,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Icons.delete_forever,
                       color: Colors.red,
                     ),
-                    title: Text(AppTexts.instance.deleteAccount),
+                    title: Text(AppLocalizations.of(context)!.deleteAccount),
                     onTap: () {
                       showDeleteAccountDialog(context);
                     },

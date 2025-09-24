@@ -4,6 +4,7 @@ import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
+import '../l10n/app_localizations.dart';
 import '../utils/image_picker/image_picker.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -44,12 +45,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                    TextButton(onPressed: ()async{
                     savePhoto();
-                   }, child: Text(photoLink == null?AppTexts.instance.addPhoto:''))
+                   }, child: Text(photoLink == null?AppLocalizations.of(context)!.addPhoto:''))
                   ],
                 )
               ),
               Text(
-                AppTexts.instance.appName,
+                AppLocalizations.of(context)!.appName,
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -60,28 +61,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
               LoginSignupTextfields(
                 controller: _userNameController,
                 icon: Icon(Icons.person),
-                labelText: AppTexts.instance.userName,
+                labelText: AppLocalizations.of(context)!.userName,
                 isOn: false,
               ),
               SizedBox(height: 16),
               LoginSignupTextfields(
                 controller:_nameController,
                 icon: Icon(Icons.nature_people),
-                labelText: AppTexts.instance.name,
+                labelText: AppLocalizations.of(context)!.name,
                 isOn: false,
               ),
               SizedBox(height: 16),
               LoginSignupTextfields(
                 controller: _emailController,
                 icon: Icon(Icons.email),
-                labelText: AppTexts.instance.email,
+                labelText: AppLocalizations.of(context)!.email,
                 isOn: false,
               ),
               SizedBox(height: 16),
               LoginSignupTextfields(
                 controller:_passwordController,
                 icon: Icon(Icons.password),
-                labelText: AppTexts.instance.password,
+                labelText: AppLocalizations.of(context)!.password,
                 isOn: true,
               ),
               SizedBox(height: 40),
@@ -105,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 child: Text(
-                  AppTexts.instance.signUp,
+                  AppLocalizations.of(context)!.signUp,
                   style: TextStyle(fontSize: 18),
                 ),
               ),
@@ -116,12 +117,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(AppTexts.instance.dntHveAccount),
+                  Text(AppLocalizations.of(context)!.dntHveAccount),
                   TextButton(
                     onPressed: () {
                       GoRouter.of(context).goNamed('login');
                     },
-                    child: Text(AppTexts.instance.login),
+                    child: Text(AppLocalizations.of(context)!.login),
                   ),
                 ],
               ),
