@@ -14,6 +14,7 @@ import 'package:silent_talk/utils/contact/send_contact.dart';
 
 import '../service/ids/get_userIds.dart';
 import '../service/model/user_model.dart';
+import '../utils/biometric/auth.dart';
 import '../utils/image_picker/image_picker.dart';
 import '../widgets/message_list.dart';
 import '../widgets/sheet_to_share.dart';
@@ -41,6 +42,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   List<Users> _users = [];
   final Picker _picker = Picker();
   String? photoLink;
+  bool? isAuthActive;
 
   // List<ChatModel> _chats = [];
   final UsersService _usersService = UsersService();
@@ -48,10 +50,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    loadIsAuth();
     setOnlineStatus();
     super.initState();
   }
-
+  Future<bool?> loadIsAuth()async{
+    isAuthActive=await AuthService().isDeviceHave();
+    return isAuthActive;
+  }
   void setOnlineStatus() async {
     if (_usersService.user?.uid != null) {
       await FirebaseFirestore.instance

@@ -127,4 +127,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get typemsg => 'Type a message';
+
+  @override
+  String get isAuth => 'No Auth Activated in Device';
 }

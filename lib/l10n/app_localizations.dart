@@ -338,6 +338,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type a message'**
   String get typemsg;
+
+  /// No description provided for @isAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'No Auth Activated in Device'**
+  String get isAuth;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

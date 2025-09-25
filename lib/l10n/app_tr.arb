@@ -39,5 +39,6 @@
   "chaneImg": "Resmi Değiştir",
   "camera": "Kamera",
   "gallery": "Galeri",
-  "typemsg": "Mesaj yazın"
+  "typemsg": "Mesaj yazın",
+  "isAuth": "Cihazda kimlik doğrulama etkinleştirilmedi"
 }

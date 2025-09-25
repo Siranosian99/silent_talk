@@ -60,7 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Center(
                     child: GestureDetector(
                       onTap: () async {
-                       await showImageSourceDialog(context);
+                        await showImageSourceDialog(context);
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15),
@@ -94,14 +94,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Section: Account
                   sectionTitle(AppLocalizations.of(context)!.account),
                   SettingsListtile(
-                    title:  Text(AppLocalizations.of(context)!.changeUserName),
+                    title: Text(AppLocalizations.of(context)!.changeUserName),
                     leading: const Icon(Icons.edit),
                     onTap: () {
                       context.pushNamed('updateUserName');
                     },
                   ),
                   SettingsListtile(
-                    title:  Text(AppLocalizations.of(context)!.changeEmail),
+                    title: Text(AppLocalizations.of(context)!.changeEmail),
                     leading: const Icon(Icons.email),
                     onTap: () {
                       context.pushNamed('updateEmail');
@@ -109,7 +109,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.lock_outline),
-                    title:  Text(AppLocalizations.of(context)!.passChange),
+                    title: Text(AppLocalizations.of(context)!.passChange),
                     onTap: () {
                       context.pushNamed('insideApp');
                     },
@@ -121,7 +121,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       themeProvider.isDark ? Icons.dark_mode : Icons.light_mode,
                     ),
                     title: Text(
-                      themeProvider.isDark ? AppLocalizations.of(context)!.isDark : AppLocalizations.of(context)!.isLight,
+                      themeProvider.isDark
+                          ? AppLocalizations.of(context)!.isDark
+                          : AppLocalizations.of(context)!.isLight,
                     ),
                     trailing: Switch(
                       value: themeProvider.isDark,
@@ -137,43 +139,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.vibration),
-                    title:  Text(AppLocalizations.of(context)!.soundVib),
+                    title: Text(AppLocalizations.of(context)!.soundVib),
                     trailing: Switch(value: false, onChanged: null),
                   ),
 
                   // Section: Security & Privacy
                   sectionTitle(AppLocalizations.of(context)!.security),
                   SettingsListtile(
+                    onTap: ()async {
+                      await AuthService().checkAvailable(context);
+                     await AuthService().isDeviceHave();
+                    },
                     leading: const Icon(Icons.lock),
-                    title:  Text(AppLocalizations.of(context)!.isSecure),
+                    title: Text(AppLocalizations.of(context)!.isSecure),
                     trailing: Switch(value: false, onChanged: null),
                   ),
-                  SettingsListtile(
-                    leading: const Icon(Icons.fingerprint),
-                    title:  Text(AppLocalizations.of(context)!.isBioMetric),
-                    trailing: Switch(value: false, onChanged: null),
-                  ),
+                  // SettingsListtile(
+                  //   leading: const Icon(Icons.fingerprint),
+                  //   title:  Text(AppLocalizations.of(context)!.isBioMetric),
+                  //   trailing: Switch(value: false, onChanged: null),
+                  // ),
                   SettingsListtile(
                     leading: const Icon(Icons.visibility),
-                    title:  Text(AppLocalizations.of(context)!.lastSeen),
+                    title: Text(AppLocalizations.of(context)!.lastSeen),
                     subtitle: const Text('Everyone'),
                     onTap: () {},
                   ),
 
                   // Section: General
                   sectionTitle(AppLocalizations.of(context)!.general),
-                  SettingsListtile(
-                    subtitle: LanguageDropdown(),
-                    onTap: () {},
-                  ),
+                  SettingsListtile(subtitle: LanguageDropdown(), onTap: () {}),
                   SettingsListtile(
                     leading: const Icon(Icons.info_outline),
-                    title:  Text(AppLocalizations.of(context)!.about),
+                    title: Text(AppLocalizations.of(context)!.about),
                     onTap: () {},
                   ),
                   SettingsListtile(
                     leading: const Icon(Icons.feedback),
-                    title:  Text(AppLocalizations.of(context)!.feedBack),
+                    title: Text(AppLocalizations.of(context)!.feedBack),
                     onTap: () {},
                   ),
 
@@ -183,10 +186,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingsListtile(
                     leading: const Icon(Icons.logout, color: Colors.red),
                     title: Text(AppLocalizations.of(context)!.logOut),
-                    onTap: ()async{
-                    await AuthService().checkAvailable();
+                    onTap: () async {
                       // context.goNamed('/');
-
                     },
                   ),
                   SettingsListtile(

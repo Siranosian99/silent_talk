@@ -127,4 +127,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get typemsg => 'Mesaj yazın';
+
+  @override
+  String get isAuth => 'Cihazda kimlik doğrulama etkinleştirilmedi';
 }

@@ -127,4 +127,7 @@ class AppLocalizationsHy extends AppLocalizations {
 
   @override
   String get typemsg => 'Մուտքագրեք հաղորդագրություն';
+
+  @override
+  String get isAuth => 'Սարքում հավաստիացումը միացված չէ';
 }

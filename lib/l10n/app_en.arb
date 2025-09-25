@@ -39,5 +39,6 @@
   "chaneImg": "Change Image",
   "camera": "Camera",
   "gallery": "Gallery",
-  "typemsg": "Type a message"
+  "typemsg": "Type a message",
+  "isAuth": "No Auth Activated in Device"
 }

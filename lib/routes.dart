@@ -17,7 +17,19 @@ import 'package:silent_talk/widgets/contact_shower_sheet.dart';
 final GoRouter router = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(path: '/', name: '/', builder: (context, state) => MainScreen()),
+    GoRoute(
+      path: '/',
+      name: 'main',
+      builder: (context, state) => MainScreen(),
+      redirect: (context, state) {
+        final isLoggedIn = false; // replace with your auth check
+        if (isLoggedIn) {
+          return '/settings'; // send user to login instead
+        }
+        return null; // allow access to MainScreen
+      },
+    ),
+
     GoRoute(
       path: '/people',
       name: 'people',
