@@ -21,6 +21,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('themes');
+  await Hive.openBox('lg');
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc",

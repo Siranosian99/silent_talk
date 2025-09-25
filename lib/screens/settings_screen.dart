@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/texts.dart';
+import 'package:silent_talk/utils/biometric/auth.dart';
 import '../l10n/app_localizations.dart';
 import '../service/authenticator/authenticator.dart';
 import '../service/users/users_service.dart';
@@ -182,8 +183,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingsListtile(
                     leading: const Icon(Icons.logout, color: Colors.red),
                     title: Text(AppLocalizations.of(context)!.logOut),
-                    onTap: () {
-                      context.goNamed('/');
+                    onTap: ()async{
+                    await AuthService().checkAvailable();
+                      // context.goNamed('/');
+
                     },
                   ),
                   SettingsListtile(
