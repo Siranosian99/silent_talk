@@ -6,6 +6,8 @@ import 'package:silent_talk/service/users/users_service.dart';
 
 import '../l10n/app_localizations.dart';
 import '../service/model/user_model.dart';
+import '../tsesgty.dart';
+import '../utils/biometric/auth.dart';
 import '../widgets/chats_gridView.dart';
 import '../widgets/chats_searchBar.dart';
 
@@ -15,13 +17,6 @@ class PeopleScreen extends StatefulWidget {
 }
 
 class _PeopleScreenState extends State<PeopleScreen> {
-  // final List<Map<String, String>> users = List.generate(
-  //   15,
-  //       (index) => {
-  //     'name': 'User $index',
-  //     'image': 'https://i.pravatar.cc/150?img=${index + 1}',
-  //   },
-  // );
   late List<Users> users=[];
   UsersService _usersService=UsersService();
   Future<void> callUsers()async{
@@ -32,6 +27,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
     callUsers();
     super.didChangeDependencies();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +44,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
         children: [
           // Search bar
           ChatSearchBar(controller:TextEditingController(), onChanged:(value){
-            value = 'asd';
+            value = 'Esref Tek';
           }),
           SizedBox(height: 20,),
           // Grid of users

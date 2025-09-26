@@ -5,11 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:silent_talk/routes.dart';
 import 'package:silent_talk/screens/chat_screen.dart';
 import 'package:silent_talk/screens/login_page.dart';
-import 'package:silent_talk/screens/main_screen.dart';
 import 'package:silent_talk/screens/people_screen.dart';
 import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
 import 'package:silent_talk/themes/app_themes.dart';
+import 'package:silent_talk/utils/biometric/auth_provider.dart';
 import 'package:silent_talk/utils/image_picker/image_picker.dart';
 import 'package:silent_talk/utils/localization/local_provider.dart';
 import 'package:silent_talk/utils/themes/theme_data.dart';
@@ -21,6 +21,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('themes');
+  await Hive.openBox('auth');
   await Hive.openBox('lg');
   await Firebase.initializeApp(
     options: const FirebaseOptions(
@@ -37,6 +38,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => Picker()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => AuthenticateProvider()),
       ],
       child: const MyApp(),
     ),

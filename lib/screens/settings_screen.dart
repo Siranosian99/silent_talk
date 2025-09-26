@@ -6,11 +6,11 @@ import 'package:silent_talk/utils/biometric/auth.dart';
 import '../l10n/app_localizations.dart';
 import '../service/authenticator/authenticator.dart';
 import '../service/users/users_service.dart';
+import '../utils/biometric/auth_provider.dart';
 import '../utils/themes/theme_provider.dart';
 import '../widgets/delete_dialog.dart';
 import '../widgets/language_dropDown.dart';
 import '../widgets/settings_listTile.dart';
-import '../widgets/settings_listView.dart';
 import '../widgets/settings_section_title.dart';
 import '../widgets/show_image_dialog.dart';
 
@@ -25,6 +25,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final UsersService _usersService = UsersService();
   Map<String, dynamic>? data;
   String img = '';
+  bool? isAuth;
 
   Future<void> callUserData() async {
     final user = await _usersService.getUserData();
@@ -43,6 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final authProvider = Provider.of<AuthenticateProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
@@ -147,12 +149,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   sectionTitle(AppLocalizations.of(context)!.security),
                   SettingsListtile(
                     onTap: ()async {
-                      await AuthService().checkAvailable(context);
-                     await AuthService().isDeviceHave();
+
                     },
-                    leading: const Icon(Icons.lock),
+                    leading:  Icon(authProvider.isAuth ?Icons.lock_open_outlined:Icons.lock),
                     title: Text(AppLocalizations.of(context)!.isSecure),
-                    trailing: Switch(value: false, onChanged: null),
+                    trailing: Switch(value: authProvider.isAuth, onChanged: (value)=> authProvider.authChange()),
                   ),
                   // SettingsListtile(
                   //   leading: const Icon(Icons.fingerprint),
@@ -187,7 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     leading: const Icon(Icons.logout, color: Colors.red),
                     title: Text(AppLocalizations.of(context)!.logOut),
                     onTap: () async {
-                      // context.goNamed('/');
+                     await Authenticator().signOut(context);
                     },
                   ),
                   SettingsListtile(

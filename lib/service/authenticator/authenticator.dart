@@ -75,6 +75,7 @@ class Authenticator {
       } else {
         ctx.goNamed('people');
         print('Login successful!');
+        final user = FirebaseAuth.instance.currentUser;
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -189,8 +190,9 @@ class Authenticator {
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
+    context.goNamed('login');
   }
 
   Future<void> deleteAccount() async {
@@ -222,4 +224,5 @@ class Authenticator {
       print('Failed to update image: $e');
     }
   }
+
 }

@@ -7,6 +7,7 @@ import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
 import '../l10n/app_localizations.dart';
 import '../mixins/navigator_mixins.dart';
+import '../utils/biometric/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

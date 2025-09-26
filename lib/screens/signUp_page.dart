@@ -61,7 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               LoginSignupTextfields(
                 controller: _userNameController,
                 icon: Icon(Icons.person),
-                labelText: AppLocalizations.of(context)!.userName,
+                labelText: AppLocalizations.of(context)!.uName,
                 isOn: false,
               ),
               SizedBox(height: 16),

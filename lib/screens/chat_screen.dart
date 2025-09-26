@@ -50,14 +50,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    loadIsAuth();
+    // loadIsAuth();
     setOnlineStatus();
     super.initState();
   }
-  Future<bool?> loadIsAuth()async{
-    isAuthActive=await AuthService().isDeviceHave();
-    return isAuthActive;
-  }
+  // Future<bool?> loadIsAuth()async{
+  //   isAuthActive=await AuthService().isDeviceHave();
+  //   return isAuthActive;
+  // }
   void setOnlineStatus() async {
     if (_usersService.user?.uid != null) {
       await FirebaseFirestore.instance
