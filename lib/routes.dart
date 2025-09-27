@@ -34,7 +34,7 @@ final GoRouter router = GoRouter(
         final isLoggedIn = FirebaseAuth.instance.currentUser;
         if (isLoggedIn != null && !isAuth && !isLocked) {
           return '/people'; // send user to login instead
-        } else if (isLoggedIn == null && !isAuth && !isLocked) {
+        } else if (isLoggedIn == null && !isAuth&& !isLocked) {
           return '/login';
         } else {
           return '/';

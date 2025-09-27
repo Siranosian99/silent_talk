@@ -3,9 +3,9 @@ import 'package:hive/hive.dart';
 
 class AuthenticateProvider extends ChangeNotifier {
   var box = Hive.box('auth');
-  bool isAuth = true;
+  bool isAuth = false;
 
-  AuthProvider(){
+  AuthenticateProvider(){
     loadAuthData();
   }
 
@@ -19,7 +19,7 @@ class AuthenticateProvider extends ChangeNotifier {
     notifyListeners();
   }
   void loadAuthData() {
-    isAuth= box.get('auth', defaultValue: true);
+    isAuth= box.get('auth', defaultValue: false);
     notifyListeners();
   }
 

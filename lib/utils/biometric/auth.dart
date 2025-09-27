@@ -20,17 +20,17 @@ class AuthService {
   Future<bool> checkAuth() async {
     final bool canAuthenticate =
         await auth.canCheckBiometrics && await auth.isDeviceSupported();
+    print(canAuthenticate);
     return canAuthenticate;
   }
 
-  Future<void> checkAvailable(BuildContext context,bool isAuth) async {
+  Future<void> checkAvailable(BuildContext context) async {
     try {
-      final authProvider = Provider.of<AuthenticateProvider>(context);
+      final _authProvider = Provider.of<AuthenticateProvider>(context,listen: false);
       // final bool canAuth =  await auth.canCheckBiometrics || await auth.isDeviceSupported();
       final bool canAuth=await checkAuth();
       if (!canAuth) {
-        context.goNamed('main');
-        isAuth =false;
+        context.goNamed('login');
         return ;
       }
 
@@ -38,12 +38,12 @@ class AuthService {
 
       bool didAuthenticate = false;
 
-      if (availableBiometrics.isNotEmpty && authProvider.isAuth ) {
+      if (availableBiometrics.isNotEmpty) {
         didAuthenticate = await auth.authenticate(
           localizedReason: 'Put Your Finger To Open App',
           options: const AuthenticationOptions(biometricOnly: true),
         );
-      } else if(availableBiometrics.isNotEmpty && authProvider.isAuth){
+      } else {
         didAuthenticate = await auth.authenticate(
           localizedReason: 'Enter The Pin To Open App',
           options: const AuthenticationOptions(biometricOnly: false),
@@ -51,20 +51,18 @@ class AuthService {
       }
 
       if (didAuthenticate) {
-        isAuth=true;
         context.goNamed('login');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.isAuth)),
         );
-        isAuth=false;
+
         SystemNavigator.pop();
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.isAuth)),
       );
-      isAuth=false;
     }
     return ;
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:silent_talk/utils/biometric/auth.dart';
+
+import '../utils/biometric/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,23 +13,23 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-   bool? isAuth;
+  bool? isAuth;
+
   @override
   void didChangeDependencies() {
     checkingAuth();
     super.didChangeDependencies();
   }
-  Future<void> checkingAuth()async{
 
-    isAuth=await AuthService().checkAuth();
-    print(isAuth);
-    if(isAuth !=null && isAuth== true){
-      await AuthService().checkAvailable(context, isAuth!);
-    }
-    else if(isAuth !=null && isAuth== false){
-     context.goNamed("login");
+  Future<void> checkingAuth() async {
+    final _authProvider = Provider.of<AuthenticateProvider>(context);
+    if (_authProvider.isAuth) {
+      await AuthService().checkAvailable(context);
+    } else if (_authProvider.isAuth == false) {
+      context.goNamed("people");
     }
   }
+
   // @override
   // void dispose() {
   //   checkingAuth();
@@ -34,8 +37,6 @@ class _SplashScreenState extends State<SplashScreen> {
   // }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-    );
+    return Scaffold();
   }
 }
