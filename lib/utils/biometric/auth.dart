@@ -26,18 +26,24 @@ class AuthService {
 
   Future<void> checkAvailable(BuildContext context) async {
     try {
-      final _authProvider = Provider.of<AuthenticateProvider>(context,listen: false);
-      // final bool canAuth =  await auth.canCheckBiometrics || await auth.isDeviceSupported();
-      final bool canAuth=await checkAuth();
+      final _authProvider = Provider.of<AuthenticateProvider>(context, listen: false);
+
+      // 🔑 If security is disabled → skip authentication
+      if (!_authProvider.isAuth) {
+        context.goNamed('login');
+        return;
+      }
+
+      // ✅ Security is enabled → continue
+      final bool canAuth = await checkAuth();
       if (!canAuth) {
         context.goNamed('login');
-        return ;
+        return;
       }
 
       final List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
 
       bool didAuthenticate = false;
-
       if (availableBiometrics.isNotEmpty) {
         didAuthenticate = await auth.authenticate(
           localizedReason: 'Put Your Finger To Open App',
@@ -51,21 +57,20 @@ class AuthService {
       }
 
       if (didAuthenticate) {
-        context.goNamed('login');
+        return ;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.isAuth)),
         );
-
-        SystemNavigator.pop();
+        SystemNavigator.pop(); // close app
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.isAuth)),
+        SnackBar(content: Text(e.toString())),
       );
     }
-    return ;
   }
+
 
 
 // if (availableBiometrics.contains(BiometricType.strong) ||

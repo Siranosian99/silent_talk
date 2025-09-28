@@ -31,4 +31,16 @@ class MessageService {
       print("Message Didnt Send");
     }
   }
+    Future<void> deleteMessage(String uId1, String uId2) async {
+      await FirebaseFirestore.instance
+          .collection("chats")
+          .doc(getChatId(uId1, uId2))
+          .collection("messages")
+          .doc("erU8kOmTZasiD0TkQUmF")
+          .delete();
+
+      print("Message ss deleted");
+    }
+
+
 }

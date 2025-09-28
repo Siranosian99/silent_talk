@@ -206,9 +206,16 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       return Expanded(
                         child:
                             messages.isNotEmpty
-                                ? MessageList(
-                                  messages: messages,
-                                  // photo: provider.imgPath ?? '',
+                                ? GestureDetector(
+                                onLongPress: ()async{
+                                  await MessageService().deleteMessage(Authenticator().user!.uid,
+                                      _users[widget.id!].id);
+                                  print("${Authenticator().user!.uid}${_users[widget.id!].id}");
+                                },
+                                  child: MessageList(
+                                    messages: messages,
+                                    // photo: provider.imgPath ?? '',
+                                  ),
                                 )
                                 : Center(
                                   child: Text(

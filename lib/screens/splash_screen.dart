@@ -17,18 +17,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void didChangeDependencies() {
-    checkingAuth();
     super.didChangeDependencies();
   }
 
-  Future<void> checkingAuth() async {
-    final _authProvider = Provider.of<AuthenticateProvider>(context);
-    if (_authProvider.isAuth) {
-      await AuthService().checkAvailable(context);
-    } else if (_authProvider.isAuth == false) {
-      context.goNamed("people");
-    }
-  }
+
 
   // @override
   // void dispose() {

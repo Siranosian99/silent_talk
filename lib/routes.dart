@@ -28,20 +28,29 @@ final GoRouter router = GoRouter(
       name: 'splash',
       builder: (context, state) => SplashScreen(),
       redirect: (context, state) async {
-        final _authProvider = Provider.of<AuthenticateProvider>(context);
-        bool isLocked = _authProvider.isAuth;
-        bool isAuth = await AuthService().checkAuth();
+        final _authProvider = Provider.of<AuthenticateProvider>(context, listen: false);
+        bool isLocked = _authProvider.isAuth; // your app lock
+        bool isAuth = await AuthService().checkAuth(); // device auth available
+        AuthService().checkAvailable(context);
         final isLoggedIn = FirebaseAuth.instance.currentUser;
-        if (isLoggedIn != null && !isAuth && !isLocked) {
-          return '/people'; // send user to login instead
-        } else if (isLoggedIn == null && !isAuth&& !isLocked) {
-          return '/login';
+
+        if (isLoggedIn != null) {
+          // user logged in
+          if (isLocked && isAuth) {
+            return '/login';
+          } else {
+            return '/people';
+          }
         } else {
-          return '/';
+          if (isLocked && isAuth) {
+            return '/login';
+          } else {
+            return '/login';
+          }
         }
-        return null; // allow access to MainScreen
       },
     ),
+
     // GoRoute(
     //   path: '/main',
     //   name: 'main',
