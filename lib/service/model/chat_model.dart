@@ -1,4 +1,5 @@
 class ChatModel {
+  String docId;
   String chatId;
   String senderId;
   String receiverId;
@@ -6,6 +7,7 @@ class ChatModel {
   String messageTime;
 
   ChatModel({
+    required this.docId,
     required this.chatId,
     required this.senderId,
     required this.receiverId,
@@ -15,6 +17,7 @@ class ChatModel {
 
   factory ChatModel.fromMap(Map<String, dynamic> map) {
     return ChatModel(
+      docId: map['docId'],
       chatId: map['chatId'],
       senderId: map['senderId'],
       receiverId: map['receiverId'],
@@ -25,6 +28,7 @@ class ChatModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'docId':docId,
       'chatId': chatId,
       'senderId': senderId,
       'receiverId': receiverId,

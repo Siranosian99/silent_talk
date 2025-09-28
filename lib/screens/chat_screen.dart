@@ -209,7 +209,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 ? GestureDetector(
                                 onLongPress: ()async{
                                   await MessageService().deleteMessage(Authenticator().user!.uid,
-                                      _users[widget.id!].id);
+                                      _users[widget.id!].id,);
                                 },
                                   child: MessageList(
                                     messages: messages,

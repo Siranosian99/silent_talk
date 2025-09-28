@@ -14,6 +14,7 @@ class GetMessageService{
     return querySnapshot.docs.map((doc) {
       final data = doc.data();
       return ChatModel(
+        docId: data['docId'],
         chatId: data['chatId'] ?? '',
         senderId: data['senderId'] ?? '',
         receiverId: data['receiverId'] ?? '',
