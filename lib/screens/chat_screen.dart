@@ -210,7 +210,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 onLongPress: ()async{
                                   await MessageService().deleteMessage(Authenticator().user!.uid,
                                       _users[widget.id!].id);
-                                  print("${Authenticator().user!.uid}${_users[widget.id!].id}");
                                 },
                                   child: MessageList(
                                     messages: messages,

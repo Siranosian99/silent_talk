@@ -18,14 +18,25 @@ class MessageService {
           .collection("chats")
           .doc(getChatId(uId1, uId2))
           .collection("messages");
+      final querySnapshot = await messages
+          .get();
 
       await messages.add({
+        "docId": "ids[1]",
         "chatId":getChatId(uId1, uId2),
         "message": message,
         "senderId": uId1,
         "receiverId": uId2,
         "messageTime": formatTimeWithSeconds(DateTime.now()), // Firestore server time
       });
+
+
+      for (var doc in querySnapshot.docs) {
+        print("Document ID: ${doc.id}");
+        // ids.add();
+        // ids.clear();
+        print("Data: ${doc.data()}");
+      }
       print("WORKING");
     } catch (e) {
       print("Message Didnt Send");
@@ -36,7 +47,7 @@ class MessageService {
           .collection("chats")
           .doc(getChatId(uId1, uId2))
           .collection("messages")
-          .doc("erU8kOmTZasiD0TkQUmF")
+          .doc("Ud9DufK2tyEZoqPqx66p")
           .delete();
 
       print("Message ss deleted");
