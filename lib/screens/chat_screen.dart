@@ -9,6 +9,7 @@ import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/messages/get_messages.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/service/model/chat_model.dart';
+import 'package:silent_talk/service/notification/notification_service.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 import 'package:silent_talk/utils/contact/send_contact.dart';
 
@@ -66,7 +67,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           .update({'isOnline': true});
     }
   }
-
   void setOfflineStatus() async {
     if (_usersService.user?.uid != null) {
       await FirebaseFirestore.instance
@@ -85,6 +85,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeDependencies() {
+    noti();
     selectedContact();
     getUsersDetails();
     super.didChangeDependencies();
@@ -116,7 +117,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }
     super.didChangeAppLifecycleState(state);
   }
-
+Future<void>noti()async{
+   await NotificationService().notificationCheck("bzeuJjXUhIRZ3O6IqSAonM9tlrj2", "euoS4LJLBQa4kIzkIKXo37A4RJr1");
+}
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<Picker>(context);
