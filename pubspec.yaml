@@ -56,6 +56,9 @@ dependencies:
   cloudinary_public: ^0.23.1
   flutter_localization: ^0.3.3
   local_auth: ^2.3.0
+  googleapis_auth: ^2.0.0
+  googleapis: ^15.0.0
+  flutter_local_notifications: ^19.4.2
 
 dev_dependencies:
   flutter_test:
