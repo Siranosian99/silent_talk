@@ -19,13 +19,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('themes');
   await Hive.openBox('auth');
   await Hive.openBox('lg');
-  NotificationHandler.initialize();
-
+  await NotificationHandler.initialize();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc",

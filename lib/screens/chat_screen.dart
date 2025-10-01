@@ -57,6 +57,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     setOnlineStatus();
     super.initState();
   }
+
   // Future<bool?> loadIsAuth()async{
   //   isAuthActive=await AuthService().isDeviceHave();
   //   return isAuthActive;
@@ -69,12 +70,16 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           .update({'isOnline': true});
     }
   }
+
   void setOfflineStatus() async {
     if (_usersService.user?.uid != null) {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(_usersService.user?.uid)
-          .update({'isOnline': false, 'lastSeen': lastSeenFormat(DateTime.now())});
+          .update({
+            'isOnline': false,
+            'lastSeen': lastSeenFormat(DateTime.now()),
+          });
     }
   }
 
@@ -87,7 +92,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeDependencies() {
-    noti();
     selectedContact();
     getUsersDetails();
     super.didChangeDependencies();
@@ -95,6 +99,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   Future<void> getUsersDetails() async {
     _users = await _usersService.fetchAllUsers();
+    noti();
     setState(() {
       _users;
     });
@@ -119,9 +124,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }
     super.didChangeAppLifecycleState(state);
   }
-Future<void>noti()async{
-  await MessageChanger().notificationCheck("OXjQt2F7XhavRe24Y11tEyivbxc2", "4gtC6SNTGqM3HxxBHA3JShrZoNN2");
-}
+
+  Future<void> noti() async {
+    await MessageChanger().notificationCheck(
+      _usersService.currentUserId,
+      _users[widget.id!].id,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<Picker>(context);
@@ -181,15 +191,15 @@ Future<void>noti()async{
                                   ),
                                 ),
                                 Text(
-                                   _users[widget.id!].lastSeen,
+                                  _users[widget.id!].lastSeen,
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey[600], // silver-like color
+                                    color:
+                                        Colors.grey[600], // silver-like color
                                   ),
                                 ),
                               ],
                             ),
-
 
                             // Text(_users[widget.id!].lastSeen.toString()),
                           ],
@@ -230,8 +240,8 @@ Future<void>noti()async{
                             messages.isNotEmpty
                                 ? MessageList(
                                   messages: messages,
-                                  id1:Authenticator().user!.uid,
-                                  id2:_users[widget.id!].id ,
+                                  id1: Authenticator().user!.uid,
+                                  id2: _users[widget.id!].id,
                                   // photo: provider.imgPath ?? '',
                                 )
                                 : Center(
@@ -257,39 +267,39 @@ Future<void>noti()async{
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: TextFormField(
-                      readOnly:  provider.isImage,
+                      readOnly: provider.isImage,
                       controller: messageController,
                       decoration: InputDecoration(
                         hint:
                             provider.isImage
                                 ? Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.network(
-                                    provider.imgPath ?? '',
-                                    fit: BoxFit.cover,
-                                    width: 100,
-                                    height: 100,
-                                  ),
-                                ),
-                                CircleAvatar(
-                                  backgroundColor: Colors.black.withOpacity(0.6),
-                                  child: IconButton(
-                                    icon: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                    onPressed: (){
-                                     provider.clearImage();
-                                    }
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        provider.imgPath ?? '',
+                                        fit: BoxFit.cover,
+                                        width: 100,
+                                        height: 100,
+                                      ),
                                     ),
-                                ),
-                              ],
-                            )
-
-
-                          : Text(AppTexts.instance.typemsg),
+                                    CircleAvatar(
+                                      backgroundColor: Colors.black.withOpacity(
+                                        0.6,
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          provider.clearImage();
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                : Text(AppTexts.instance.typemsg),
                         filled: true,
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 12,
@@ -323,7 +333,6 @@ Future<void>noti()async{
                                 messageController.clear();
                               },
                             ),
-
                           ],
                         ),
                       ),

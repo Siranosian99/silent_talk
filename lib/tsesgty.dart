@@ -1,69 +1,85 @@
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:flutter/material.dart';
 //
-// import 'package:local_auth/local_auth.dart';
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await FirebaseMessaging.instance.requestPermission();
+//   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+//   runApp(MyApp());
+// }
 //
-// class AuthService {
-//   static final LocalAuthentication _auth = LocalAuthentication();
-//   static AuthService authService = AuthService();
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   print("Handling a background message: ${message.messageId}");
+//   // You might need to handle navigation differently in the background handler
+//   // or store the data to navigate when the app comes to foreground.
+// }
 //
+// class MyApp extends StatefulWidget {
+//   @override
+//   _MyAppState createState() => _MyAppState();
+// }
 //
-//   static Future<bool> authenticate(bool auth) async {
-//     try {
-//       if (!auth) {
-//         return true;
+// class _MyAppState extends State<MyApp> {
+//   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _setupFCMListeners();
+//   }
+//
+//   void _setupFCMListeners() {
+//     // Handle when the app is opened from a terminated state by tapping a notification
+//     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+//       if (message != null) {
+//         _handleNotificationTap(message);
 //       }
+//     });
 //
-//       bool canCheckBiometrics = await _auth.canCheckBiometrics;
+//     // Handle when the app is in the background and a notification is tapped
+//     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
+//   }
 //
-//       bool hasBiometricEnrolled = await _auth.getAvailableBiometrics().then(
-//             (biometrics) => biometrics.isNotEmpty,
-//       );
-//
-//       bool isAuthenticated = false;
-//
-//       if (canCheckBiometrics && hasBiometricEnrolled) {
-//         // Use biometric authentication
-//         isAuthenticated = await _auth.authenticate(
-//           localizedReason: 'Please authenticate to access the app',
-//           options: const AuthenticationOptions(
-//             biometricOnly: true,
-//           ),
-//         );
-//       } else {
-//         // Fallback to device credentials (PIN, pattern, etc.)
-//         isAuthenticated = await _auth.authenticate(
-//           localizedReason: 'Please authenticate to access the app',
-//           options: const AuthenticationOptions(
-//             biometricOnly: false,
-//           ),
-//         );
-//       }
-//
-//       if (!isAuthenticated) {
-//         auth = false;
-//       }
-//
-//       return isAuthenticated;
-//     } catch (e) {
-//       return false;
+//   void _handleNotificationTap(RemoteMessage message) {
+//     final String? screen = message.data['screen'];
+//     if (screen != null) {
+//       navigatorKey.currentState?.pushNamed(screen, arguments: message.data);
 //     }
 //   }
 //
-//
-//
-//   static Future<bool> isDeviceSecure() async {
-//     try {
-//       final bool isDeviceSupported = await _auth.isDeviceSupported();
-//       final bool canCheckBiometrics = await _auth.canCheckBiometrics;
-//
-//       // This means either biometrics or device-level PIN/pattern is active
-//       return isDeviceSupported ;
-//     } catch (e) {
-//       print("Error checking device security: $e");
-//       return false;
-//     }
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       navigatorKey: navigatorKey,
+//       initialRoute: '/',
+//       routes: {
+//         '/': (context) => HomeScreen(),
+//         '/messages': (context) => MessagesScreen(),
+//         // Define other routes here
+//       },
+//     );
 //   }
+// }
 //
+// class HomeScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Home')),
+//       body: Center(child: Text('Welcome to the Home Screen!')),
+//     );
+//   }
+// }
 //
+// class MessagesScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     final Map<String, dynamic>? args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+//     final String? messageId = args?['messageId'];
 //
-//
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Messages')),
+//       body: Center(child: Text('Viewing Message ID: ${messageId ?? "N/A"}')),
+//     );
+//   }
 // }
