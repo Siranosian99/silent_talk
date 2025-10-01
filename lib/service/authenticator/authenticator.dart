@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:silent_talk/service/notification/get_token.dart';
 
 import '../ids/get_userIds.dart';
 import '../model/user_model.dart';
@@ -26,6 +27,7 @@ class Authenticator {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       String uid = userCredential.user!.uid;
+      String utoken=await GetToken.getToken();
       Users userInfo = Users(
         id: uid,
         image: image,
@@ -33,7 +35,7 @@ class Authenticator {
         userName: userName,
         email: email,
         password: password,
-        token: '',
+        token: utoken,
         isOnline: false,
       );
       userCredential.user?.sendEmailVerification();

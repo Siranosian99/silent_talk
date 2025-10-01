@@ -29,7 +29,7 @@ class MessageService {
           })
           .then((DocumentReference doc) {
             messages.doc(doc.id).update({"docId": doc.id});
-            print("------------${doc.id}----------");
+            // print("------------${doc.id}----------");
           });
 
       print("WORKING");

@@ -9,7 +9,8 @@ import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/messages/get_messages.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/service/model/chat_model.dart';
-import 'package:silent_talk/service/notification/notification_service.dart';
+import 'package:silent_talk/service/notification/get_token.dart';
+import 'package:silent_talk/service/notification/message_detecter.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 import 'package:silent_talk/utils/contact/send_contact.dart';
 
@@ -118,7 +119,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 Future<void>noti()async{
-   await NotificationService().notificationCheck("bzeuJjXUhIRZ3O6IqSAonM9tlrj2", "euoS4LJLBQa4kIzkIKXo37A4RJr1");
+  await MessageChanger().notificationCheck("OXjQt2F7XhavRe24Y11tEyivbxc2", "4gtC6SNTGqM3HxxBHA3JShrZoNN2");
 }
   @override
   Widget build(BuildContext context) {

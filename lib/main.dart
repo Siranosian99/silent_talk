@@ -8,6 +8,7 @@ import 'package:silent_talk/screens/login_page.dart';
 import 'package:silent_talk/screens/people_screen.dart';
 import 'package:silent_talk/screens/settings_screen.dart';
 import 'package:silent_talk/screens/signUp_page.dart';
+import 'package:silent_talk/service/notification/notification_shower.dart';
 import 'package:silent_talk/themes/app_themes.dart';
 import 'package:silent_talk/utils/biometric/auth_provider.dart';
 import 'package:silent_talk/utils/image_picker/image_picker.dart';
@@ -23,10 +24,12 @@ void main() async {
   await Hive.openBox('themes');
   await Hive.openBox('auth');
   await Hive.openBox('lg');
+  NotificationHandler.initialize();
+
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc",
-      appId: "1:156704193316:android:12088ea8a9934d143211b1",
+      appId: "1:156704193316:ios:8f808066187c855d3211b1",
       //1:156704193316:ios:8f808066187c855d3211b1  //1:156704193316:android:12088ea8a9934d143211b1
       messagingSenderId: "156704193316",
       projectId: "silenttalk-53850",
