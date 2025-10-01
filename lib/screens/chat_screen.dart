@@ -13,6 +13,7 @@ import 'package:silent_talk/service/notification/get_token.dart';
 import 'package:silent_talk/service/notification/message_detecter.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 import 'package:silent_talk/utils/contact/send_contact.dart';
+import 'package:silent_talk/utils/time_format/time_convertor.dart';
 
 import '../service/ids/get_userIds.dart';
 import '../service/model/user_model.dart';
@@ -73,7 +74,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(_usersService.user?.uid)
-          .update({'isOnline': false, 'lastSeen': DateTime.now()});
+          .update({'isOnline': false, 'lastSeen': lastSeenFormat(DateTime.now())});
     }
   }
 
@@ -135,11 +136,14 @@ Future<void>noti()async{
                     alignment: Alignment.bottomLeft,
                     children: [
                       Container(
+                        padding: EdgeInsets.only(left: 40),
                         width: double.infinity,
-                        height: 150,
+                        height: 90,
                         color: Color.fromRGBO(52, 136, 176, 0.91),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          spacing: 5,
                           children: [
                             Stack(
                               alignment: Alignment.bottomRight,
@@ -165,13 +169,28 @@ Future<void>noti()async{
                               ],
                             ),
                             SizedBox(height: 15),
-                            Text(
-                              _users[widget.id!].userName,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _users[widget.id!].userName,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Text(
+                                   _users[widget.id!].lastSeen,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600], // silver-like color
+                                  ),
+                                ),
+                              ],
                             ),
+
+
                             // Text(_users[widget.id!].lastSeen.toString()),
                           ],
                         ),
@@ -184,7 +203,6 @@ Future<void>noti()async{
                       ),
                     ],
                   ),
-
                   StreamBuilder<QuerySnapshot>(
                     stream:
                         FirebaseFirestore.instance

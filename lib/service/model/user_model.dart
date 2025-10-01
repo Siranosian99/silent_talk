@@ -6,6 +6,7 @@ class Users {
   String email;
   String password;
   String token;
+  String lastSeen;
   bool isOnline;
 
 
@@ -17,6 +18,7 @@ class Users {
     required this.email,
     required this.password,
     required this.token,
+    required this.lastSeen,
     required this.isOnline,
 
   });
@@ -31,6 +33,7 @@ class Users {
     data['password'] = user.password;
     data['token']=user.token;
     data['isOnline']=user.isOnline;
+    data['lastSeen']=user.lastSeen;
 
     return data;
 

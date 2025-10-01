@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/notification/get_token.dart';
 
+import '../../utils/time_format/time_convertor.dart';
 import '../ids/get_userIds.dart';
 import '../model/user_model.dart';
 
@@ -36,6 +37,7 @@ class Authenticator {
         email: email,
         password: password,
         token: utoken,
+        lastSeen: lastSeenFormat(DateTime.now()),
         isOnline: false,
       );
       userCredential.user?.sendEmailVerification();
