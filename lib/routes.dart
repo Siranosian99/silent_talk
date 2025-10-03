@@ -19,8 +19,11 @@ import 'package:silent_talk/utils/biometric/auth.dart';
 import 'package:silent_talk/utils/biometric/auth_provider.dart';
 import 'package:silent_talk/widgets/contact_shower_sheet.dart';
 
+import 'global_key.dart';
+
 
 final GoRouter router = GoRouter(
+  navigatorKey: AppNavigator.navigatorKey,
   initialLocation: '/',
   routes: [
     GoRoute(

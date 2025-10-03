@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 
 
+import '../../global_key.dart';
 import 'get_token.dart';
 import 'notification_helper.dart';
 
@@ -31,6 +33,13 @@ class NotificationHandler {
 
     // Handle Notifications when the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final context = AppNavigator.navigatorKey.currentContext;
+      GoRouter.of(context!).pushNamed(
+        'chat',
+        extra: {
+          'id': "Bq7CWRqltmVv2DaKCBk6aKotttk2_u5SViY9x0UdEXED6mU19AM7IODA3",
+        },
+      );
       print("Foreground Notification: ${message.notification?.title}");
       _showNotification(message);
     });
