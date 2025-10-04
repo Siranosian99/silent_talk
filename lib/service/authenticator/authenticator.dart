@@ -29,6 +29,7 @@ class Authenticator {
           .createUserWithEmailAndPassword(email: email, password: password);
       String uid = userCredential.user!.uid;
       String utoken=await GetToken.getToken();
+
       Users userInfo = Users(
         id: uid,
         image: image,
@@ -80,7 +81,12 @@ class Authenticator {
       } else {
         ctx.goNamed('people');
         print('Login successful!');
+        String utoken=await GetToken.getToken();
         final user = FirebaseAuth.instance.currentUser;
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user?.uid)
+            .update({'token': utoken});
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

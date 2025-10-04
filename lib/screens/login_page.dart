@@ -94,6 +94,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                       Authenticator().login(
                         _emailController.text.trim(),
                         _passwordController.text.trim(),
+
                         context,
                       );
                     }

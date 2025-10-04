@@ -33,19 +33,16 @@ class NotificationHandler {
 
     // Handle Notifications when the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      final context = AppNavigator.navigatorKey.currentContext;
-      GoRouter.of(context!).pushNamed(
-        'chat',
-        extra: {
-          'id': "Bq7CWRqltmVv2DaKCBk6aKotttk2_u5SViY9x0UdEXED6mU19AM7IODA3",
-        },
-      );
       print("Foreground Notification: ${message.notification?.title}");
       _showNotification(message);
     });
 
     // Handle Notification when the app is opened from the background
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      final context = AppNavigator.navigatorKey.currentContext;
+      GoRouter.of(context!).pushNamed(
+        'settings',
+      );
       print("App opened by Notification: ${message.notification?.title}");
       // Handle navigation or action
     });
@@ -78,7 +75,7 @@ class NotificationHandler {
     await Firebase.initializeApp();
     print("Background Notification: ${message.notification?.title}");
     _showNotification(message);
-    _sendAutomaticNotification(message);
+    // _sendAutomaticNotification(message);
   }
 
   // Show notification on the device
@@ -101,21 +98,21 @@ class NotificationHandler {
   }
 
   // Send automatic notification (for example, forwarding or auto-reply message)
-  static Future<void> _sendAutomaticNotification(RemoteMessage message) async {
-    // Ensure the FCM token is available
-    String? token = GetToken.token;
-    if (token != null) {
-      try {
-        await NotificationService.sendNotification(
-          token,
-          message.notification?.title ?? "Forwarded Message",
-          message.notification?.body ?? "You have a new forwarded notification!",
-        );
-      } catch (error) {
-        print("Error sending notification: $error");
-      }
-    } else {
-      print("FCM Token is not available.");
-    }
-  }
+  // static Future<void> _sendAutomaticNotification(RemoteMessage message) async {
+  //   // Ensure the FCM token is available
+  //   String? token = GetToken.token;
+  //   if (token != null) {
+  //     try {
+  //       await NotificationService.sendNotification(
+  //         token,
+  //         message.notification?.title ?? "Forwarded Message",
+  //         message.notification?.body ?? "You have a new forwarded notification!",
+  //       );
+  //     } catch (error) {
+  //       print("Error sending notification: $error");
+  //     }
+  //   } else {
+  //     print("FCM Token is not available.");
+  //   }
+  // }
 }

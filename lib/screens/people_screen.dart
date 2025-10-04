@@ -20,14 +20,14 @@ class PeopleScreen extends StatefulWidget {
 }
 
 class _PeopleScreenState extends State<PeopleScreen> {
-  late List<Users> users=[];
-  UsersService _usersService=UsersService();
-  Future<void> callUsers()async{
-    users=await _usersService.fetchAllUsers();
-  }
+  // late List<Users> users=[];
+  // UsersService _usersService=UsersService();
+  // Future<void> callUsers()async{
+  //   users=await _usersService.fetchAllUsers();
+  // }
   @override
   void didChangeDependencies() {
-    callUsers();
+    // callUsers();
     super.didChangeDependencies();
   }
 
