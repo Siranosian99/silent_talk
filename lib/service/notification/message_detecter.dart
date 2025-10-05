@@ -41,7 +41,7 @@ class MessageChanger {
               String receiverToken = senderId == user1 ? tokenU2 : tokenU1;
               NotificationService.sendNotification(
                 receiverToken,
-                senderId == user1 ? userNameU2 : userNameU1,
+                senderId == user1 ? userNameU1 : userNameU2,
                 change.doc['message'],
 
               );

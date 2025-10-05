@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../global_key.dart';
 import 'get_token.dart';
+import 'navigate_notification.dart';
 import 'notification_helper.dart';
 
 class NotificationHandler {
@@ -34,15 +37,17 @@ class NotificationHandler {
     // Handle Notifications when the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("Foreground Notification: ${message.notification?.title}");
+      // final context = AppNavigator.navigatorKey.currentContext;
+      // GoRouter.of(context!).pushNamed(
+      //   'settings',
+      // );
       _showNotification(message);
     });
 
     // Handle Notification when the app is opened from the background
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       final context = AppNavigator.navigatorKey.currentContext;
-      GoRouter.of(context!).pushNamed(
-        'settings',
-      );
+      handleMessageNavigation(message);
       print("App opened by Notification: ${message.notification?.title}");
       // Handle navigation or action
     });
@@ -94,8 +99,20 @@ class NotificationHandler {
       message.notification?.title,
       message.notification?.body,
       notificationDetails,
+      payload: jsonEncode({
+        'id':0,
+        'senderId':'Pttpb7DGYcOYACI1hWkB6oTVTRl1',
+        'receiverId':'DbPNIqQM1eQxi378PHzOxJh9D5o2',
+      })
     );
   }
+  //   final String? name;
+//   final int? id;
+//   final String? senderId;
+//   final String? receiverId;
+
+
+
 
   // Send automatic notification (for example, forwarding or auto-reply message)
   // static Future<void> _sendAutomaticNotification(RemoteMessage message) async {

@@ -34,7 +34,7 @@ void main() async {
       projectId: "silenttalk-53850",
     ),
   );
-   NotificationHandler.initialize();
+  NotificationHandler.initialize();
 
   runApp(
     MultiProvider(

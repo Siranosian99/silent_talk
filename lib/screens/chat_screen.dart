@@ -155,28 +155,33 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           mainAxisAlignment: MainAxisAlignment.start,
                           spacing: 5,
                           children: [
-                            Stack(
-                              alignment: Alignment.bottomRight,
-                              children: [
-                                CircleAvatar(
-                                  radius: 40,
-                                  backgroundImage:
-                                      _users[widget.id!].image.isEmpty
-                                          ? AssetImage(
-                                            "assets/images/noProfile.png",
-                                          )
-                                          : NetworkImage(
-                                            _users[widget.id!].image,
-                                          ),
-                                ),
-                                CircleAvatar(
-                                  backgroundColor:
-                                      _users[widget.id!].isOnline
-                                          ? Colors.green
-                                          : Colors.red,
-                                  radius: 10,
-                                ),
-                              ],
+                            GestureDetector(
+                              onTap:(){
+                                print(_users[widget.id!].id);
+                              },
+                              child: Stack(
+                                alignment: Alignment.bottomRight,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 40,
+                                    backgroundImage:
+                                        _users[widget.id!].image.isEmpty
+                                            ? AssetImage(
+                                              "assets/images/noProfile.png",
+                                            )
+                                            : NetworkImage(
+                                              _users[widget.id!].image,
+                                            ),
+                                  ),
+                                  CircleAvatar(
+                                    backgroundColor:
+                                        _users[widget.id!].isOnline
+                                            ? Colors.green
+                                            : Colors.red,
+                                    radius: 10,
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(height: 15),
                             Column(
