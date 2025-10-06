@@ -11,6 +11,7 @@ import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/service/model/chat_model.dart';
 import 'package:silent_talk/service/notification/get_token.dart';
 import 'package:silent_talk/service/notification/message_detecter.dart';
+import 'package:silent_talk/service/notification/notification_shower.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 import 'package:silent_talk/utils/contact/send_contact.dart';
 import 'package:silent_talk/utils/time_format/time_convertor.dart';
@@ -23,16 +24,16 @@ import '../widgets/message_list.dart';
 import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String? name;
-  final int? id;
-  final String? senderId;
+  // final String? name;
+  // final int? id;
+  // final String? senderId;
   final String? receiverId;
 
   const ChatScreen({
     super.key,
-    this.name,
-    this.id,
-    this.senderId,
+    // this.name,
+    // this.id,
+    // this.senderId,
     this.receiverId,
   });
 
@@ -49,7 +50,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   // List<ChatModel> _chats = [];
   final UsersService _usersService = UsersService();
-
+  Users? getReceiver() {
+    if (widget.receiverId == null) return null;
+    try {
+      return _users.firstWhere((user) => user.id == widget.receiverId);
+    } catch (e) {
+      return null;
+    }
+  }
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -92,22 +100,22 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeDependencies() {
-    selectedContact();
+    // selectedContact();
     getUsersDetails();
     super.didChangeDependencies();
   }
 
   Future<void> getUsersDetails() async {
     _users = await _usersService.fetchAllUsers();
-    noti();
+    // noti();
     setState(() {
       _users;
     });
   }
 
-  void selectedContact() {
-    messageController.text = widget.name ?? '';
-  }
+  // void selectedContact() {
+  //   messageController.text = widget.name ?? '';
+  // }
 
   void selectedPicture(String path) {
     messageController.text = _picker.imgPath ?? '';
@@ -125,17 +133,17 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
-  Future<void> noti() async {
-    await MessageChanger().notificationCheck(
-      _usersService.currentUserId,
-      _users[widget.id!].id,
-    );
-  }
+  // Future<void> noti() async {
+  //   await MessageChanger().notificationCheck(
+  //     _usersService.currentUserId,
+  //     _users.id,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<Picker>(context);
-
+    final reciever=getReceiver();
     return Scaffold(
       body:
           _users.isEmpty
@@ -157,7 +165,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           children: [
                             GestureDetector(
                               onTap:(){
-                                print(_users[widget.id!].id);
+                                print("--------------------");
+                                print(reciever?.id);
+                                print(reciever?.name);
+                                print(reciever?.userName);
+                                print("--------------------");
                               },
                               child: Stack(
                                 alignment: Alignment.bottomRight,
@@ -165,17 +177,17 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   CircleAvatar(
                                     radius: 40,
                                     backgroundImage:
-                                        _users[widget.id!].image.isEmpty
+                                       reciever!.image.isEmpty
                                             ? AssetImage(
                                               "assets/images/noProfile.png",
                                             )
                                             : NetworkImage(
-                                              _users[widget.id!].image,
+                                          reciever!.image,
                                             ),
                                   ),
                                   CircleAvatar(
                                     backgroundColor:
-                                        _users[widget.id!].isOnline
+                                    reciever!.isOnline
                                             ? Colors.green
                                             : Colors.red,
                                     radius: 10,
@@ -189,14 +201,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  _users[widget.id!].userName,
+                                  reciever?.userName ??"",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
                                   ),
                                 ),
                                 Text(
-                                  _users[widget.id!].lastSeen,
+                                  reciever!.lastSeen,
                                   style: TextStyle(
                                     fontSize: 16,
                                     color:
@@ -246,7 +258,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 ? MessageList(
                                   messages: messages,
                                   id1: Authenticator().user!.uid,
-                                  id2: _users[widget.id!].id,
+                                  id2: reciever.id,
                                   // photo: provider.imgPath ?? '',
                                 )
                                 : Center(
@@ -317,7 +329,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         prefixIcon: IconButton(
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
-                            showCustomBottomSheet(context, widget.id!);
+                            showCustomBottomSheet(context, 1);
                           },
                         ),
                         suffixIcon: Column(
@@ -333,7 +345,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 MessageService().sendMessage(
                                   messageController.text,
                                   Authenticator().user!.uid,
-                                  _users[widget.id!].id,
+                                  reciever!.id,
                                 );
                                 messageController.clear();
                               },

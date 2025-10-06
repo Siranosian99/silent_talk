@@ -15,7 +15,6 @@ import 'notification_helper.dart';
 class NotificationHandler {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   static final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
-
   static Future<void> initialize() async {
     // Initialize Firebase
     await Firebase.initializeApp();
@@ -29,10 +28,23 @@ class NotificationHandler {
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        print("Notification Clicked: ${response.payload}");
-        // Handle navigation or action after clicking the notification
+        if (response.payload != null) {
+          final data = jsonDecode(response.payload!);
+
+          // Get context from navigator key
+          final context = AppNavigator.navigatorKey.currentContext;
+          if (context != null) {
+            GoRouter.of(context).pushNamed(
+              'chat',
+              extra: {
+                'receiverId': data['receiverId'],
+              },
+            );
+          }
+        }
       },
     );
+
 
     // Handle Notifications when the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -46,8 +58,11 @@ class NotificationHandler {
 
     // Handle Notification when the app is opened from the background
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      final context = AppNavigator.navigatorKey.currentContext;
-      handleMessageNavigation(message);
+      // if (message.data.isNotEmpty) {
+      //   String screen = message.data['screen'];
+      //   AppNavigator.navigatorKey.currentState?.pushNamed(screen);
+      // }
+      // handleMessage(message);
       print("App opened by Notification: ${message.notification?.title}");
       // Handle navigation or action
     });
@@ -93,17 +108,15 @@ class NotificationHandler {
     );
 
     const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
-
+    final payload = jsonEncode({
+      'receiverId': message.data['receiverId'],
+    });
     await _localNotifications.show(
       0,
       message.notification?.title,
       message.notification?.body,
       notificationDetails,
-      payload: jsonEncode({
-        'id':0,
-        'senderId':'Pttpb7DGYcOYACI1hWkB6oTVTRl1',
-        'receiverId':'DbPNIqQM1eQxi378PHzOxJh9D5o2',
-      })
+      payload:payload,
     );
   }
   //   final String? name;

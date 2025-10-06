@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/model/user_model.dart';
+import 'package:silent_talk/service/notification/notification_shower.dart';
 
 import '../service/users/users_service.dart';
 
@@ -50,7 +51,7 @@ class _ChatsGridViewState extends State<ChatsGridView> {
                 GoRouter.of(context).pushNamed(
                   'chat',
                   extra: {
-                    'id': index,
+                    'id': user.id,
                     'senderId': Authenticator().user?.uid,
                     'receiverId': user.id,
                   },

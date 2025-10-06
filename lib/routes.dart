@@ -15,6 +15,7 @@ import 'package:silent_talk/screens/splash_screen.dart';
 import 'package:silent_talk/screens/update_email_screen.dart';
 import 'package:silent_talk/screens/userName_update.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
+import 'package:silent_talk/service/notification/notification_shower.dart';
 import 'package:silent_talk/utils/biometric/auth.dart';
 import 'package:silent_talk/utils/biometric/auth_provider.dart';
 import 'package:silent_talk/widgets/contact_shower_sheet.dart';
@@ -97,10 +98,10 @@ final GoRouter router = GoRouter(
         final extra = state.extra as Map<String, dynamic>?;
 
         return ChatScreen(
-          id: extra?['id'],
-          senderId: extra?['senderId'],
-          receiverId: extra?['receiverId'],
-          name: extra?['name'],
+          receiverId: extra?['id'],
+          // senderId: extra?['senderId'],
+          // receiverId: extra?['receiverId'],
+          // name: extra?['name'],
         );
       },
     ),
