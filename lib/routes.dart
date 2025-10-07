@@ -98,7 +98,7 @@ final GoRouter router = GoRouter(
         final extra = state.extra as Map<String, dynamic>?;
 
         return ChatScreen(
-          receiverId: extra?['id'],
+          receiverId: extra?['receiverId'],
           // senderId: extra?['senderId'],
           // receiverId: extra?['receiverId'],
           // name: extra?['name'],
@@ -106,13 +106,13 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    GoRoute(
-      path: '/chatScreen',
-      name: 'chatScreen',
-      builder: (context, state) {
-        return ChatScreen();
-      },
-    ),
+    // GoRoute(
+    //   path: '/chatScreen',
+    //   name: 'chatScreen',
+    //   builder: (context, state) {
+    //     return ChatScreen();
+    //   },
+    // ),
 
     // GoRoute(
     //   name: 'chatWithName',

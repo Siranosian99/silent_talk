@@ -38,11 +38,15 @@ class MessageChanger {
           for (var change in snapshot.docChanges) {
             if (change.type == DocumentChangeType.added) {
               String senderId = change.doc['senderId'];
+              String receiverId = change.doc['receiverId'];
               String receiverToken = senderId == user1 ? tokenU2 : tokenU1;
               NotificationService.sendNotification(
                 receiverToken,
                 senderId == user1 ? userNameU1 : userNameU2,
                 change.doc['message'],
+                  receiverId
+
+
 
               );
               print("New message added: ${change.doc.data()}");

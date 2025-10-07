@@ -27,14 +27,14 @@ class ChatScreen extends StatefulWidget {
   // final String? name;
   // final int? id;
   // final String? senderId;
-  final String? receiverId;
+  final String receiverId;
 
   const ChatScreen({
     super.key,
     // this.name,
     // this.id,
     // this.senderId,
-    this.receiverId,
+     this.receiverId="DbPNIqQM1eQxi378PHzOxJh9D5o2",
   });
 
   @override
@@ -107,9 +107,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   Future<void> getUsersDetails() async {
     _users = await _usersService.fetchAllUsers();
-    // noti();
+    noti();
     setState(() {
-      _users;
+      // _users;
     });
   }
 
@@ -133,12 +133,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
-  // Future<void> noti() async {
-  //   await MessageChanger().notificationCheck(
-  //     _usersService.currentUserId,
-  //     _users.id,
-  //   );
-  // }
+  Future<void> noti() async {
+    if( _usersService.currentUserId != null &&  widget.receiverId != null){
+      await MessageChanger().notificationCheck(
+        _usersService.currentUserId,
+        widget.receiverId,
+      );
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {

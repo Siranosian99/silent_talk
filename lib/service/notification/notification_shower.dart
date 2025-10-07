@@ -108,9 +108,9 @@ class NotificationHandler {
     );
 
     const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
-    final payload = jsonEncode({
-      'receiverId': message.data['receiverId'],
-    });
+    String receiverId = message.data['receiverId'];
+    final payload = receiverId;
+    print("-__-___-_:${message.toMap()}");
     await _localNotifications.show(
       0,
       message.notification?.title,

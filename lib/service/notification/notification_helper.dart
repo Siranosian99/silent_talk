@@ -45,6 +45,7 @@ class NotificationService {
     String deviceToken,
     String title,
     String body,
+    String receiverId
   ) async {
     final String accessToken = await getAccessToken();
 
@@ -55,7 +56,8 @@ class NotificationService {
       "message": {
         "token": deviceToken,
         "notification": {"title": title, "body": body},
-        "data": {"route": "chats",},
+        "data": {"route": "chats",
+        "receiverId" :receiverId},
       },
     };
 //

@@ -51,29 +51,29 @@ import '../../screens/chat_screen.dart';
 //
 // }
 
-final FlutterLocalNotificationsPlugin _localNotifications =
-    FlutterLocalNotificationsPlugin();
-Future<void> showNotification(RemoteMessage message) async {
-  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-    'channel_id',
-    'channel_name',
-    importance: Importance.high,
-    priority: Priority.high,
-  );
-
-  const NotificationDetails notificationDetails = NotificationDetails(
-    android: androidDetails,
-  );
-  final payload = jsonEncode({
-    'id': 1,
-    'senderId': 'Pttpb7DGYcOYACI1hWkB6oTVTRl1',
-    'receiverId': 'DbPNIqQM1eQxi378PHzOxJh9D5o2',
-  });
-  await _localNotifications.show(
-    0,
-    message.notification?.title,
-    message.notification?.body,
-    notificationDetails,
-    payload: payload,
-  );
-}
+// final FlutterLocalNotificationsPlugin _localNotifications =
+//     FlutterLocalNotificationsPlugin();
+// Future<void> showNotification(RemoteMessage message) async {
+//   const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+//     'channel_id',
+//     'channel_name',
+//     importance: Importance.high,
+//     priority: Priority.high,
+//   );
+//
+//   const NotificationDetails notificationDetails = NotificationDetails(
+//     android: androidDetails,
+//   );
+//   final payload = jsonEncode({
+//     'id': 1,
+//     'senderId': 'Pttpb7DGYcOYACI1hWkB6oTVTRl1',
+//     'receiverId': 'DbPNIqQM1eQxi378PHzOxJh9D5o2',
+//   });
+//   await _localNotifications.show(
+//     0,
+//     message.notification?.title,
+//     message.notification?.body,
+//     notificationDetails,
+//     payload: payload,
+//   );
+// }
