@@ -24,10 +24,11 @@ class MessageChanger {
     return uname;
   }
   Future<void> notificationCheck(String user1, String user2) async {
-    String tokenU1=await getUsersToken(user1);
-    String tokenU2=await getUsersToken(user2);
-    String userNameU1=await getUserName(user1);
-    String userNameU2=await getUserName(user2);
+    String tokenU1 = await getUsersToken(user1);
+    String tokenU2 = await getUsersToken(user2);
+    String userNameU1 = await getUserName(user1);
+    String userNameU2 = await getUserName(user2);
+
     _firebase
         .collection("chats")
         .doc(getChatId(user1, user2))
@@ -35,24 +36,24 @@ class MessageChanger {
         .orderBy("messageTime", descending: false)
         .snapshots()
         .listen((snapshot) async {
-          for (var change in snapshot.docChanges) {
-            if (change.type == DocumentChangeType.added) {
-              String senderId = change.doc['senderId'];
-              String receiverId = change.doc['receiverId'];
-              String receiverToken = senderId == user1 ? tokenU2 : tokenU1;
-              NotificationService.sendNotification(
-                receiverToken,
-                senderId == user1 ? userNameU1 : userNameU2,
-                change.doc['message'],
-                  receiverId
+      for (var change in snapshot.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+          String senderId = change.doc['senderId'];
+          String receiverId = change.doc['receiverId'];
+          String receiverToken = senderId == user1 ? tokenU2 : tokenU1;
+          String senderName = senderId == user1 ? userNameU1 : userNameU2;
 
+          await NotificationService.sendNotification(
+             receiverToken,
+             senderName,
+             change.doc['message'],
+             receiverId, // 👈 important
+          );
 
-
-              );
-              print("New message added: ${change.doc.data()}");
-              // 👉 You can trigger local notification here
-            }
-          }
-        });
+          print("✅ Notification sent for message: ${change.doc['message']}");
+        }
+      }
+    });
   }
+
 }

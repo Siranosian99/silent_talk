@@ -37,7 +37,7 @@ class NotificationHandler {
             GoRouter.of(context).pushNamed(
               'chat',
               extra: {
-                'receiverId': data['receiverId'],
+                'receiverId': "Pttpb7DGYcOYACI1hWkB6oTVTRl1",
               },
             );
           }
@@ -108,16 +108,23 @@ class NotificationHandler {
     );
 
     const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
-    String receiverId = message.data['receiverId'];
-    final payload = receiverId;
+    // String receiverId = message.data['receiverId'];
     print("-__-___-_:${message.toMap()}");
+    final data = message.data;
+
+    final route = message.data['route'];
+    final receiverId = message.data['receiverId'];
+    final title = message.data['title'] ?? 'No title';
+    final body = message.data['body'] ?? 'No body';
     await _localNotifications.show(
       0,
-      message.notification?.title,
-      message.notification?.body,
+      title,
+      body,
       notificationDetails,
-      payload:payload,
-    );
+      payload:jsonEncode({
+        'route': route,
+        'receiverId': receiverId,
+      }));
   }
   //   final String? name;
 //   final int? id;

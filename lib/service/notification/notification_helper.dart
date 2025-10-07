@@ -45,22 +45,25 @@ class NotificationService {
     String deviceToken,
     String title,
     String body,
-    String receiverId
+    String receiverId,
   ) async {
     final String accessToken = await getAccessToken();
 
     String endpointFCM =
         'https://fcm.googleapis.com/v1/projects/silenttalk-53850/messages:send';
     final Map<String, dynamic> message = {
-
       "message": {
         "token": deviceToken,
-        "notification": {"title": title, "body": body},
-        "data": {"route": "chats",
-        "receiverId" :receiverId},
+        // "notification": {"title": title, "body": body},
+        "data": {
+          "route": "chats",
+          "receiverId": receiverId,
+          "title": title,
+          "body": body,
+        },
       },
     };
-//
+    //
     final http.Response response = await http.post(
       Uri.parse(endpointFCM),
       headers: {

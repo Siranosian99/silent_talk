@@ -27,14 +27,14 @@ class ChatScreen extends StatefulWidget {
   // final String? name;
   // final int? id;
   // final String? senderId;
-  final String receiverId;
+  final String? receiverId;
 
   const ChatScreen({
     super.key,
     // this.name,
     // this.id,
     // this.senderId,
-     this.receiverId="DbPNIqQM1eQxi378PHzOxJh9D5o2",
+     this.receiverId,
   });
 
   @override
@@ -137,7 +137,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     if( _usersService.currentUserId != null &&  widget.receiverId != null){
       await MessageChanger().notificationCheck(
         _usersService.currentUserId,
-        widget.receiverId,
+        widget.receiverId!,
       );
     }
 
