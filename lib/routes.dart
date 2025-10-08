@@ -101,7 +101,7 @@ final GoRouter router = GoRouter(
           receiverId: extra?['receiverId'],
           // senderId: extra?['senderId'],
           // receiverId: extra?['receiverId'],
-          // name: extra?['name'],
+          name: extra?['name'],
         );
       },
     ),
@@ -133,7 +133,9 @@ final GoRouter router = GoRouter(
       name: 'contact',
       builder: (context, state) {
         final index = state.extra as int?;
-        return ContactScreen(index: index!);
+        final id = state.extra as String?;
+        return ContactScreen(index: index!,
+        id:id! );
       },
     ),
     GoRoute(

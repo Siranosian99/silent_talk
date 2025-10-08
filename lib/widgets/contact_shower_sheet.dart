@@ -18,9 +18,10 @@ import 'contact_send_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
   final int index;
+  final String id;
 
   @override
-  ContactScreen({required this.index});
+  ContactScreen({required this.index,required this.id});
 
   _ContactScreenState createState() => _ContactScreenState();
 }
@@ -40,6 +41,14 @@ class _ContactScreenState extends State<ContactScreen> {
     super.initState();
   }
 
+  Users? getReceiver() {
+    if (widget.id == null) return null;
+    try {
+      return _users.firstWhere((user) => user.id == widget.id);
+    } catch (e) {
+      return null;
+    }
+  }
   final _ctrl = ScrollController();
 
   Future<void> getUsersDetails() async {
@@ -69,6 +78,7 @@ class _ContactScreenState extends State<ContactScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final reciever=getReceiver();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -107,8 +117,7 @@ class _ContactScreenState extends State<ContactScreen> {
                     return _ContactItem(
                       contact: _contacts[index],
                       index: widget.index,
-                      id: _users[widget.index].id,
-                    );
+                      id:reciever!.id);
                   },
                   separatorBuilder:
                       (BuildContext context, int index) => SizedBox(height: 50),
@@ -177,15 +186,14 @@ class _ContactItem extends StatelessWidget {
             );
 
           }
-          ); // context.pushNamed(
-          //   'chat',
-          //   extra: {
-          //     'id': index,
-          //     'senderId': '',
-          //     'receiverId': '',
-          //     'name': contactDetails(contact),
-          //   },
-          // );
+          );
+          context.pushNamed(
+            'chat',
+            extra: {
+              'receiverId': id«,
+              'name': contactDetails(contact),
+            },
+          );
 
         },
         leading: _ContactImage(contact: contact),

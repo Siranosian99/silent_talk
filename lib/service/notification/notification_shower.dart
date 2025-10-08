@@ -30,6 +30,7 @@ class NotificationHandler {
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         if (response.payload != null) {
           final data = jsonDecode(response.payload!);
+          final senderId = data['senderId'];
 
           // Get context from navigator key
           final context = AppNavigator.navigatorKey.currentContext;
@@ -37,7 +38,7 @@ class NotificationHandler {
             GoRouter.of(context).pushNamed(
               'chat',
               extra: {
-                'receiverId': "Pttpb7DGYcOYACI1hWkB6oTVTRl1",
+                'receiverId': senderId,
               },
             );
           }
@@ -109,13 +110,13 @@ class NotificationHandler {
 
     const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
     // String receiverId = message.data['receiverId'];
-    print("-__-___-_:${message.toMap()}");
+
     final data = message.data;
 
-    final route = message.data['route'];
-    final receiverId = message.data['receiverId'];
-    final title = message.data['title'] ?? 'No title';
-    final body = message.data['body'] ?? 'No body';
+    final route = data['route'];
+    final senderId = data['senderId'];
+    final title = data['title'] ?? 'No title';
+    final body = data['body'] ?? 'No body';
     await _localNotifications.show(
       0,
       title,
@@ -123,7 +124,7 @@ class NotificationHandler {
       notificationDetails,
       payload:jsonEncode({
         'route': route,
-        'receiverId': receiverId,
+        'senderId': senderId,
       }));
   }
   //   final String? name;

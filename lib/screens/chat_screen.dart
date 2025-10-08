@@ -24,14 +24,14 @@ import '../widgets/message_list.dart';
 import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
-  // final String? name;
+  final String? name;
   // final int? id;
   // final String? senderId;
   final String? receiverId;
 
   const ChatScreen({
     super.key,
-    // this.name,
+    this.name,
     // this.id,
     // this.senderId,
      this.receiverId,
@@ -100,7 +100,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeDependencies() {
-    // selectedContact();
+    selectedContact();
     getUsersDetails();
     super.didChangeDependencies();
   }
@@ -109,13 +109,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     _users = await _usersService.fetchAllUsers();
     noti();
     setState(() {
-      // _users;
+      _users;
     });
   }
 
-  // void selectedContact() {
-  //   messageController.text = widget.name ?? '';
-  // }
+  void selectedContact() {
+    messageController.text = widget.name ?? '';
+  }
 
   void selectedPicture(String path) {
     messageController.text = _picker.imgPath ?? '';
@@ -134,7 +134,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   Future<void> noti() async {
-    if( _usersService.currentUserId != null &&  widget.receiverId != null){
+    if(widget.receiverId != null){
       await MessageChanger().notificationCheck(
         _usersService.currentUserId,
         widget.receiverId!,
@@ -169,9 +169,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             GestureDetector(
                               onTap:(){
                                 print("--------------------");
-                                print(reciever?.id);
-                                print(reciever?.name);
-                                print(reciever?.userName);
+                                print(reciever.id);
+                                print(reciever.name);
+                                print(reciever.userName);
                                 print("--------------------");
                               },
                               child: Stack(
@@ -185,12 +185,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                               "assets/images/noProfile.png",
                                             )
                                             : NetworkImage(
-                                          reciever!.image,
+                                          reciever.image,
                                             ),
                                   ),
                                   CircleAvatar(
                                     backgroundColor:
-                                    reciever!.isOnline
+                                    reciever.isOnline
                                             ? Colors.green
                                             : Colors.red,
                                     radius: 10,
@@ -204,7 +204,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  reciever?.userName ??"",
+                                  reciever.userName ??"",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
@@ -332,7 +332,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         prefixIcon: IconButton(
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
-                            showCustomBottomSheet(context, 1);
+                            showCustomBottomSheet(context, 1,widget.receiverId!);
                           },
                         ),
                         suffixIcon: Column(

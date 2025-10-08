@@ -7,7 +7,7 @@ import '../utils/file_picker/file_picker.dart';
 import '../utils/image_picker/image_picker.dart';
 import 'contact_shower_sheet.dart';
 
-void showCustomBottomSheet(BuildContext context,int index) {
+void showCustomBottomSheet(BuildContext context,int index,String id) {
   final picker = Provider.of<Picker>(context, listen: false);
   showModalBottomSheet(
     context: context,

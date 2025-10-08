@@ -15,14 +15,16 @@ class MessageChanger {
 
     return token;
   }
+
   Future<String> getUserName(String userId) async {
     DocumentSnapshot doc =
-    await _firebase.collection("users").doc(userId).get();
+        await _firebase.collection("users").doc(userId).get();
 
     String uname = doc['userName']; // only the token field
 
     return uname;
   }
+
   Future<void> notificationCheck(String user1, String user2) async {
     String tokenU1 = await getUsersToken(user1);
     String tokenU2 = await getUsersToken(user2);
@@ -36,24 +38,21 @@ class MessageChanger {
         .orderBy("messageTime", descending: false)
         .snapshots()
         .listen((snapshot) async {
-      for (var change in snapshot.docChanges) {
-        if (change.type == DocumentChangeType.added) {
-          String senderId = change.doc['senderId'];
-          String receiverId = change.doc['receiverId'];
-          String receiverToken = senderId == user1 ? tokenU2 : tokenU1;
-          String senderName = senderId == user1 ? userNameU1 : userNameU2;
-
-          await NotificationService.sendNotification(
-             receiverToken,
-             senderName,
-             change.doc['message'],
-             receiverId, // 👈 important
-          );
-
-          print("✅ Notification sent for message: ${change.doc['message']}");
-        }
-      }
-    });
+          for (var change in snapshot.docChanges) {
+            if (change.type == DocumentChangeType.added ) {
+              String senderId = change.doc['senderId'];
+              String receiverId = change.doc['receiverId'];
+              String receiverToken = senderId == user1 ? tokenU2 : tokenU1;
+              String senderName = senderId == user1 ? userNameU1 : userNameU2;
+              await NotificationService.sendNotification(
+                receiverToken,
+                senderName,
+                change.doc['message'],
+                change.doc['senderId'],
+                change.doc['receiverId'],
+              );
+            }
+          }
+        });
   }
-
 }
