@@ -22,7 +22,6 @@ import 'package:silent_talk/widgets/contact_shower_sheet.dart';
 
 import 'global_key.dart';
 
-
 final GoRouter router = GoRouter(
   navigatorKey: AppNavigator.navigatorKey,
   initialLocation: '/',
@@ -32,7 +31,10 @@ final GoRouter router = GoRouter(
       name: 'splash',
       builder: (context, state) => SplashScreen(),
       redirect: (context, state) async {
-        final _authProvider = Provider.of<AuthenticateProvider>(context, listen: false);
+        final _authProvider = Provider.of<AuthenticateProvider>(
+          context,
+          listen: false,
+        );
         bool isLocked = _authProvider.isAuth; // your app lock
         bool isAuth = await AuthService().checkAuth(); // device auth available
         AuthService().checkAvailable(context);
@@ -132,10 +134,9 @@ final GoRouter router = GoRouter(
       path: '/contact',
       name: 'contact',
       builder: (context, state) {
-        final index = state.extra as int?;
+        final index = state.extra as String?;
         final id = state.extra as String?;
-        return ContactScreen(index: index!,
-        id:id! );
+        return ContactScreen(index: index!, id: id!);
       },
     ),
     GoRoute(

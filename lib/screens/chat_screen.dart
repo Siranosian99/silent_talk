@@ -107,7 +107,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   Future<void> getUsersDetails() async {
     _users = await _usersService.fetchAllUsers();
-    noti();
+    // noti();
     setState(() {
       _users;
     });
@@ -332,7 +332,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         prefixIcon: IconButton(
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
-                            showCustomBottomSheet(context, 1,widget.receiverId!);
+                            showCustomBottomSheet(context, '112',widget.receiverId!);
                           },
                         ),
                         suffixIcon: Column(

@@ -17,7 +17,7 @@ import '../utils/contact/send_contact.dart';
 import 'contact_send_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
-  final int index;
+  final String index;
   final String id;
 
   @override
@@ -116,8 +116,8 @@ class _ContactScreenState extends State<ContactScreen> {
                   itemBuilder: (_, index) {
                     return _ContactItem(
                       contact: _contacts[index],
-                      index: widget.index,
-                      id:reciever!.id);
+                      indexz:reciever!.id,
+                      id:reciever.id);
                   },
                   separatorBuilder:
                       (BuildContext context, int index) => SizedBox(height: 50),
@@ -135,14 +135,14 @@ class _ContactItem extends StatelessWidget {
   const _ContactItem({
     Key? key,
     required this.contact,
-    required this.index,
+    required this.indexz,
     required this.id,
   }) : super(key: key);
 
   static final height = 86.0;
 
   final Contact contact;
-  final int index;
+  final String indexz;
   final String id;
 
   @override
@@ -190,7 +190,7 @@ class _ContactItem extends StatelessWidget {
           context.pushNamed(
             'chat',
             extra: {
-              'receiverId': id«,
+              'receiverId': id,
               'name': contactDetails(contact),
             },
           );
