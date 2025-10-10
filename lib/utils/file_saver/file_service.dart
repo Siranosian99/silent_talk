@@ -62,7 +62,7 @@ class FileSaver {
   static Future<File> saveImage(String fileName, Uint8List bytes) async {
     final path = await _localPath;
     Directory folder = await getAppDownloadFolder();
-    final file = File('$path/$fileName.png'); // or jpg
+    final file = File('${folder.path}/$fileName.png'); // or jpg
     return file.writeAsBytes(bytes);
   }
 

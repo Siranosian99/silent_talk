@@ -24,12 +24,12 @@ class MessageList extends StatelessWidget {
       itemBuilder:
           (context, index) => GestureDetector(
             onTap: (){
-              if( messages[index]['message'].contains(
-                "https://res.cloudinary.com",
-              )){
-                FileSaver.downloadAndSave(messages[index]['message'], 'file1');
+
+                Uint8List bytes = Uint8List.fromList(utf8.encode(messages[index]['message']));
+                FileSaver.saveImage("img", bytes);
+                // FileSaver.downloadAndSave(messages[index]['message'], 'file1');
                 print(messages[index]['message']);
-              }
+
             },
             onLongPress: (){
               MessageService().deleteMessage(id1,id2,messages[index]['docId']);
