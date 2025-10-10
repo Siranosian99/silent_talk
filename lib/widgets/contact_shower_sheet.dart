@@ -17,11 +17,11 @@ import '../utils/contact/send_contact.dart';
 import 'contact_send_dialog.dart';
 
 class ContactScreen extends StatefulWidget {
-  final String index;
+  final int index;
   final String id;
 
   @override
-  ContactScreen({required this.index,required this.id});
+  ContactScreen({required this.index, required this.id});
 
   _ContactScreenState createState() => _ContactScreenState();
 }
@@ -49,6 +49,7 @@ class _ContactScreenState extends State<ContactScreen> {
       return null;
     }
   }
+
   final _ctrl = ScrollController();
 
   Future<void> getUsersDetails() async {
@@ -78,7 +79,7 @@ class _ContactScreenState extends State<ContactScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final reciever=getReceiver();
+    final reciever = getReceiver();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -116,8 +117,9 @@ class _ContactScreenState extends State<ContactScreen> {
                   itemBuilder: (_, index) {
                     return _ContactItem(
                       contact: _contacts[index],
-                      indexz:reciever!.id,
-                      id:reciever.id);
+                      index: index,
+                      id: reciever!.id,
+                    );
                   },
                   separatorBuilder:
                       (BuildContext context, int index) => SizedBox(height: 50),
@@ -135,14 +137,14 @@ class _ContactItem extends StatelessWidget {
   const _ContactItem({
     Key? key,
     required this.contact,
-    required this.indexz,
+    required this.index,
     required this.id,
   }) : super(key: key);
 
   static final height = 86.0;
 
   final Contact contact;
-  final String indexz;
+  final int index;
   final String id;
 
   @override
@@ -174,27 +176,24 @@ class _ContactItem extends StatelessWidget {
     return SizedBox(
       height: height,
       child: ListTile(
-        onTap: () {
-          context.pop();
-          showContactDialog(
+        onTap: () async {
+          await showContactDialog(
             context,
-            contactDetails(contact,nameOnly: true), contactDetails(contact ,phoneOnly: true),(){
-            MessageService().sendMessage(
-              contactDetails(contact),
-              Authenticator().user!.uid,
-              id,
-            );
-
-          }
-          );
-          context.pushNamed(
-            'chat',
-            extra: {
-              'receiverId': id,
-              'name': contactDetails(contact),
+            contactDetails(contact, nameOnly: true),
+            contactDetails(contact, phoneOnly: true),
+            () {
+              context.pop();
+              context.pushNamed(
+                'chat',
+                extra: {'receiverId': id, 'name': contactDetails(contact)},
+              );
+              MessageService().sendMessage(
+                contactDetails(contact),
+                Authenticator().user!.uid,
+                id,
+              );
             },
           );
-
         },
         leading: _ContactImage(contact: contact),
         title: Text(

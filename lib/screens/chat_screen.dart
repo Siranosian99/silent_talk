@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_contacts/src/model/contact.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +67,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     setOnlineStatus();
     super.initState();
   }
-
   // Future<bool?> loadIsAuth()async{
   //   isAuthActive=await AuthService().isDeviceHave();
   //   return isAuthActive;
@@ -100,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeDependencies() {
-    selectedContact();
+    // selectedContact();
     getUsersDetails();
     super.didChangeDependencies();
   }
@@ -211,11 +212,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   ),
                                 ),
                                 Text(
-                                  reciever!.lastSeen,
+                                  reciever.lastSeen,
                                   style: TextStyle(
                                     fontSize: 16,
                                     color:
-                                        Colors.grey[600], // silver-like color
+                                        Colors.grey[500], // silver-like color
                                   ),
                                 ),
                               ],
@@ -332,7 +333,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         prefixIcon: IconButton(
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
-                            showCustomBottomSheet(context, '112',widget.receiverId!);
+                            showCustomBottomSheet(context, 21,reciever.id);
                           },
                         ),
                         suffixIcon: Column(
@@ -348,7 +349,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 MessageService().sendMessage(
                                   messageController.text,
                                   Authenticator().user!.uid,
-                                  reciever!.id,
+                                  reciever.id,
                                 );
                                 messageController.clear();
                               },

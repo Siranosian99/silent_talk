@@ -134,11 +134,13 @@ final GoRouter router = GoRouter(
       path: '/contact',
       name: 'contact',
       builder: (context, state) {
-        final index = state.extra as String?;
-        final id = state.extra as String?;
-        return ContactScreen(index: index!, id: id!);
+        final data = state.extra as Map<String, dynamic>;
+        final index = data['index'] as int;
+        final id = data['id'] as String;
+        return ContactScreen(index: index, id: id);
       },
     ),
+
     GoRoute(
       path: '/resetPassword',
       name: 'resetPassword',

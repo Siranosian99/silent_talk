@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
+import 'package:silent_talk/utils/file_saver/file_service.dart';
 import 'package:silent_talk/widgets/language_dropDown.dart';
 import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
@@ -18,7 +19,13 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+@override
+  void initState() {
+    super.initState();
+  }
+  // Future<void>requestPermission ()async{
+  //   await FileSaver.requestStoragePermission();
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

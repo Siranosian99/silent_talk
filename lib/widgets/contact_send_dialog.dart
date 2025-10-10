@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-void showContactDialog(
+Future<void> showContactDialog(
     BuildContext context,
     String contactName,
     String contactNumber,
     VoidCallback onTap,
-    ) {
-  showDialog(
+    )async {
+ await showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
