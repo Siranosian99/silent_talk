@@ -17,7 +17,8 @@
     <application
         android:label="silent_talk"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
 
         <!-- File provider -->
         <provider
@@ -31,8 +32,12 @@
         </provider>
 
         <!-- Flutter local notifications receivers -->
-        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" android:exported="false"/>
-        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver" android:exported="false">
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+            android:exported="false" />
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
@@ -45,7 +50,7 @@
             android:name="com.dexterous.flutterlocalnotifications.ForegroundService"
             android:exported="false"
             android:stopWithTask="false"
-            android:foregroundServiceType="connectedDevice" /> <!-- Replace with proper type -->
+            android:foregroundServiceType="connectedDevice" />
 
         <!-- Main activity -->
         <activity
@@ -59,7 +64,7 @@
 
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme"/>
+                android:resource="@style/NormalTheme" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -67,14 +72,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Flutter embedding meta-data -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
 
     </application>
 
-    <!-- Queries needed for text processing plugin -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>

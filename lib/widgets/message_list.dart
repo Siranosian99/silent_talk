@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
+import 'package:silent_talk/utils/file_saver/file_service.dart';
 
 import '../service/authenticator/authenticator.dart';
 import '../utils/contact/send_contact.dart';
@@ -19,6 +23,14 @@ class MessageList extends StatelessWidget {
     return ListView.builder(
       itemBuilder:
           (context, index) => GestureDetector(
+            onTap: (){
+              if( messages[index]['message'].contains(
+                "https://res.cloudinary.com",
+              )){
+                FileSaver.downloadAndSave(messages[index]['message'], 'file1');
+                print(messages[index]['message']);
+              }
+            },
             onLongPress: (){
               MessageService().deleteMessage(id1,id2,messages[index]['docId']);
             },

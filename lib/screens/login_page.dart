@@ -21,11 +21,12 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 @override
   void initState() {
+  requestPermission();
     super.initState();
   }
-  // Future<void>requestPermission ()async{
-  //   await FileSaver.requestStoragePermission();
-  // }
+  Future<void>requestPermission ()async{
+    await FileSaver.requestStoragePermission();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
