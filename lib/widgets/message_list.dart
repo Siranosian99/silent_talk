@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
+import 'package:silent_talk/utils/contact/add_contact.dart';
 import 'package:silent_talk/utils/file_saver/file_service.dart';
 
 import '../service/authenticator/authenticator.dart';
@@ -12,27 +13,43 @@ import '../utils/contact/send_contact.dart';
 import '../utils/image_picker/image_picker.dart';
 
 class MessageList extends StatelessWidget {
-  const MessageList({super.key, required this.messages,required this.id1,required this.id2});
+  const MessageList({
+    super.key,
+    required this.messages,
+    required this.id1,
+    required this.id2,
+  });
 
   final List<QueryDocumentSnapshot<Object?>> messages;
   final String id1;
   final String id2;
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<Picker>(context);
     return ListView.builder(
       itemBuilder:
           (context, index) => GestureDetector(
-            onTap: (){
+            onTap: () {
+              if (messages[index]['message'].contains(
+                "https://res.cloudinary.com",
+              )) {
+                // String fileName,String urlPath, Uint8List bytes
+                Uint8List bytes = Uint8List.fromList(
+                  utf8.encode(messages[index]['message']),
+                );
 
-                Uint8List bytes = Uint8List.fromList(utf8.encode(messages[index]['message']));
-                FileSaver.saveImage("img", bytes);
+                FileSaver.saveNetworkImage(messages[index]['message']);
                 // FileSaver.downloadAndSave(messages[index]['message'], 'file1');
                 print(messages[index]['message']);
-
+              }
             },
-            onLongPress: (){
-              MessageService().deleteMessage(id1,id2,messages[index]['docId']);
+            onLongPress: () {
+              MessageService().deleteMessage(
+                id1,
+                id2,
+                messages[index]['docId'],
+              );
             },
             child: Align(
               alignment:
@@ -46,14 +63,21 @@ class MessageList extends StatelessWidget {
                         "https://res.cloudinary.com",
                       )
                       ? ClipRRect(
-                        borderRadius:BorderRadius.circular(20),
-                        child: Image.network(messages[index]['message'], fit: BoxFit.cover,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          messages[index]['message'],
+                          fit: BoxFit.cover,
                           width: 250,
-                          height: 250,))
+                          height: 250,
+                        ),
+                      )
                       : messages[index]['message'].contains("Name:")
                       ? Container(
                         width: 300,
-                        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        margin: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -116,7 +140,9 @@ class MessageList extends StatelessWidget {
                             ),
                             SizedBox(height: 12),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                addContact(extractName(messages[index]['message']).toString(), extractPhone(messages[index]['message']).toString());
+                              },
                               child: Row(
                                 children: [
                                   Icon(
@@ -164,7 +190,7 @@ class MessageList extends StatelessWidget {
                       //   child: Image.network(messages[index]['message']),
                       // )
                       // :
-                  : Container(
+                      : Container(
                         margin: const EdgeInsets.symmetric(
                           vertical: 6,
                           horizontal: 12,

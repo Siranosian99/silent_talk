@@ -1,13 +1,16 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 
 class FileSaver {
   /// Get the app's documents directory (internal storage)
   static Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getTemporaryDirectory();
     return directory.path;
   }
   static Future<Directory> getAppDownloadFolder() async {
@@ -59,13 +62,20 @@ class FileSaver {
   }
 
   /// Save image file (binary)
-  static Future<File> saveImage(String fileName, Uint8List bytes) async {
+  static Future<File> saveImage(String fileName,String urlPath, Uint8List bytes) async {
+    Dio _dio=Dio();
     final path = await _localPath;
     Directory folder = await getAppDownloadFolder();
-    final file = File('${folder.path}/$fileName.png'); // or jpg
+    final file = File('$path/$fileName.jpg'); // or jpg
+    await _dio.download(urlPath, path);
     return file.writeAsBytes(bytes);
   }
-
+  static Future<void> saveNetworkImage(String url) async {
+    var response = await Dio().get(url, options: Options(responseType: ResponseType.bytes));
+    final result = await ImageGallerySaverPlus.saveImage(Uint8List.fromList(response.data), quality: 60, name: "hello");
+    print(result);
+    // Utils.toast("$result");
+  }
   /// Read a file (text)
   static Future<String> readText(String fileName) async {
     final path = await _localPath;

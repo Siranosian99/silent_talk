@@ -19,14 +19,14 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-@override
-  void initState() {
-  requestPermission();
-    super.initState();
-  }
-  Future<void>requestPermission ()async{
-    await FileSaver.requestStoragePermission();
-  }
+// @override
+//   void initState() {
+//   requestPermission();
+//     super.initState();
+//   }
+//   Future<void>requestPermission ()async{
+//     await FileSaver.checkAndRequestStoragePermission();
+//   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
