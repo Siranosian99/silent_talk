@@ -10,6 +10,7 @@ import 'package:silent_talk/utils/file_saver/file_service.dart';
 
 import '../service/authenticator/authenticator.dart';
 import '../utils/contact/send_contact.dart';
+import '../utils/file_picker/file_picker.dart';
 import '../utils/image_picker/image_picker.dart';
 
 class MessageList extends StatelessWidget {
@@ -30,10 +31,9 @@ class MessageList extends StatelessWidget {
     return ListView.builder(
       itemBuilder:
           (context, index) => GestureDetector(
-            onTap: () {
-              if (messages[index]['message'].contains(
-                "https://res.cloudinary.com",
-              )) {
+            onTap: ()  {
+              final msg = messages[index]['message'];
+              if (msg.contains("https://res.cloudinary.com")) {
                 // String fileName,String urlPath, Uint8List bytes
                 Uint8List bytes = Uint8List.fromList(
                   utf8.encode(messages[index]['message']),
@@ -42,6 +42,12 @@ class MessageList extends StatelessWidget {
                 FileSaver.saveNetworkImage(messages[index]['message']);
                 // FileSaver.downloadAndSave(messages[index]['message'], 'file1');
                 print(messages[index]['message']);
+              } else if (msg.contains('.txt') ||
+                  msg.contains('.pdf') ||
+                  msg.contains('.doc') ||
+                  msg.contains('.docx')) {
+                // await readFileContent(messages[index]['message']);
+                    print(messages[index]['message']);
               }
             },
             onLongPress: () {
@@ -59,7 +65,30 @@ class MessageList extends StatelessWidget {
 
               //here checkin///
               child:
-                  messages[index]['message'].contains(
+                  (messages[index]['message'].contains('.txt') ||
+                          messages[index]['message'].contains('.pdf') ||
+                          messages[index]['message'].contains('.doc') ||
+                          messages[index]['message'].contains('.docx'))
+                      ? ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          width: 240,
+                          height: 90,
+                          color: Colors.lightBlue,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Image.asset(
+                                'assets/icons/document.png',
+                                scale: 15,
+                              ),
+                              Text('${  messages[index]['message'].split('/').last
+                                  }'),
+                            ],
+                          ),
+                        ),
+                      )
+                      : messages[index]['message'].contains(
                         "https://res.cloudinary.com",
                       )
                       ? ClipRRect(
@@ -141,7 +170,14 @@ class MessageList extends StatelessWidget {
                             SizedBox(height: 12),
                             InkWell(
                               onTap: () {
-                                addContact(extractName(messages[index]['message']).toString(), extractPhone(messages[index]['message']).toString());
+                                addContact(
+                                  extractName(
+                                    messages[index]['message'],
+                                  ).toString(),
+                                  extractPhone(
+                                    messages[index]['message'],
+                                  ).toString(),
+                                );
                               },
                               child: Row(
                                 children: [
