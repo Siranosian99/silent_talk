@@ -29,9 +29,10 @@ Future<void> pickDocumentFile(BuildContext context, String receiverId) async {
   }
 }
 
-Future<void> readFileContent(String path) async {
+Future<String> readFileContent(String path) async {
   final file = File(path);
   final content = await file.readAsString();
+  return content;
   print('Text content: $content');
   // now send this content to your chat
 }

@@ -167,37 +167,28 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           mainAxisAlignment: MainAxisAlignment.start,
                           spacing: 5,
                           children: [
-                            GestureDetector(
-                              onTap:(){
-                                print("--------------------");
-                                print(reciever.id);
-                                print(reciever.name);
-                                print(reciever.userName);
-                                print("--------------------");
-                              },
-                              child: Stack(
-                                alignment: Alignment.bottomRight,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 40,
-                                    backgroundImage:
-                                       reciever!.image.isEmpty
-                                            ? AssetImage(
-                                              "assets/images/noProfile.png",
-                                            )
-                                            : NetworkImage(
-                                          reciever.image,
-                                            ),
-                                  ),
-                                  CircleAvatar(
-                                    backgroundColor:
-                                    reciever.isOnline
-                                            ? Colors.green
-                                            : Colors.red,
-                                    radius: 10,
-                                  ),
-                                ],
-                              ),
+                            Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                CircleAvatar(
+                                  radius: 40,
+                                  backgroundImage:
+                                     reciever!.image.isEmpty
+                                          ? AssetImage(
+                                            "assets/images/noProfile.png",
+                                          )
+                                          : NetworkImage(
+                                        reciever.image,
+                                          ),
+                                ),
+                                CircleAvatar(
+                                  backgroundColor:
+                                  reciever.isOnline
+                                          ? Colors.green
+                                          : Colors.red,
+                                  radius: 10,
+                                ),
+                              ],
                             ),
                             SizedBox(height: 15),
                             Column(

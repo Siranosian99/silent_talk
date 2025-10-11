@@ -3,11 +3,13 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/utils/contact/add_contact.dart';
 import 'package:silent_talk/utils/file_saver/file_service.dart';
 
+import '../screens/text_viewer.dart';
 import '../service/authenticator/authenticator.dart';
 import '../utils/contact/send_contact.dart';
 import '../utils/file_picker/file_picker.dart';
@@ -31,7 +33,7 @@ class MessageList extends StatelessWidget {
     return ListView.builder(
       itemBuilder:
           (context, index) => GestureDetector(
-            onTap: ()  {
+            onTap: () async {
               final msg = messages[index]['message'];
               if (msg.contains("https://res.cloudinary.com")) {
                 // String fileName,String urlPath, Uint8List bytes
@@ -46,8 +48,21 @@ class MessageList extends StatelessWidget {
                   msg.contains('.pdf') ||
                   msg.contains('.doc') ||
                   msg.contains('.docx')) {
-                // await readFileContent(messages[index]['message']);
+                final file=await readFileContent(messages[index]['message']);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FileViewer(filePath:file),
+                  ),
+                );
                     print(messages[index]['message']);
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: SelectableText(
+                     await readFileContent(messages[index]['message']).toString(),
+                    style: const TextStyle(fontSize: 16, fontFamily: 'monospace'),
+                  ),
+                );
               }
             },
             onLongPress: () {
@@ -69,35 +84,49 @@ class MessageList extends StatelessWidget {
                           messages[index]['message'].contains('.pdf') ||
                           messages[index]['message'].contains('.doc') ||
                           messages[index]['message'].contains('.docx'))
-                      ? ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          width: 240,
-                          height: 90,
-                          color: Colors.lightBlue,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Image.asset(
-                                'assets/icons/document.png',
-                                scale: 15,
-                              ),
-                              Text('${  messages[index]['message'].split('/').last
-                                  }'),
-                            ],
+                      ? Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            width: 240,
+                            height: 90,
+                            color:Color(0xFFFFA726)  ,// #2196F3 – bright, modern blue
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Image.asset(
+                                  'assets/icons/document.png',
+                                  scale: 15,
+                                ),
+                                Text(
+                                  messages[index]['message'].split('/').last,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.indigoAccent,
+                                    letterSpacing: 0.5,
+                                  ),
+                                )
+                                ,
+                              ],
+                            ),
                           ),
                         ),
                       )
                       : messages[index]['message'].contains(
                         "https://res.cloudinary.com",
                       )
-                      ? ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          messages[index]['message'],
-                          fit: BoxFit.cover,
-                          width: 250,
-                          height: 250,
+                      ? Padding(
+                    padding: const EdgeInsets.only(top: 12,bottom: 12 ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.network(
+                            messages[index]['message'],
+                            fit: BoxFit.cover,
+                            width: 250,
+                            height: 250,
+                          ),
                         ),
                       )
                       : messages[index]['message'].contains("Name:")
