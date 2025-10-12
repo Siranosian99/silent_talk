@@ -1,0 +1,4 @@
+1-Download text files
+2-Show text files
+3-open other type documents
+4-send location

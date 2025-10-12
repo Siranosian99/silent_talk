@@ -16,6 +16,7 @@ import 'package:silent_talk/utils/localization/local_provider.dart';
 import 'package:silent_talk/utils/themes/theme_data.dart';
 import 'package:silent_talk/utils/themes/theme_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
@@ -35,7 +36,10 @@ void main() async {
     ),
   );
   NotificationHandler.initialize();
-
+  await Supabase.initialize(
+    url: 'https://qvcdgtjxkmmtmklgffyk.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2Y2RndGp4a21tdG1rbGdmZnlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMTA4ODcsImV4cCI6MjA3NTc4Njg4N30.5AyA6GGTPWCmvFtVsdvdnVXy_4m_xfxq6F8Sdz9uAtI',
+  );
   runApp(
     MultiProvider(
       providers: [

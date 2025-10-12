@@ -44,10 +44,10 @@ void showCustomBottomSheet(BuildContext context,int index,String id,{String? fil
               _buildOption(Icons.insert_drive_file, 'Document', () {
                 pickDocumentFile(context,id);
               }),
-              _buildOption(Icons.event, 'Event', () {}),
-              _buildOption(Icons.poll, 'Poll', () {}),
+              // _buildOption(Icons.event, 'Event', () {}),
+              // _buildOption(Icons.poll, 'Poll', () {}),
               _buildOption(FontAwesomeIcons.spotify, 'Spotify', () {}),
-              _buildOption(Icons.share, 'Share', () {}),
+              // _buildOption(Icons.share, 'Share', () {}),
             ],
           ),
         ),

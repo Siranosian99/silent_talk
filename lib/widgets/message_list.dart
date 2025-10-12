@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/utils/contact/add_contact.dart';
+import 'package:silent_talk/utils/file_picker/documents.dart';
 import 'package:silent_talk/utils/file_saver/file_service.dart';
 
 import '../screens/text_viewer.dart';
@@ -47,14 +48,7 @@ class MessageList extends StatelessWidget {
               } else if (msg.contains('.txt') ||
                   msg.contains('.pdf') ||
                   msg.contains('.doc') ||
-                  msg.contains('.docx')) {
-                final file=await readFileContent(messages[index]['message']);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => FileViewer(filePath:file),
-                  ),
-                );
+                  msg.contains('.docx')) {DocumentsUtilty().downloadDocument(msg.split('/').last);
                     print(messages[index]['message']);
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
