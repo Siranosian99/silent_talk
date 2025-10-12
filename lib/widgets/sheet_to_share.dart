@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/utils/location/location_select.dart';
 
 import '../utils/file_picker/file_picker.dart';
 import '../utils/image_picker/image_picker.dart';
@@ -31,7 +32,9 @@ void showCustomBottomSheet(BuildContext context,int index,String id,{String? fil
                 picker.cameraPicker();
                 Navigator.pop(context);
               }),
-              _buildOption(Icons.location_on, 'Location', () {}),
+              _buildOption(Icons.location_on, 'Location', ()async {
+              await  LocationUtilty().getLocation();
+              }),
               _buildOption(Icons.contacts, 'Contact', () {
                 context.pushNamed(
                   'contact',

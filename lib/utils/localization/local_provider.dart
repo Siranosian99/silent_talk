@@ -11,7 +11,7 @@ class LocaleProvider extends ChangeNotifier {
 
   void setLocale(Locale locale) {
     _locale = locale;
-    box.get('lg', defaultValue: 'en');
+    box.put('lg',locale.languageCode);
     notifyListeners();
   }
 

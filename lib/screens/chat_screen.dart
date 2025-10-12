@@ -16,6 +16,7 @@ import 'package:silent_talk/service/notification/message_detecter.dart';
 import 'package:silent_talk/service/notification/notification_shower.dart';
 import 'package:silent_talk/service/users/users_service.dart';
 import 'package:silent_talk/utils/contact/send_contact.dart';
+import 'package:silent_talk/utils/last_seen/last_seen_provider.dart';
 import 'package:silent_talk/utils/time_format/time_convertor.dart';
 
 import '../service/ids/get_userIds.dart';
@@ -147,6 +148,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<Picker>(context);
+    final lastProvider = Provider.of<LastSeenProvider>(context);
     final reciever=getReceiver();
     return Scaffold(
       body:
@@ -203,7 +205,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   ),
                                 ),
                                 Text(
-                                  reciever.lastSeen,
+                                  lastProvider.isSeen?  reciever.lastSeen: "--------",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color:

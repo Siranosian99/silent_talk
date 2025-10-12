@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/utils/biometric/auth.dart';
+import 'package:silent_talk/utils/last_seen/last_seen_provider.dart';
 import '../l10n/app_localizations.dart';
 import '../service/authenticator/authenticator.dart';
 import '../service/users/users_service.dart';
@@ -45,6 +46,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final authProvider = Provider.of<AuthenticateProvider>(context);
+    final lastProvider = Provider.of<LastSeenProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
@@ -161,10 +163,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   //   trailing: Switch(value: false, onChanged: null),
                   // ),
                   SettingsListtile(
-                    leading: const Icon(Icons.visibility),
+                    leading: lastProvider.isSeen ? Icon(Icons.visibility):Icon(Icons.visibility_off),
                     title: Text(AppLocalizations.of(context)!.lastSeen),
-                    subtitle: const Text('Everyone'),
-                    onTap: () {},
+                    trailing: Switch(value: lastProvider.isSeen, onChanged: (value)=> lastProvider.lastSeenSwitch()),
+
                   ),
 
                   // Section: General

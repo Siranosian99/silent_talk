@@ -12,6 +12,7 @@ import 'package:silent_talk/service/notification/notification_shower.dart';
 import 'package:silent_talk/themes/app_themes.dart';
 import 'package:silent_talk/utils/biometric/auth_provider.dart';
 import 'package:silent_talk/utils/image_picker/image_picker.dart';
+import 'package:silent_talk/utils/last_seen/last_seen_provider.dart';
 import 'package:silent_talk/utils/localization/local_provider.dart';
 import 'package:silent_talk/utils/themes/theme_data.dart';
 import 'package:silent_talk/utils/themes/theme_provider.dart';
@@ -25,6 +26,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('themes');
   await Hive.openBox('auth');
+  await Hive.openBox('lastSeen');
   await Hive.openBox('lg');
   await Firebase.initializeApp(
     options: const FirebaseOptions(
@@ -47,6 +49,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => Picker()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => AuthenticateProvider()),
+        ChangeNotifierProvider(create: (_) => LastSeenProvider()),
       ],
       child: const MyApp(),
     ),

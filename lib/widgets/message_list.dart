@@ -42,13 +42,13 @@ class MessageList extends StatelessWidget {
                   utf8.encode(messages[index]['message']),
                 );
 
-                FileSaver.saveNetworkImage(messages[index]['message']);
+                Filer.saveNetworkImage(messages[index]['message']);
                 // FileSaver.downloadAndSave(messages[index]['message'], 'file1');
                 print(messages[index]['message']);
               } else if (msg.contains('.txt') ||
                   msg.contains('.pdf') ||
                   msg.contains('.doc') ||
-                  msg.contains('.docx')) {DocumentsUtilty().downloadDocument(msg.split('/').last);
+                  msg.contains('.docx')) {DocumentsUtilty().saveFromLink(messages[index]['message'],msg.split('/').last);
                     print(messages[index]['message']);
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(16),

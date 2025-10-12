@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
-class FileSaver {
+class Filer {
   /// Get the app's documents directory (internal storage)
   static Future<String> get _localPath async {
     final directory = await getTemporaryDirectory();
@@ -122,7 +122,7 @@ class FileSaver {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         Uint8List bytes = response.bodyBytes; // actual file bytes
-        await FileSaver.saveToExternal(fileName, bytes);
+        await Filer.saveToExternal(fileName, bytes);
         print("✅ File saved: $fileName");
       } else {
         print("❌ Failed to download file: ${response.statusCode}");

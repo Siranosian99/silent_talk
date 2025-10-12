@@ -1,4 +1,5 @@
-1-Download text files
-2-Show text files
-3-open other type documents
-4-send location
+1-Show text files
+2-open other type documents
+3-send location
+4-image clear after upload
+5-didnt send to cloudinary before press ok
