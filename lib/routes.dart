@@ -18,6 +18,8 @@ import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/notification/notification_shower.dart';
 import 'package:silent_talk/utils/biometric/auth.dart';
 import 'package:silent_talk/utils/biometric/auth_provider.dart';
+import 'package:silent_talk/utils/location/map_layer.dart';
+import 'package:silent_talk/utils/location/ss.dart';
 import 'package:silent_talk/widgets/contact_shower_sheet.dart';
 
 import 'global_key.dart';
@@ -161,5 +163,11 @@ final GoRouter router = GoRouter(
       name: 'updateUserName',
       builder: (context, state) => UpdateUserNameScreen(),
     ),
+    GoRoute(
+      path: '/mapLayer',
+      name: 'mapLayer',
+      builder: (context, state) => SelectLocation(),
+    ),
+
   ],
 );

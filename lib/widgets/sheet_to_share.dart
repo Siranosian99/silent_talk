@@ -34,7 +34,9 @@ void showCustomBottomSheet(BuildContext context,int index,String id,{String? fil
               }),
               _buildOption(Icons.location_on, 'Location', ()async {
               await  sendLocation(id);
-
+              context.pushNamed(
+                'mapLayer',
+              );
               }),
               _buildOption(Icons.contacts, 'Contact', () {
                 context.pushNamed(
