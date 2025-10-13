@@ -33,7 +33,8 @@ void showCustomBottomSheet(BuildContext context,int index,String id,{String? fil
                 Navigator.pop(context);
               }),
               _buildOption(Icons.location_on, 'Location', ()async {
-              await  LocationUtilty().getLocation();
+              await  sendLocation(id);
+
               }),
               _buildOption(Icons.contacts, 'Contact', () {
                 context.pushNamed(
