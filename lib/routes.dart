@@ -166,7 +166,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/mapLayer',
       name: 'mapLayer',
-      builder: (context, state) => SelectLocation(),
+      builder: (context, state) => MapSample(),
     ),
 
   ],

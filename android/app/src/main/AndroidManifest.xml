@@ -22,7 +22,8 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
-
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA7Hi82BXzseAJZAlfLgxE5VGYCs-rV924"/>
         <!-- File provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
