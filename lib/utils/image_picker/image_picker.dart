@@ -25,11 +25,11 @@ class Picker with ChangeNotifier{
         imgPath=response.secureUrl;
         imgPath!.isNotEmpty ?isImage=true: isImage=false;
         print(isImage);
-        notifyListeners();
         print('Uploaded image URL: ${response.secureUrl}');
         return imgPath; // Return the Cloudinary link
 
       }
+      notifyListeners();
     } catch (e) {
       print('Error uploading image: $e');
     }

@@ -24,7 +24,9 @@ Future<void> showImageSourceDialog(BuildContext context) async {
                 onTap: () async {
                   final result =await picker.cameraPicker();
                   if (result != null) {
-                    await Authenticator().updateProilePhoto(result);
+                    await Authenticator().updateProilePhoto(result).then((_){
+                      picker.clearImage();
+                    });
                     Navigator.pop(context);
                   }
 
@@ -36,7 +38,9 @@ Future<void> showImageSourceDialog(BuildContext context) async {
                 onTap: () async {
                   final result = await picker.galleryPicker();
                   if (result != null) {
-                    await Authenticator().updateProilePhoto(result);
+                    await Authenticator().updateProilePhoto(result).then((_){
+                      picker.clearImage();
+                    });
                     Navigator.pop(context);
                   }
                 },

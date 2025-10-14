@@ -107,15 +107,13 @@ class Authenticator {
           .update({'lastPasswordReset': FieldValue.serverTimestamp()});
     }
   }
-  Future <void> updateProilePhoto(String image)async{
+  Future <void> updateProilePhoto(String image)async {
     if (user != null) {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user?.uid)
-          .update({'image':image});
-      print("UPDATE Finished");
+          .update({'image': image});
     }
-    print("UPDATE Finished");
   }
   Future<void> updateEmail(String email) async {
     try {

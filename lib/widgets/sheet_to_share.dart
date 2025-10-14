@@ -8,7 +8,12 @@ import '../utils/file_picker/file_picker.dart';
 import '../utils/image_picker/image_picker.dart';
 import 'contact_shower_sheet.dart';
 
-void showCustomBottomSheet(BuildContext context,int index,String id,{String? fileName}) {
+void showCustomBottomSheet(
+  BuildContext context,
+  int index,
+  String id, {
+  String? fileName,
+}) {
   final picker = Provider.of<Picker>(context, listen: false);
   showModalBottomSheet(
     context: context,
@@ -24,32 +29,24 @@ void showCustomBottomSheet(BuildContext context,int index,String id,{String? fil
             runSpacing: 24,
             children: [
               _buildOption(Icons.photo, 'Photo', () {
-                 picker.galleryPicker();
-                 Navigator.pop(context);
-
+                picker.galleryPicker();
+                Navigator.pop(context);
               }),
               _buildOption(Icons.camera_alt, 'Camera', () {
                 picker.cameraPicker();
                 Navigator.pop(context);
               }),
-              _buildOption(Icons.location_on, 'Location', ()async {
-              // await  sendLocation(id);
-
-             await context.pushNamed(
-                'mapLayer',
-              );
+              _buildOption(Icons.location_on, 'Location', () async {
+                await sendLocation(id, context);
               }),
               _buildOption(Icons.contacts, 'Contact', () {
                 context.pushNamed(
                   'contact',
-                  extra: {
-                    "id":id,
-                    "index":index
-                  }, // Passing index here
+                  extra: {"id": id, "index": index}, // Passing index here
                 );
               }),
               _buildOption(Icons.insert_drive_file, 'Document', () {
-                pickDocumentFile(context,id);
+                pickDocumentFile(context, id);
               }),
               // _buildOption(Icons.event, 'Event', () {}),
               // _buildOption(Icons.poll, 'Poll', () {}),

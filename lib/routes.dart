@@ -166,7 +166,14 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/mapLayer',
       name: 'mapLayer',
-      builder: (context, state) => MapSample(),
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        final latitude = data['latitude'] as double;
+        final longitude = data['longitude'] as double;
+        final receiverId = data['receiverId'] as String;
+
+        return MapSample(latitude: latitude, longitude: longitude,receiverId: receiverId,);
+      },
     ),
 
   ],

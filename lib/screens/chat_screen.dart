@@ -345,6 +345,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   reciever.id,
                                 );
                                 messageController.clear();
+                                _picker.clearImage();
                               },
                             ),
                           ],

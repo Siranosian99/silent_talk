@@ -3,12 +3,14 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/utils/contact/add_contact.dart';
 import 'package:silent_talk/utils/file_picker/documents.dart';
 import 'package:silent_talk/utils/file_saver/file_service.dart';
+import 'package:silent_talk/widgets/map_bubble.dart';
 
 import '../screens/text_viewer.dart';
 import '../service/authenticator/authenticator.dart';
@@ -36,6 +38,8 @@ class MessageList extends StatelessWidget {
           (context, index) => GestureDetector(
             onTap: () async {
               final msg = messages[index]['message'];
+              final coords = msg.split("q=").last;
+              final parts = coords.split(",");
               if (msg.contains("https://res.cloudinary.com")) {
                 // String fileName,String urlPath, Uint8List bytes
                 Uint8List bytes = Uint8List.fromList(
@@ -48,14 +52,25 @@ class MessageList extends StatelessWidget {
               } else if (msg.contains('.txt') ||
                   msg.contains('.pdf') ||
                   msg.contains('.doc') ||
-                  msg.contains('.docx')) {DocumentsUtilty().saveFromLink(messages[index]['message'],msg.split('/').last);
-                    print(messages[index]['message']);
+                  msg.contains('.docx')) {
+                DocumentsUtilty().saveFromLink(messages[index]['message'],msg.split('/').last
+              );
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: SelectableText(
                      await readFileContent(messages[index]['message']).toString(),
                     style: const TextStyle(fontSize: 16, fontFamily: 'monospace'),
                   ),
+                );
+              }
+              else if (msg.contains("https://www.google.com/maps?q")){
+                await context.pushNamed(
+                  'mapLayer',
+                  extra: {
+                    'latitude': double.parse(parts[0].trim()),
+                    'longitude': double.parse(parts[1].trim()),
+                    "receiverId": 'adf',
+                  },
                 );
               }
             },
@@ -73,7 +88,12 @@ class MessageList extends StatelessWidget {
                       : Alignment.topLeft,
 
               //here checkin///
-              child:
+              child:messages[index]['message'].contains(
+                "https://www.google.com/maps?q",
+              )?Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MapPreview(url: messages[index]['message'],),
+              ):
                   (messages[index]['message'].contains('.txt') ||
                           messages[index]['message'].contains('.pdf') ||
                           messages[index]['message'].contains('.doc') ||
@@ -93,13 +113,17 @@ class MessageList extends StatelessWidget {
                                   'assets/icons/document.png',
                                   scale: 15,
                                 ),
-                                Text(
-                                  messages[index]['message'].split('/').last,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.indigoAccent,
-                                    letterSpacing: 0.5,
+                                Expanded(
+                                  child: Text(
+                                    messages[index]['message'].split('/').last,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.clip,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.indigoAccent,
+                                      letterSpacing: 0.5,
+                                    ),
                                   ),
                                 )
                                 ,

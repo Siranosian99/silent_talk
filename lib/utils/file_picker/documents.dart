@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 class DocumentsUtilty {
   final supabase = Supabase.instance.client;
 
@@ -47,21 +49,28 @@ class DocumentsUtilty {
 
   Future<void> saveFromLink(String url, String fileName) async {
     try {
-      final savedPath = await FileSaver().saveAs(
-        name: fileName,
-        link: LinkDetails(
-          link: url,                // your file URL// optional headers if needed
-        ),
-        fileExtension: fileName.split('.').last,
-        mimeType: MimeType.other,
-      );
+      final savedPath = await FileSaver()
+          .saveAs(
+            name: fileName,
+            link: LinkDetails(
+              link: url, // your file URL// optional headers if needed
+            ),
+            fileExtension: fileName.split('.').last,
+            mimeType: MimeType.other,
+          )
+          .then((_) {
+            launchUrl(
+              Uri.parse(
+                "https://docs.google.com/gview?embedded=true&url=url",
+              ),
+            );
+          });
 
       print('✅ File saved at: $savedPath');
     } catch (e) {
       print('❌ Error saving file: $e');
     }
   }
-
 }
 
 //

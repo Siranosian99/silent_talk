@@ -12,6 +12,7 @@ class MessageService {
 
   Future<void> sendMessage(String message, String uId1, String uId2) async {
     try {
+
       CollectionReference messages = FirebaseFirestore.instance
           .collection("chats")
           .doc(getChatId(uId1, uId2))
