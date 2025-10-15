@@ -1,5 +1,6 @@
 class Users {
   String id;
+  String deviceId;
   String image;
   String userName;
   String name;
@@ -12,6 +13,7 @@ class Users {
 
   Users({
     required this.id,
+    required this.deviceId,
     required this.image,
     required this.name,
     required this.userName,
@@ -26,6 +28,7 @@ class Users {
   Map toMap(Users user){
     var data = Map<String, dynamic>();
     data['id']=user.id;
+    data['deviceId']=user.deviceId;
     data['image']=user.image;
     data['userName']=user.userName;
     data['name'] = user.name;

@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/notification/get_token.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../utils/time_format/time_convertor.dart';
 import '../ids/get_userIds.dart';
@@ -11,7 +12,7 @@ import '../model/user_model.dart';
 
 class Authenticator {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-   final user = FirebaseAuth.instance.currentUser;
+  final user = FirebaseAuth.instance.currentUser;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseAuth auth = FirebaseAuth.instance;
   CollectionReference users = firestore.collection('users');
@@ -28,10 +29,11 @@ class Authenticator {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       String uid = userCredential.user!.uid;
-      String utoken=await GetToken.getToken();
-
+      String utoken = await GetToken.getToken();
+      final deviceId = Uuid().v4();
       Users userInfo = Users(
         id: uid,
+        deviceId:deviceId ,
         image: image,
         name: name,
         userName: userName,
@@ -72,7 +74,6 @@ class Authenticator {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      // Check if the user's email is verified
       if (!userCredential.user!.emailVerified) {
         ScaffoldMessenger.of(
           ctx,
@@ -81,12 +82,21 @@ class Authenticator {
       } else {
         ctx.goNamed('people');
         print('Login successful!');
-        String utoken=await GetToken.getToken();
+        String utoken = await GetToken.getToken();
+        final deviceId = Uuid().v4();
         final user = FirebaseAuth.instance.currentUser;
+        final docRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user?.uid);
+        final snapshot = await docRef.get();
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user?.uid)
-            .update({'token': utoken});
+            .set({'token': utoken,'deviceId':deviceId,},SetOptions(merge: true));
+        final currentDeviceId = snapshot.data()?['deviceId'];
+        if(currentDeviceId != deviceId ){
+          FirebaseAuth.instance.signOut();
+        }
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -107,7 +117,8 @@ class Authenticator {
           .update({'lastPasswordReset': FieldValue.serverTimestamp()});
     }
   }
-  Future <void> updateProilePhoto(String image)async {
+
+  Future<void> updateProilePhoto(String image) async {
     if (user != null) {
       await FirebaseFirestore.instance
           .collection('users')
@@ -115,11 +126,14 @@ class Authenticator {
           .update({'image': image});
     }
   }
+
   Future<void> updateEmail(String email) async {
     try {
       await user?.verifyBeforeUpdateEmail(email);
       await user?.reload();
-      print('📨 Verification email sent to $email. Email will update after verification.');
+      print(
+        '📨 Verification email sent to $email. Email will update after verification.',
+      );
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user?.uid)
@@ -134,25 +148,23 @@ class Authenticator {
       }
     }
 
-
-
     // if (user != null) {
     //   await FirebaseFirestore.instance
     //       .collection('users')
     //       .doc(user?.uid)
     //       .update({'email':email});
     // }
-
   }
-  Future<void> updateUserName(String userName) async {
 
+  Future<void> updateUserName(String userName) async {
     if (user != null) {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user?.uid)
-          .update({'userName':userName});
+          .update({'userName': userName});
     }
   }
+
   // Future<void> fuckingPassword(String txt) async {
   //
   //   if (user != null) {
@@ -205,7 +217,6 @@ class Authenticator {
   }
 
   Future<void> deleteAccount() async {
-
     try {
       final uid = user?.uid;
 
@@ -234,6 +245,23 @@ class Authenticator {
     }
   }
 
+  Future<void> anotherDeviceLogin(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uid);
+    final snapshot = await docRef.get();
+    final deviceId = Uuid().v4();
+    if (snapshot.exists) {
+      final currentDeviceId = snapshot.data()?['deviceId'];
+      if(deviceId != currentDeviceId ){
+        FirebaseAuth.instance.signOut();
+      }
 
+      print('User token: $deviceId');
+    } else {
+      print('No such document!');
+    }
 
+  }
 }

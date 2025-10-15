@@ -26,6 +26,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('themes');
   await Hive.openBox('auth');
+  await Hive.openBox('localBox');
   await Hive.openBox('lastSeen');
   await Hive.openBox('lg');
   await Firebase.initializeApp(

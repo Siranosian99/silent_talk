@@ -45,6 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                    TextButton(onPressed: ()async{
                     savePhoto();
+
                    }, child: Text(photoLink == null?AppLocalizations.of(context)!.addPhoto:''))
                   ],
                 )

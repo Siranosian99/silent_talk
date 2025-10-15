@@ -22,6 +22,7 @@ class UsersService {
       doc.id != currentUserId) // hide current user
           .map((doc) {
         return Users(
+            deviceId: doc['deviceId'],
             lastSeen:doc['lastSeen'],
             id: doc['id'],
             name: doc['name'],
