@@ -18,18 +18,19 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final Authenticator auth= Authenticator();
   String? photoLink;
+  String? photoServer;
   final TextEditingController _nameController=TextEditingController();
   final TextEditingController _userNameController=TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final  picker=Picker();
-  // Future<String?> savePhoto()async{
-  //  final link=await picker.galleryPicker();
-  //     setState(() {
-  //       photoLink=link;
-  //     });
-  //     return link;
-  // }
+  Future<String?> savePhoto()async{
+   final link=await picker.galleryPicker();
+      setState(() {
+        photoLink=link;
+      });
+      return link;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,16 +44,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // App Titlep
               CircleAvatar(
                 radius: 60,
-                backgroundImage: photoLink!=null?FileImage(File(photoLink!)):AssetImage('assets/images/noProfile.png'),
+                backgroundImage: photoLink !=null?FileImage(File(photoLink!)):AssetImage('assets/images/noProfile.png'),
                 child: Stack(
                   children: [
-                   TextButton(onPressed: ()async{
-
-                    await   picker.galleryPicker();
-                    setState(() {
-                      photoLink=picker.pickedImage?.path;
-                      photoLink;
-                    });
+                   TextButton(onPressed: (){
+                     setState(() {
+                      savePhoto();
+                     });
                    }, child: Text(photoLink == null?AppLocalizations.of(context)!.addPhoto:''))
                   ],
                 )
@@ -97,8 +95,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // Login Button
               ElevatedButton(
                 onPressed: () async{
-                  if(picker.pickedImage?.path != null){
-                    await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,picker.pickedImage?.path ?? '');
+                  if(photoLink != null){
+                    photoServer=await picker.imgUploaderToServer(photoLink.toString());
+                    await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,photoServer ?? '');
                   }
                   else {
                     return;

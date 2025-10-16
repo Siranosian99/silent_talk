@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/notification/get_token.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../utils/image_picker/image_picker.dart';
 import '../../utils/time_format/time_convertor.dart';
 import '../ids/get_userIds.dart';
 import '../model/user_model.dart';

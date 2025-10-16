@@ -14,35 +14,33 @@ class Picker with ChangeNotifier{
 
   Future<String?> galleryPicker() async {
     try {
-       pickedImage = await picker.pickImage(source: ImageSource.gallery);
-       print("-=-=-=--=-=-=-=--=${pickedImage?.path}");
-      if (pickedImage != null && isPressed) {
-        imgUploaderToServer(pickedImage!.path);
-        print("Uploaded to Server ${pickedImage?.path}");
-       //  imgPath=pickedImage?.path;
-       // if(isPressed){
-       //   CloudinaryResponse response = await cloudinary.uploadFile(
-       //     CloudinaryFile.fromFile(
-       //       imgPath ?? '',
-       //       resourceType: CloudinaryResourceType.Image,
-       //     ),
-       //   );
-       //   print('Uploaded image URL: ${response.secureUrl}');
-       //   imgPath=response.secureUrl;
-       // }
-        imgPath!.isNotEmpty ?isImage=true: isImage=false;
-        print(isImage);
+      pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
-        return pickedImage?.path; // Return the Cloudinary link
-
-      }
+      // if (pickedImage != null && isPressed) {
+      //   imgUploaderToServer(pickedImage!.path);
+      //   print("Uploaded to Server ${pickedImage?.path}");
+      // imgPath = pickedImage?.path;
+      // CloudinaryResponse response = await cloudinary.uploadFile(
+      //   CloudinaryFile.fromFile(
+      //     imgPath ?? '',
+      //     resourceType: CloudinaryResourceType.Image,
+      //   ),
+      // );
+      // print('Uploaded image URL: ${response.secureUrl}');
+      // imgPath = response.secureUrl;
+      imgPath = pickedImage?.path;
       notifyListeners();
+      imgPath!.isNotEmpty ? isImage = true : isImage = false;
+      print(isImage);
+      print("------------------------IMAGE PATH:$imgPath");
+      return imgPath; // Return the Cloudinary link
+
     } catch (e) {
       print('Error uploading image: $e');
     }
     return null; // No image picked or upload failed
   }
-  Future<void> imgUploaderToServer(String imgPath)async{
+  Future<String?> imgUploaderToServer(String imgPath)async{
     CloudinaryResponse response = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(
           imgPath ?? '',
@@ -50,6 +48,9 @@ class Picker with ChangeNotifier{
         )
     );
     imgPath=response.secureUrl;
+    return imgPath;
+    print('================Succses');
+    print('Uploaded image URL: ${response.secureUrl}');
     print('================Succses');
 
   }
