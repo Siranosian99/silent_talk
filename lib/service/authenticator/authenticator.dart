@@ -34,7 +34,7 @@ class Authenticator {
       final deviceId = Uuid().v4();
       Users userInfo = Users(
         id: uid,
-        deviceId:deviceId ,
+        deviceId: deviceId,
         image: image,
         name: name,
         userName: userName,
@@ -84,22 +84,21 @@ class Authenticator {
         ctx.goNamed('people');
         print('Login successful!');
         String utoken = await GetToken.getToken();
-        // anotherDeviceLogin(ctx);
+
         final deviceId = Uuid().v4();
         final user = FirebaseAuth.instance.currentUser;
         final docRef = FirebaseFirestore.instance
             .collection('users')
             .doc(user?.uid);
         final snapshot = await docRef.get();
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user?.uid)
-            // 'token': utoken
-            .set({'deviceId':deviceId,},SetOptions(merge: true));
-        final currentDeviceId = snapshot.data()?['deviceId'];
-        if(currentDeviceId != deviceId ){
-          FirebaseAuth.instance.signOut();
-        }
+        await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
+          {'token': utoken, 'deviceId': deviceId},
+          SetOptions(merge: true),
+        );
+        // final currentDeviceId = snapshot.data()?['deviceId'];
+        // if (currentDeviceId != deviceId) {
+        //   FirebaseAuth.instance.signOut();
+        // }
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -248,7 +247,6 @@ class Authenticator {
     }
   }
 
-
   void anotherDeviceLoginListener(BuildContext context) async {
     if (user == null) return;
 
@@ -262,46 +260,45 @@ class Authenticator {
         .doc(user?.uid)
         .snapshots()
         .listen((snapshot) async {
-      if (!snapshot.exists) return;
+          if (!snapshot.exists) return;
 
-      final currentDeviceToken = snapshot.data()?['token'];
+          final currentDeviceToken = snapshot.data()?['token'];
 
-      print('-----------------------------------------');
-      print('User token: $token  currentToken: $currentDeviceToken');
-      print('-----------------------------------------');
+          print('-----------------------------------------');
+          print('User token: $token  currentToken: $currentDeviceToken');
+          print('-----------------------------------------');
 
-      // If token in Firestore is different, logout
-      if (token != currentDeviceToken) {
-        await FirebaseAuth.instance.signOut();
-        if (context.mounted) {
-          context.goNamed('login');
-        }
-        print('🚪 Logged out because another device logged in.');
-      }
-    });
+          // If token in Firestore is different, logout
+          if (token != currentDeviceToken) {
+            await FirebaseAuth.instance.signOut();
+            if (context.mounted) {
+              context.goNamed('login');
+            }
+            print('🚪 Logged out because another device logged in.');
+          }
+        });
   }
 
-  void listenForAnotherDeviceLogin(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .snapshots()
-        .listen((snapshot) async {
-      if (!snapshot.exists) return;
-
-      final remoteToken = snapshot.data()?['token'];
-      final localToken = await GetToken.getToken();
-
-      if (remoteToken != localToken) {
-        await FirebaseAuth.instance.signOut();
-        if (context.mounted) {
-          context.goNamed('login');
-        }
-      }
-    });
-  }
-
+  // void listenForAnotherDeviceLogin(BuildContext context) {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   if (user == null) return;
+  //
+  //   FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(user.uid)
+  //       .snapshots()
+  //       .listen((snapshot) async {
+  //         if (!snapshot.exists) return;
+  //
+  //         final remoteToken = snapshot.data()?['token'];
+  //         final localToken = await GetToken.getToken();
+  //
+  //         if (remoteToken != localToken) {
+  //           await FirebaseAuth.instance.signOut();
+  //           if (context.mounted) {
+  //             context.goNamed('login');
+  //           }
+  //         }
+  //       });
+  // }
 }

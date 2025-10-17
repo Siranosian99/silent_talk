@@ -1,2 +1,1 @@
-1-documents save in with chat ids
-2-search bar
+1-logic of users accept to Talk

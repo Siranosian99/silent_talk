@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
-import 'package:silent_talk/service/notification/get_token.dart';
-import 'package:silent_talk/service/notification/notification_helper.dart';
-import 'package:silent_talk/service/notification/notification_shower.dart';
+
 import 'package:silent_talk/service/users/users_service.dart';
 
 import '../l10n/app_localizations.dart';
 import '../service/model/user_model.dart';
-import '../tsesgty.dart';
-import '../utils/biometric/auth.dart';
-import '../widgets/chats_gridView.dart';
+
 import '../widgets/chats_searchBar.dart';
 
 class PeopleScreen extends StatefulWidget {
@@ -20,46 +15,99 @@ class PeopleScreen extends StatefulWidget {
 }
 
 class _PeopleScreenState extends State<PeopleScreen> {
-  // late List<Users> users=[];
-  // UsersService _usersService=UsersService();
-  // Future<void> callUsers()async{
-  //   users=await _usersService.fetchAllUsers();
-  // }
-  @override
-  void didChangeDependencies() {
-    // callUsers();
-    super.didChangeDependencies();
+  final TextEditingController searchController = TextEditingController();
+
+
+  late List<Users> users = [];
+  final UsersService _usersService = UsersService();
+
+  Future<void> callUsers(String query) async {
+    users = await _usersService.fetchAllUsers(query) ?? [];
+    setState(() {
+      users;
+    });
   }
+
+  @override
+  void initState() {
+    callUsers('');
+    super.initState();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text( AppLocalizations.of(context)!.chats),
+        title: Text(AppLocalizations.of(context)!.chats),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: (){
-            context.pushNamed('settings');
-          }, icon: Icon(Icons.settings))
+          IconButton(
+            onPressed: () {
+              context.pushNamed('settings');
+            },
+            icon: Icon(Icons.settings),
+          ),
         ],
       ),
       body: Column(
         children: [
           // Search bar
-          ChatSearchBar(controller:TextEditingController(), onChanged:(value){
-            value = 'Esref Tek';
-          }),
-          SizedBox(height: 20,),
+          ChatSearchBar(
+            controller: searchController,
+            onChanged: (value) {
+            callUsers(value);
+            },
+          ),
+          SizedBox(height: 20),
           // Grid of users
           Expanded(
-            child: ChatsGridView(),
+            child: GridView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: users.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.75,
+              ),
+              itemBuilder: (context, index) {
+                final user = users[index];
+                return Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        GoRouter.of(context).pushNamed(
+                          'chat',
+                          extra: {
+                            'id': user.id,
+                            'senderId': Authenticator.user?.uid,
+                            'receiverId': user.id,
+                          },
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 35,
+                        backgroundImage:
+                            user.image.isEmpty
+                                ? AssetImage('assets/images/noProfile.png')
+                                : NetworkImage(user.image),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      user.name,
+                      style: const TextStyle(fontSize: 14),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-
-
-

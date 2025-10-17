@@ -47,6 +47,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   TextEditingController messageController = TextEditingController();
+  TextEditingController searchController=TextEditingController();
   List<Users> _users = [];
   final Picker _picker = Picker();
   String? photoLink;
@@ -67,8 +68,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     // loadIsAuth();
-    Authenticator().anotherDeviceLoginListener(context);
-    ;
+    // Authenticator().anotherDeviceLoginListener(context);
+    // ;
     setOnlineStatus();
     super.initState();
   }
@@ -112,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   Future<void> getUsersDetails() async {
-    _users = await _usersService.fetchAllUsers();
+    _users = await _usersService.fetchAllUsers('')??[];
     // noti();
     setState(() {
       _users;

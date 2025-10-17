@@ -53,7 +53,7 @@ class _ContactScreenState extends State<ContactScreen> {
   final _ctrl = ScrollController();
 
   Future<void> getUsersDetails() async {
-    _users = await _usersService.fetchAllUsers();
+    _users = await _usersService.fetchAllUsers('') ?? [];
     setState(() {
       _users;
     });

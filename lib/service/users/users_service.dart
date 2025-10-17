@@ -10,14 +10,23 @@ class UsersService {
   );
 
 
-  Future<List<Users>> fetchAllUsers() async {
+  Future<List<Users>?> fetchAllUsers(String name) async {
     try {
       // Fetch all documents from the Category collection
-      QuerySnapshot snapshot =
-      await users.get();
+      QuerySnapshot? snapshot;
+      if(name.isEmpty){
+        snapshot=  await users.get();
+      }
+      else if(name.isNotEmpty){
+        snapshot = await users
+            .where('name', isGreaterThanOrEqualTo: name)
+            .where('name', isLessThanOrEqualTo: name + '\uf8ff')
+            .get();
+
+      }
 
       // Map each document to its data
-      return snapshot.docs.where((doc) =>
+      return snapshot?.docs.where((doc) =>
       doc.id != Authenticator.user?.uid
       ) // hide current user
           .map((doc) {
@@ -39,6 +48,8 @@ class UsersService {
       return [];
     }
   }
+
+
 
   Future<Map<String, dynamic>?> getUserData() async {
 

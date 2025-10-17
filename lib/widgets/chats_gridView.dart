@@ -19,7 +19,7 @@ class _ChatsGridViewState extends State<ChatsGridView> {
   UsersService _usersService = UsersService();
 
   Future<void> callUsers() async {
-    users = await _usersService.fetchAllUsers();
+    users = await _usersService.fetchAllUsers('') ?? [];
     setState(() {
       users;
     });
