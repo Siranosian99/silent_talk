@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../authenticator/authenticator.dart';
 import '../model/user_model.dart';
 
 class UsersService {
   CollectionReference users = FirebaseFirestore.instance.collection(
     'users',
   );
-  final user = FirebaseAuth.instance.currentUser;
 
-  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
   Future<List<Users>> fetchAllUsers() async {
     try {
@@ -19,7 +18,8 @@ class UsersService {
 
       // Map each document to its data
       return snapshot.docs.where((doc) =>
-      doc.id != currentUserId) // hide current user
+      doc.id != Authenticator.user?.uid
+      ) // hide current user
           .map((doc) {
         return Users(
             deviceId: doc['deviceId'],
@@ -41,17 +41,18 @@ class UsersService {
   }
 
   Future<Map<String, dynamic>?> getUserData() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
 
-    if (currentUser == null) return null;
+    if (Authenticator.user == null) return null;
 
     final doc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(currentUser.uid)
+        .doc(Authenticator.user?.uid)
         .get();
 
     if (!doc.exists) return null;
-
+    print('----------------------------'
+          '${doc.data()}'
+        '-----------------------');
     return doc.data(); // ✅ This gives you a Map<String, dynamic>
   }
 }

@@ -55,10 +55,13 @@ class Picker with ChangeNotifier{
 
   }
   void clearImage() {
-    imgPath = null;
-    isImage = false;
+    imgPath = '';
+    pickedImage = null;
     notifyListeners();
+    isImage = false;
+
   }
+
 
   Future<String?> cameraPicker() async {
     try {

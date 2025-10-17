@@ -13,7 +13,7 @@ import '../model/user_model.dart';
 
 class Authenticator {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final user = FirebaseAuth.instance.currentUser;
+  static final user = FirebaseAuth.instance.currentUser;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseAuth auth = FirebaseAuth.instance;
   CollectionReference users = firestore.collection('users');
@@ -246,23 +246,23 @@ class Authenticator {
     }
   }
 
-  Future<void> anotherDeviceLogin(BuildContext context) async {
-    final user = FirebaseAuth.instance.currentUser;
-    final docRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user?.uid);
-    final snapshot = await docRef.get();
-    final deviceId = Uuid().v4();
-    if (snapshot.exists) {
-      final currentDeviceId = snapshot.data()?['deviceId'];
-      if(deviceId != currentDeviceId ){
-        FirebaseAuth.instance.signOut();
-      }
-
-      print('User token: $deviceId');
-    } else {
-      print('No such document!');
-    }
-
-  }
+  // Future<void> anotherDeviceLogin(BuildContext context) async {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   final docRef = FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(user?.uid);
+  //   final snapshot = await docRef.get();
+  //   final deviceId = Uuid().v4();
+  //   if (snapshot.exists) {
+  //     final currentDeviceId = snapshot.data()?['deviceId'];
+  //     if(deviceId != currentDeviceId ){
+  //       FirebaseAuth.instance.signOut();
+  //     }
+  //
+  //     print('User token: $deviceId');
+  //   } else {
+  //     print('No such document!');
+  //   }
+  //
+  // }
 }

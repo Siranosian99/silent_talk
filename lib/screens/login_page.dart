@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                     Text( AppLocalizations.of(context)!.dntHveAccount),
                     TextButton(
                       onPressed: () {
-                        GoRouter.of(context).goNamed('signUp');
+                        context.goNamed('signUp');
                       },
                       child: Text( AppLocalizations.of(context)!.signUp),
                     ),

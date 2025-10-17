@@ -85,16 +85,20 @@ final GoRouter router = GoRouter(
       name: 'login',
       builder: (context, state) => LoginScreen(),
       redirect: (context, state) {
-        final isLoggedIn = FirebaseAuth.instance.currentUser;
+        final user= FirebaseAuth.instance.currentUser;
+        final isLoggedIn = user;
 
-        if (isLoggedIn != null) {
+        if (isLoggedIn != null && user!.emailVerified) {
           return '/people'; // user already logged in → skip login
+        }
+        else {
+          print(""
+              "verify your emailll");
         }
 
         return null; // stay on /login
       },
     ),
-
     GoRoute(
       name: 'chat',
       path: '/chat',
@@ -110,28 +114,7 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    // GoRoute(
-    //   path: '/chatScreen',
-    //   name: 'chatScreen',
-    //   builder: (context, state) {
-    //     return ChatScreen();
-    //   },
-    // ),
 
-    // GoRoute(
-    //   name: 'chatWithName',
-    //   path: '/chat/withName/:name',
-    //   builder: (context, state) {
-    //     final name = state.pathParameters['name'];
-    //     return ChatScreen(contactId: name);
-    //   },
-    // ),
-
-    // GoRoute(
-    //   path: '/chat',
-    //   name: 'chatWithoutParams',
-    //   builder: (context, state) => ChatScreen(),
-    // ),
     GoRoute(
       path: '/contact',
       name: 'contact',
@@ -178,3 +161,25 @@ final GoRouter router = GoRouter(
 
   ],
 );
+// GoRoute(
+//   path: '/chatScreen',
+//   name: 'chatScreen',
+//   builder: (context, state) {
+//     return ChatScreen();
+//   },
+// ),
+
+// GoRoute(
+//   name: 'chatWithName',
+//   path: '/chat/withName/:name',
+//   builder: (context, state) {
+//     final name = state.pathParameters['name'];
+//     return ChatScreen(contactId: name);
+//   },
+// ),
+
+// GoRoute(
+//   path: '/chat',
+//   name: 'chatWithoutParams',
+//   builder: (context, state) => ChatScreen(),
+// ),

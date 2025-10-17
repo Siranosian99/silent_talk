@@ -36,7 +36,10 @@ Future<void> showImageSourceDialog(BuildContext context) async {
                 leading: const Icon(Icons.photo_library),
                 title:  Text(AppLocalizations.of(context)!.gallery),
                 onTap: () async {
-                  final result = await picker.galleryPicker();
+                  final path = await picker.galleryPicker();
+                  final localPath=path;
+                  final result=await picker.imgUploaderToServer(localPath.toString());
+
                   if (result != null) {
                     await Authenticator().updateProilePhoto(result).then((_){
                       picker.clearImage();

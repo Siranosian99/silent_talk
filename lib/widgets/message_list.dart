@@ -83,7 +83,7 @@ class MessageList extends StatelessWidget {
             },
             child: Align(
               alignment:
-                  messages[index]['senderId'] == Authenticator().user?.uid
+                  messages[index]['senderId'] == Authenticator.user?.uid
                       ? Alignment.topRight
                       : Alignment.topLeft,
 
@@ -145,6 +145,7 @@ class MessageList extends StatelessWidget {
                             width: 250,
                             height: 250,
                           ),
+
                         ),
                       )
                       : messages[index]['message'].contains("Name:")
@@ -283,7 +284,7 @@ class MessageList extends StatelessWidget {
                         decoration: BoxDecoration(
                           color:
                               messages[index]['senderId'] ==
-                                      Authenticator().user?.uid
+                                      Authenticator.user?.uid
                                   ? Color.fromRGBO(24, 85, 115, 0.91)
                                   : Color.fromRGBO(40, 174, 39, 0.91),
                           borderRadius: const BorderRadius.only(
