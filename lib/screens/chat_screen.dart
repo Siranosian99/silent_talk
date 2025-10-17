@@ -67,6 +67,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     // loadIsAuth();
+    Authenticator().anotherDeviceLoginListener(context);
+    ;
     setOnlineStatus();
     super.initState();
   }

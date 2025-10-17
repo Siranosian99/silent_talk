@@ -50,9 +50,6 @@ class UsersService {
         .get();
 
     if (!doc.exists) return null;
-    print('----------------------------'
-          '${doc.data()}'
-        '-----------------------');
     return doc.data(); // ✅ This gives you a Map<String, dynamic>
   }
 }
