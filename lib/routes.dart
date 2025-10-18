@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:silent_talk/screens/chat_screen.dart';
 import 'package:silent_talk/screens/login_page.dart';
 import 'package:silent_talk/screens/people_screen.dart';
+import 'package:silent_talk/screens/request_screen.dart';
 import 'package:silent_talk/screens/reset_email.dart';
 import 'package:silent_talk/screens/reset_password_inside.dart';
 import 'package:silent_talk/screens/settings_screen.dart';
@@ -145,6 +146,11 @@ final GoRouter router = GoRouter(
       path: '/updateUserName',
       name: 'updateUserName',
       builder: (context, state) => UpdateUserNameScreen(),
+    ),
+    GoRoute(
+      path: '/request',
+      name: 'request',
+      builder: (context, state) => RequestScreen(),
     ),
     GoRoute(
       path: '/mapLayer',

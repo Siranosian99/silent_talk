@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 
-import 'package:silent_talk/service/users/users_service.dart';
+import 'package:silent_talk/service/users/user_details/users_service.dart';
 
 import '../l10n/app_localizations.dart';
 import '../service/model/user_model.dart';
@@ -43,6 +43,12 @@ class _PeopleScreenState extends State<PeopleScreen> {
         title: Text(AppLocalizations.of(context)!.chats),
         centerTitle: true,
         actions: [
+          IconButton(
+            onPressed: () {
+              context.pushNamed('request');
+            },
+            icon: Icon(Icons.people),
+          ),
           IconButton(
             onPressed: () {
               context.pushNamed('settings');

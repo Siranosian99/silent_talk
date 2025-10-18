@@ -6,7 +6,7 @@ import 'package:silent_talk/utils/biometric/auth.dart';
 import 'package:silent_talk/utils/last_seen/last_seen_provider.dart';
 import '../l10n/app_localizations.dart';
 import '../service/authenticator/authenticator.dart';
-import '../service/users/users_service.dart';
+import '../service/users/user_details/users_service.dart';
 import '../utils/biometric/auth_provider.dart';
 import '../utils/themes/theme_provider.dart';
 import '../widgets/delete_dialog.dart';

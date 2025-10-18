@@ -8,16 +8,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
+import 'package:silent_talk/service/authenticator/request_check.dart';
 import 'package:silent_talk/service/messages/get_messages.dart';
 import 'package:silent_talk/service/messages/send_messages.dart';
 import 'package:silent_talk/service/model/chat_model.dart';
 import 'package:silent_talk/service/notification/get_token.dart';
 import 'package:silent_talk/service/notification/message_detecter.dart';
 import 'package:silent_talk/service/notification/notification_shower.dart';
-import 'package:silent_talk/service/users/users_service.dart';
+import 'package:silent_talk/service/users/user_details/users_service.dart';
 import 'package:silent_talk/utils/contact/send_contact.dart';
 import 'package:silent_talk/utils/last_seen/last_seen_provider.dart';
 import 'package:silent_talk/utils/time_format/time_convertor.dart';
+import 'package:silent_talk/widgets/requests_dialog.dart';
 
 import '../service/authenticator/authenticator.dart';
 import '../service/ids/get_userIds.dart';
@@ -29,6 +31,7 @@ import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
   final String? name;
+
   // final int? id;
   // final String? senderId;
   final String? receiverId;
@@ -38,7 +41,7 @@ class ChatScreen extends StatefulWidget {
     this.name,
     // this.id,
     // this.senderId,
-     this.receiverId,
+    this.receiverId,
   });
 
   @override
@@ -47,7 +50,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   TextEditingController messageController = TextEditingController();
-  TextEditingController searchController=TextEditingController();
+  TextEditingController searchController = TextEditingController();
   List<Users> _users = [];
   final Picker _picker = Picker();
   String? photoLink;
@@ -56,6 +59,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   // List<ChatModel> _chats = [];
   final UsersService _usersService = UsersService();
+
   Users? getReceiver() {
     if (widget.receiverId == null) return null;
     try {
@@ -64,15 +68,25 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       return null;
     }
   }
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     // loadIsAuth();
     // Authenticator().anotherDeviceLoginListener(context);
     // ;
+    request();
+    print("----------------------------${widget.receiverId}");
+    print("----------------------------${Authenticator.user?.uid}");
+
     setOnlineStatus();
     super.initState();
   }
+
+  Future<void> request() async {
+    await RequestsChats().sendRequest(context);
+  }
+
   // Future<bool?> loadIsAuth()async{
   //   isAuthActive=await AuthService().isDeviceHave();
   //   return isAuthActive;
@@ -113,7 +127,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   Future<void> getUsersDetails() async {
-    _users = await _usersService.fetchAllUsers('')??[];
+    _users = await _usersService.fetchAllUsers('') ?? [];
     // noti();
     setState(() {
       _users;
@@ -141,20 +155,19 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   Future<void> noti() async {
-    if(widget.receiverId != null){
+    if (widget.receiverId != null) {
       await MessageChanger().notificationCheck(
         Authenticator.user!.uid,
         widget.receiverId!,
       );
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<Picker>(context);
     final lastProvider = Provider.of<LastSeenProvider>(context);
-    final reciever=getReceiver();
+    final reciever = getReceiver();
     return Scaffold(
       body:
           _users.isEmpty
@@ -180,17 +193,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 CircleAvatar(
                                   radius: 40,
                                   backgroundImage:
-                                     reciever!.image.isEmpty
+                                      reciever!.image.isEmpty
                                           ? AssetImage(
                                             "assets/images/noProfile.png",
                                           )
-                                          : NetworkImage(
-                                        reciever.image,
-                                          ),
+                                          : NetworkImage(reciever.image),
                                 ),
                                 CircleAvatar(
                                   backgroundColor:
-                                  reciever.isOnline
+                                      reciever.isOnline
                                           ? Colors.green
                                           : Colors.red,
                                   radius: 10,
@@ -203,14 +214,16 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  reciever.userName ??"",
+                                  reciever.userName ?? "",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
                                   ),
                                 ),
                                 Text(
-                                  lastProvider.isSeen?  reciever.lastSeen: "--------",
+                                  lastProvider.isSeen
+                                      ? reciever.lastSeen
+                                      : "--------",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color:
@@ -295,8 +308,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
-                                      child: Image.file(File(
-                                        provider.imgPath ?? ''),
+                                      child: Image.file(
+                                        File(provider.imgPath ?? ''),
                                         fit: BoxFit.cover,
                                         width: 100,
                                         height: 100,
@@ -331,29 +344,38 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         prefixIcon: IconButton(
                           icon: const Icon(Icons.attach_file),
                           onPressed: () {
-                            showCustomBottomSheet(context, 21,reciever.id);
+                            showCustomBottomSheet(context, 21, reciever.id);
                           },
                         ),
                         suffixIcon: Column(
                           children: [
                             IconButton(
                               icon: const Icon(Icons.send),
-                              onPressed: () async{
-                                photoLink=provider.imgPath;
-                                photoServer=await provider.imgUploaderToServer(photoLink.toString());
-                                provider.isImage
-                                    ? messageController.text =
-                                    photoServer!
-                                    : messageController.text =
-                                        messageController.text;
-                                await MessageService().sendMessage(
-                                  messageController.text,
-                                  Authenticator.user!.uid,
-                                  reciever.id,
-                                );
-                                messageController.clear();
-                                provider.clearImage();
-
+                              onPressed: () async {
+                                photoLink = provider.imgPath;
+                                if (photoLink == null || photoLink!.isEmpty) {
+                                  if (messageController.text.isNotEmpty) {
+                                    await MessageService().sendMessage(
+                                      messageController.text,
+                                      Authenticator.user!.uid,
+                                      reciever.id,
+                                    );
+                                  }
+                                  messageController.clear();
+                                }
+                                photoServer = await provider
+                                    .imgUploaderToServer(photoLink.toString());
+                                if (photoServer != null ||
+                                    photoServer!.isNotEmpty) {
+                                  messageController.text = photoServer!;
+                                  await MessageService().sendMessage(
+                                    messageController.text,
+                                    Authenticator.user!.uid,
+                                    reciever.id,
+                                  );
+                                  messageController.clear();
+                                  provider.clearImage();
+                                }
                               },
                             ),
                           ],

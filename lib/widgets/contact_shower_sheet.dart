@@ -11,7 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../service/authenticator/authenticator.dart';
 import '../service/messages/send_messages.dart';
 import '../service/model/user_model.dart';
-import '../service/users/users_service.dart';
+import '../service/users/user_details/users_service.dart';
 import '../utils/contact/send_contact.dart';
 
 import 'contact_send_dialog.dart';

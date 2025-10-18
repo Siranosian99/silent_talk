@@ -3,6 +3,8 @@ class ChatModel {
   String chatId;
   String senderId;
   String receiverId;
+  bool senderAccept;
+  bool receiverAccept;
   String message;
   String messageTime;
 
@@ -11,6 +13,8 @@ class ChatModel {
     required this.chatId,
     required this.senderId,
     required this.receiverId,
+    required this.senderAccept,
+    required this.receiverAccept,
     required this.message,
     required this.messageTime,
   });
@@ -21,6 +25,8 @@ class ChatModel {
       chatId: map['chatId'],
       senderId: map['senderId'],
       receiverId: map['receiverId'],
+      senderAccept: map['senderAccept'],
+      receiverAccept: map['receiverAccept'],
       message: map['message'],
       messageTime: map['messageTime'],
     );
@@ -32,6 +38,8 @@ class ChatModel {
       'chatId': chatId,
       'senderId': senderId,
       'receiverId': receiverId,
+      'senderAccept':senderAccept,
+      'receiverAccept':receiverAccept,
       'message': message,
       'messageTime': messageTime,
     };

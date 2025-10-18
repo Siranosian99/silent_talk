@@ -4,7 +4,7 @@ import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/model/user_model.dart';
 import 'package:silent_talk/service/notification/notification_shower.dart';
 
-import '../service/users/users_service.dart';
+import '../service/users/user_details/users_service.dart';
 
 class ChatsGridView extends StatefulWidget {
   ChatsGridView({super.key});
