@@ -13,6 +13,7 @@ class RequestScreen extends StatefulWidget {
 
 class _RequestScreenState extends State<RequestScreen> {
   late List<Users> users = [];
+  Map<String, dynamic>? data;
   final UsersService _usersService = UsersService();
 
   Future<void> callUsers(String query) async {
@@ -22,9 +23,16 @@ class _RequestScreenState extends State<RequestScreen> {
     });
   }
 
+  Future<void> callUserData() async {
+    final user = await _usersService.getRequests(recieverId);
+    setState(() {
+      data = user;
+    });
+  }
   @override
   void initState() {
     callUsers('');
+    
     super.initState();
   }
 
@@ -71,6 +79,7 @@ class _RequestScreenState extends State<RequestScreen> {
                       Text(
                         users[index].userName,
                         style: const TextStyle(
+                          color:Colors.black,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -100,7 +109,7 @@ class _RequestScreenState extends State<RequestScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 8),
                   ),
-                  child: const Text("Accept"),
+                  child:  Text("${ users[index].password}"),
                 ),
               ],
             ),

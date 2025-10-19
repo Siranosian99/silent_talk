@@ -5,6 +5,7 @@ import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/users/user_details/users_service.dart';
 
 import '../l10n/app_localizations.dart';
+import '../service/authenticator/request_check.dart';
 import '../service/model/user_model.dart';
 
 import '../widgets/chats_searchBar.dart';
@@ -84,14 +85,15 @@ class _PeopleScreenState extends State<PeopleScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        GoRouter.of(context).pushNamed(
-                          'chat',
-                          extra: {
-                            'id': user.id,
-                            'senderId': Authenticator.user?.uid,
-                            'receiverId': user.id,
-                          },
-                        );
+                        RequestsChats().sendRequest(false, Authenticator.user!.uid, user.id);
+                        // GoRouter.of(context).pushNamed(
+                        //   'chat',
+                        //   extra: {
+                        //     'id': user.id,
+                        //     'senderId': Authenticator.user?.uid,
+                        //     'receiverId': user.id,
+                        //   },
+                        // );
                       },
                       child: CircleAvatar(
                         radius: 35,
@@ -117,3 +119,54 @@ class _PeopleScreenState extends State<PeopleScreen> {
     );
   }
 }
+//StreamBuilder<QuerySnapshot>(
+//                     stream:
+//                         FirebaseFirestore.instance
+//                             .collection('chats')
+//                             .doc(
+//                               getChatId(
+//                                 Authenticator.user!.uid,
+//                                 widget.receiverId!,
+//                               ),
+//                             ) // Chat ID
+//                             .collection('messages')
+//                             .orderBy('messageTime', descending: false)
+//                             .snapshots(),
+//                     builder: (context, snapshot) {
+//                       if (snapshot.hasError) {
+//                         return Center(child: Text('Error loading messages'));
+//                       }
+//                       if (snapshot.connectionState == ConnectionState.waiting) {
+//                         return Center(child: CircularProgressIndicator());
+//                       }
+//
+//                       final messages = snapshot.data!.docs;
+//                       return Expanded(
+//                         child:
+//                             messages.isNotEmpty
+//                                 ? MessageList(
+//                                   messages: messages,
+//                                   id1: Authenticator.user!.uid,
+//                                   id2: reciever.id,
+//                                   // photo: provider.imgPath ?? '',
+//                                 )
+//                                 : Center(
+//                                   child: Text(
+//                                     "No messages yet. Start the conversation!",
+//                                     style: TextStyle(
+//                                       fontSize: 17,
+//                                       fontWeight: FontWeight.w600,
+//                                       // Semi-bold
+//                                       color: Color.fromRGBO(97, 119, 138, 1),
+//                                       // Make it fully opaque
+//                                       fontStyle: FontStyle.italic,
+//                                       // Optional: gives it a stylish slant
+//                                       letterSpacing:
+//                                           0.3, // Slight spacing for polish
+//                                     ),
+//                                     textAlign: TextAlign.center,
+//                                   ),
+//                                 ),
+//                       );
+//                     },
+//                   ),

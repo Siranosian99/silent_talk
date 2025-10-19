@@ -75,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     // loadIsAuth();
     // Authenticator().anotherDeviceLoginListener(context);
     // ;
-    request();
+    // request();
     print("----------------------------${widget.receiverId}");
     print("----------------------------${Authenticator.user?.uid}");
 
@@ -83,9 +83,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.initState();
   }
 
-  Future<void> request() async {
-    await RequestsChats().sendRequest(context);
-  }
+  // Future<void> request() async {
+  //   await RequestsChats().sendRequest(context);
+  // }
 
   // Future<bool?> loadIsAuth()async{
   //   isAuthActive=await AuthService().isDeviceHave();
