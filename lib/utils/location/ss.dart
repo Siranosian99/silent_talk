@@ -334,3 +334,172 @@
 //   }
 //
 // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+// import 'package:silent_talk/service/authenticator/authenticator.dart';
+//
+// class RequestScreen extends StatefulWidget {
+//   const RequestScreen({super.key});
+//
+//   @override
+//   State<RequestScreen> createState() => _RequestScreenState();
+// }
+//
+// class _RequestScreenState extends State<RequestScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("Requests"),
+//         centerTitle: true,
+//       ),
+//       body: StreamBuilder<QuerySnapshot>(
+//         stream: FirebaseFirestore.instance
+//             .collection('requests')
+//             .doc('9iTWrb5rTbSmmaHPUrUq3267sC83_NRZeJIyDzNamRe5tzp2xiL7SPth1')
+//             .collection('users_requests')
+//             .where('requestReceiverId', isEqualTo: Authenticator.user?.uid)
+//             .snapshots(),
+//         builder: (context, snapshot) {
+//           if (snapshot.hasError) {
+//             return const Center(child: Text('Error loading requests'));
+//           }
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Center(child: CircularProgressIndicator());
+//           }
+//
+//           final docs = snapshot.data!.docs;
+//
+//           if (docs.isEmpty) {
+//             return const Center(child: Text('No requests found'));
+//           }
+//
+//           return ListView.separated(
+//             padding: const EdgeInsets.all(12),
+//             itemCount: docs.length,
+//             separatorBuilder: (context, index) => const SizedBox(height: 10),
+//             itemBuilder: (context, index) {
+//               final data = docs[index].data() as Map<String, dynamic>;
+//               final senderName = data['senderName'] ?? 'Unknown';
+//               final senderImage = data['senderImage'] ?? '';
+//               final senderId = data['requestSenderId'] ?? '';
+//               final requestStatus = data['requestStatus'] ?? false;
+//
+//               return Container(
+//                 padding: const EdgeInsets.all(12),
+//                 decoration: BoxDecoration(
+//                   color: Colors.white,
+//                   borderRadius: BorderRadius.circular(16),
+//                   boxShadow: [
+//                     BoxShadow(
+//                       color: Colors.black.withOpacity(0.05),
+//                       blurRadius: 8,
+//                       offset: const Offset(0, 4),
+//                     ),
+//                   ],
+//                 ),
+//                 child: Row(
+//                   children: [
+//                     // Profile Image
+//                     CircleAvatar(
+//                       radius: 30,
+//                       backgroundColor: Colors.grey[200],
+//                       backgroundImage:
+//                       senderImage.isNotEmpty ? NetworkImage(senderImage) : null,
+//                       child: senderImage.isEmpty
+//                           ? const Icon(Icons.person, size: 30, color: Colors.grey)
+//                           : null,
+//                     ),
+//                     const SizedBox(width: 12),
+//
+//                     // Username + Full name
+//                     Expanded(
+//                       child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Text(
+//                             senderName,
+//                             style: const TextStyle(
+//                               color: Colors.black,
+//                               fontSize: 16,
+//                               fontWeight: FontWeight.bold,
+//                             ),
+//                           ),
+//                           Text(
+//                             senderId,
+//                             style: const TextStyle(
+//                               fontSize: 14,
+//                               color: Colors.grey,
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//
+//                     // Accept Button
+//                     ElevatedButton(
+//                       onPressed: () {
+//                         // You can update Firestore here to set requestStatus = true
+//                         FirebaseFirestore.instance
+//                             .collection('requests')
+//                             .doc('9iTWrb5rTbSmmaHPUrUq3267sC83_NRZeJIyDzNamRe5tzp2xiL7SPth1')
+//                             .collection('user_requests')
+//                             .doc(docs[index].id)
+//                             .update({'requestStatus': true});
+//
+//                         ScaffoldMessenger.of(context).showSnackBar(
+//                           const SnackBar(content: Text('Request accepted!')),
+//                         );
+//                       },
+//                       style: ElevatedButton.styleFrom(
+//                         backgroundColor:
+//                         requestStatus ? Colors.grey : Colors.green,
+//                         foregroundColor: Colors.white,
+//                         shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                         padding: const EdgeInsets.symmetric(
+//                             horizontal: 16, vertical: 8),
+//                       ),
+//                       child: Text(
+//                         requestStatus ? 'Accepted' : 'Accept',
+//                         style: const TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

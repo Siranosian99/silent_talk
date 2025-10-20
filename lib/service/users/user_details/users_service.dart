@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:silent_talk/service/ids/get_userIds.dart';
 
 import '../../authenticator/authenticator.dart';
+import '../../model/request_model.dart';
 import '../../model/user_model.dart';
 
 class UsersService {
@@ -64,17 +65,18 @@ class UsersService {
     if (!doc.exists) return null;
     return doc.data(); // ✅ This gives you a Map<String, dynamic>
   }
-
-  Future<Map<String, dynamic>?> getRequests(String recieverId) async {
+  Future<Map<String, dynamic>?> getUserDataById(String id) async {
 
     if (Authenticator.user == null) return null;
 
     final doc = await FirebaseFirestore.instance
-        .collection('requests')
-        .doc(getChatId(Authenticator.user!.uid, recieverId))
+        .collection('users')
+        .doc(id)
         .get();
 
     if (!doc.exists) return null;
     return doc.data(); // ✅ This gives you a Map<String, dynamic>
   }
+
+
 }

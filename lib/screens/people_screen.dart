@@ -85,6 +85,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                   children: [
                     InkWell(
                       onTap: () {
+                        print(user.id);
                         RequestsChats().sendRequest(false, Authenticator.user!.uid, user.id);
                         // GoRouter.of(context).pushNamed(
                         //   'chat',
