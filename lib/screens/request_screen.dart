@@ -19,9 +19,7 @@ class _RequestScreenState extends State<RequestScreen> {
   // late List<Users> users = [];
   // Map<String, dynamic>? data;
   final UsersService _usersService = UsersService();
-
-
-
+  final RequestsChats _requestsChats = RequestsChats();
 
   @override
   void initState() {
@@ -32,16 +30,13 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Requests"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Requests"), centerTitle: true),
       body: StreamBuilder<QuerySnapshot>(
         stream:
-        FirebaseFirestore.instance
-            .collection('requests')// Chat ID
-            .where('requestReceiverId', isEqualTo: Authenticator.user?.uid)
-            .snapshots(),
+            FirebaseFirestore.instance
+                .collection('requests') // Chat ID
+                .where('requestReceiverId', isEqualTo: Authenticator.user?.uid)
+                .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error loading messages'));
@@ -58,8 +53,8 @@ class _RequestScreenState extends State<RequestScreen> {
               final data = requests[index].data() as Map<String, dynamic>;
               final senderId = data['requestSenderId'];
               return FutureBuilder<Map<String, dynamic>?>(
-
-                future: _usersService.getUserDataById(senderId), // async call
+                future: _usersService.getUserDataById(senderId),
+                // async call
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
                     return const ListTile(title: Text('Loading user...'));
@@ -82,19 +77,14 @@ class _RequestScreenState extends State<RequestScreen> {
                     child: Row(
                       children: [
                         // Profile Image
-                        GestureDetector(
-                          onLongPress: (){
-                            print(senderId);
-                          },
-
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundImage: NetworkImage(userData['image']),
-                            backgroundColor: Colors
-                                .grey[200], // optional placeholder background
-                          ),
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(userData['image']),
+                          backgroundColor:
+                              Colors
+                                  .grey[200], // optional placeholder background
                         ),
-                        SizedBox(width: 12,),
+                        SizedBox(width: 12),
                         // Username + Full name
                         Expanded(
                           child: Column(
@@ -120,11 +110,25 @@ class _RequestScreenState extends State<RequestScreen> {
                         ),
 
                         // Accept Button
-                        Column(
+                        data['requestStatus']? ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                          ),
+                          onPressed: () { },
+                          child: Text("Accepted"),
+                        ):Column(
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                print("Accepted request #$index");
+                                _requestsChats.acceptRequest(data['docId']);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
@@ -133,7 +137,9 @@ class _RequestScreenState extends State<RequestScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
                               ),
                               child: Text("Accept"),
                             ),
@@ -148,7 +154,9 @@ class _RequestScreenState extends State<RequestScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
                               ),
                               child: Text("Cancel"),
                             ),
@@ -161,10 +169,8 @@ class _RequestScreenState extends State<RequestScreen> {
               );
             },
           );
-        }));}
+        },
+      ),
+    );
   }
-
-
-
-
-
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
+import 'package:silent_talk/service/ids/get_userIds.dart';
 
 import 'package:silent_talk/service/users/user_details/users_service.dart';
 
@@ -21,6 +22,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
   late List<Users> users = [];
   final UsersService _usersService = UsersService();
+  final RequestsChats _requestsChats=RequestsChats();
 
   Future<void> callUsers(String query) async {
     users = await _usersService.fetchAllUsers(query) ?? [];
@@ -32,10 +34,27 @@ class _PeopleScreenState extends State<PeopleScreen> {
   @override
   void initState() {
     callUsers('');
+
     super.initState();
   }
 
 
+  void checkRequestStatus(String docId) async {
+    String id = getChatId(Authenticator.user!.uid, docId);
+
+    bool? status = await _requestsChats.getRequestStatus(id);
+
+    if (status != null) {
+      if (status) {
+        print("Request is active/accepted");
+      } else {
+        print("Request exists but not accepted");
+      }
+    } else {
+      print("No request found");
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,17 +103,26 @@ class _PeopleScreenState extends State<PeopleScreen> {
                 return Column(
                   children: [
                     InkWell(
-                      onTap: () {
-                        print(user.id);
-                        RequestsChats().sendRequest(false, Authenticator.user!.uid, user.id);
-                        // GoRouter.of(context).pushNamed(
-                        //   'chat',
-                        //   extra: {
-                        //     'id': user.id,
-                        //     'senderId': Authenticator.user?.uid,
-                        //     'receiverId': user.id,
-                        //   },
-                        // );
+                      onTap: ()async {
+                        String id = getChatId(Authenticator.user!.uid, user.id);
+
+                        bool status = await _requestsChats.getRequestStatus(id) ??false;
+                        print(status);
+                        if(status){
+                          GoRouter.of(context).pushNamed(
+                            'chat',
+                            extra: {
+                              'id': user.id,
+                              'senderId': Authenticator.user?.uid,
+                              'receiverId': user.id,
+                            },
+                          );
+                        }
+                        else{
+                          RequestsChats().sendRequest(false, Authenticator.user!.uid, user.id);
+                        }
+                        print("UserId:${user.id}");
+
                       },
                       child: CircleAvatar(
                         radius: 35,

@@ -6,59 +6,99 @@ import '../ids/get_userIds.dart';
 import '../model/request_model.dart';
 import 'authenticator.dart';
 
-class RequestsChats{
-Future<void> sendRequest(bool request, String uId1, String uId2) async {
-  try {
+class RequestsChats {
+  Future<void> sendRequest(bool request, String uId1, String uId2) async {
+    try {
+      final requests = FirebaseFirestore.instance
+          .collection("requests")
+          .doc(getChatId(uId1, uId2));
 
-    final requests = FirebaseFirestore.instance
-        .collection("requests")
-        .doc(getChatId(uId1, uId2));
-    String docId = '';
-    await requests
-        .set({
-        "docId": docId,
-      "requestId":uId2 ,
-      "requestStatus": request,
-      "requestSenderId": uId1,
-      "requestReceiverId": uId2,
+      final docSnapshot = await requests.get();
 
-      // Firestore server time
-    });
-    //     .then((DocumentReference doc) {
-    //   requests.doc(doc.id).update({"docId": doc.id});
-    //   // print("------------${doc.id}----------");
-    // });
+      // If document doesn't exist, create it
+      if (!docSnapshot.exists) {
+        await requests.set({
+          "docId": getChatId(uId1, uId2),
+          "requestId": uId2,
+          "requestStatus": request,
+          "requestSenderId": uId1,
+          "requestReceiverId": uId2,
+          "createdAt": FieldValue.serverTimestamp(),
+        });
 
-    print("Requests Details SenderId:$uId1,RecieverId:$uId2");
-  } catch (e) {
-    print("Request Didnt Send");
+        print("✅ Request added from $uId1 to $uId2");
+      } else {
+        print("⚠️ Request already exists between $uId1 and $uId2");
+      }
+    } catch (e) {
+      print("❌ Request didn't send: $e");
+    }
+  }
+
+  Future<List<Request>?> getRequests(String docId) async {
+    if (Authenticator.user == null) return null;
+
+    String fullId = docId;
+    List<String> parts = fullId.split("_");
+    String secondPart = parts[1];
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('requests')
+            .where(
+              FieldPath.documentId,
+              isGreaterThanOrEqualTo: secondPart,
+            )
+            .where(
+              FieldPath.documentId,
+              isLessThanOrEqualTo: secondPart,
+            )
+            .get();
+    return doc.docs
+        .where((doc) => doc.id != secondPart) // hide current user
+        .map((doc) {
+          return Request(
+            requestSenderId: doc['requestSenderId'],
+            requestReceiverId: doc['requestReceiverId'],
+            requestId: doc['requestId'],
+            requestStatus: doc['requestStatus'],
+          );
+        })
+        .toList();
+  }
+  Future<bool?> getRequestStatus(String docId) async {
+    try {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('requests')
+          .doc(docId)
+          .get();
+
+      if (doc.exists) {
+        // Cast the document data to a Map
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+        // Return the boolean value of requestStatus
+        return data['requestStatus'] as bool?;
+      } else {
+        print('Document not found');
+        return null;
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+      return null;
+    }
+  }
+
+  Future<void>acceptRequest(String docId)async{
+    await FirebaseFirestore.instance.collection('requests').doc(docId).set(
+      {'requestStatus': true},
+      SetOptions(merge: true),
+    );
   }
 }
-Future<List<Request>?> getRequests() async {
-
-  if (Authenticator.user == null) return null;
-
-  final doc = await FirebaseFirestore.instance
-      .collection('requests')
-      .where(FieldPath.documentId, isGreaterThanOrEqualTo: Authenticator.user?.uid)
-      .where(FieldPath.documentId, isLessThanOrEqualTo: '${Authenticator.user?.uid}\uf8ff')
-      .get();
-  return doc.docs.where((doc) =>
-  doc.id != Authenticator.user?.uid
-  ) // hide current user
-      .map((doc) {
-    return Request(
-      requestSenderId: doc['requestSenderId'], requestReceiverId:  doc['requestReceiverId'], requestId:doc['requestId'],requestStatus: doc['requestStatus'],
-    );
-  }).toList();
-}}
-
 
 //  final String requestSenderId;
 //   final String requestReceiverId;
 //   bool requestStatus;
-
-
 
 // Future<List<Users>?> fetchAllUsers(String name) async {
 //     try {
@@ -98,6 +138,3 @@ Future<List<Request>?> getRequests() async {
 //       return [];
 //     }
 //   }
-
-
-
