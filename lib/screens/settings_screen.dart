@@ -189,7 +189,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingsListtile(
                     leading: const Icon(Icons.logout, color: Colors.red),
                     title: Text(AppLocalizations.of(context)!.logOut),
-                    onTap: () async {
+                    onTap: ()async{
                      await Authenticator().signOut(context);
                     },
                   ),
