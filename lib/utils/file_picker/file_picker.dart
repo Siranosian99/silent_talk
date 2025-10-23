@@ -22,7 +22,7 @@ Future<void> pickDocumentFile(BuildContext context, String receiverId) async {
       String? fileUrl= await DocumentsUtilty().uploadDocuments(path, fileName);
       MessageService().sendMessage(
         fileUrl!,
-        Authenticator.user!.uid,
+        Authenticator().user!.uid,
         receiverId,
       );
       // print(result.names[0]);

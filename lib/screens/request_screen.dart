@@ -35,7 +35,7 @@ class _RequestScreenState extends State<RequestScreen> {
         stream:
             FirebaseFirestore.instance
                 .collection('requests') // Chat ID
-                .where('requestReceiverId', isEqualTo: Authenticator.user?.uid)
+                .where('requestReceiverId', isEqualTo: Authenticator().user?.uid)
                 .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {

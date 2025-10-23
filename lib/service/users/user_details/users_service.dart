@@ -29,7 +29,7 @@ class UsersService {
 
       // Map each document to its data
       return snapshot?.docs.where((doc) =>
-      doc.id != Authenticator.user?.uid
+      doc.id != Authenticator().user?.uid
       ) // hide current user
           .map((doc) {
         return Users(
@@ -55,11 +55,11 @@ class UsersService {
 
   Future<Map<String, dynamic>?> getUserData() async {
 
-    if (Authenticator.user == null) return null;
+    if (Authenticator().user == null) return null;
 
     final doc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(Authenticator.user?.uid)
+        .doc(Authenticator().user?.uid)
         .get();
 
     if (!doc.exists) return null;
@@ -67,7 +67,7 @@ class UsersService {
   }
   Future<Map<String, dynamic>?> getUserDataById(String id) async {
 
-    if (Authenticator.user == null) return null;
+    if (Authenticator().user == null) return null;
 
     final doc = await FirebaseFirestore.instance
         .collection('users')

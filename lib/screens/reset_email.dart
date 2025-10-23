@@ -13,7 +13,7 @@ class ResetEmailScreen extends StatefulWidget {
 class _ResetEmailScreenState extends State<ResetEmailScreen> {
   final _emailController = TextEditingController();
   final _passwordController=TextEditingController();
-  final _userId=Authenticator.user?.uid;
+  final _userId=Authenticator().user?.uid;
   final _formKey = GlobalKey<FormState>();
 
 

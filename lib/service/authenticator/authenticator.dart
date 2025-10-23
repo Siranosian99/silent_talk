@@ -13,7 +13,7 @@ import '../model/user_model.dart';
 
 class Authenticator {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final user = FirebaseAuth.instance.currentUser;
+  final user = FirebaseAuth.instance.currentUser;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseAuth auth = FirebaseAuth.instance;
   CollectionReference users = firestore.collection('users');
@@ -74,19 +74,23 @@ class Authenticator {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-
+      await FirebaseAuth.instance.currentUser?.reload();
+      print("-----------------_----------------_----------------------------"
+          "${FirebaseAuth.instance.currentUser?.email}");
       if (!userCredential.user!.emailVerified) {
         ScaffoldMessenger.of(
           ctx,
         ).showSnackBar(SnackBar(content: Text('Verify Email')));
         userCredential.user?.sendEmailVerification();
+        await FirebaseAuth.instance.currentUser?.reload();
       } else {
+        final user = FirebaseAuth.instance.currentUser;
+        await user?.reload();
         ctx.goNamed('people');
         print('Login successful!');
         String utoken = await GetToken.getToken();
-
         final deviceId = Uuid().v4();
-        final user = FirebaseAuth.instance.currentUser;
+
         final docRef = FirebaseFirestore.instance
             .collection('users')
             .doc(user?.uid);
@@ -214,10 +218,9 @@ class Authenticator {
   }
 
   Future<void> signOut(BuildContext context) async {
-    await FirebaseAuth.instance.signOut().then((_){
+    await FirebaseAuth.instance.signOut().then((_) {
       context.goNamed('login');
     });
-
   }
 
   Future<void> deleteAccount() async {
@@ -249,37 +252,37 @@ class Authenticator {
     }
   }
 
-  void anotherDeviceLoginListener(BuildContext context) async {
-    if (user == null) return;
-
-    // Get current device token
-    final token = await GetToken.getToken();
-    if (token == null) return;
-
-    // Listen to the user document in Firestore
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(user?.uid)
-        .snapshots()
-        .listen((snapshot) async {
-          if (!snapshot.exists) return;
-
-          final currentDeviceToken = snapshot.data()?['token'];
-
-          print('-----------------------------------------');
-          print('User token: $token  currentToken: $currentDeviceToken');
-          print('-----------------------------------------');
-
-          // If token in Firestore is different, logout
-          if (token != currentDeviceToken) {
-            await FirebaseAuth.instance.signOut();
-            if (context.mounted) {
-              context.goNamed('login');
-            }
-            print('🚪 Logged out because another device logged in.');
-          }
-        });
-  }
+  // void anotherDeviceLoginListener(BuildContext context) async {
+  //   if (user == null) return;
+  //
+  //   // Get current device token
+  //   final token = await GetToken.getToken();
+  //   if (token == null) return;
+  //
+  //   // Listen to the user document in Firestore
+  //   FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(user?.uid)
+  //       .snapshots()
+  //       .listen((snapshot) async {
+  //         if (!snapshot.exists) return;
+  //
+  //         final currentDeviceToken = snapshot.data()?['token'];
+  //
+  //         print('-----------------------------------------');
+  //         print('User token: $token  currentToken: $currentDeviceToken');
+  //         print('-----------------------------------------');
+  //
+  //         // If token in Firestore is different, logout
+  //         if (token != currentDeviceToken) {
+  //           await FirebaseAuth.instance.signOut();
+  //           if (context.mounted) {
+  //             context.goNamed('login');
+  //           }
+  //           print('🚪 Logged out because another device logged in.');
+  //         }
+  //       });
+  // }
 
   // void listenForAnotherDeviceLogin(BuildContext context) {
   //   final user = FirebaseAuth.instance.currentUser;

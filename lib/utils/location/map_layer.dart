@@ -105,7 +105,7 @@ class MapSampleState extends State<MapSample> {
       final googleMapsUrl = "https://www.google.com/maps?q=${_markerPosition!.latitude},${_markerPosition!.longitude}";
       MessageService().sendMessage(
         googleMapsUrl,
-        Authenticator.user!.uid,
+        Authenticator().user!.uid,
         receiverId,
       ).then((_) => context.pop());
     }

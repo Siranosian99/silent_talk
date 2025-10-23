@@ -36,7 +36,7 @@ class RequestsChats {
   }
 
   Future<List<Request>?> getRequests(String docId) async {
-    if (Authenticator.user == null) return null;
+    if (Authenticator().user == null) return null;
 
     String fullId = docId;
     List<String> parts = fullId.split("_");

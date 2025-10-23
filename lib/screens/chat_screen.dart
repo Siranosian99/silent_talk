@@ -77,7 +77,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     // ;
     // request();
     print("----------------------------${widget.receiverId}");
-    print("----------------------------${Authenticator.user?.uid}");
+    print("----------------------------${Authenticator().user?.uid}");
 
     setOnlineStatus();
     super.initState();
@@ -92,19 +92,19 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   //   return isAuthActive;
   // }
   void setOnlineStatus() async {
-    if (Authenticator.user?.uid != null) {
+    if (Authenticator().user?.uid != null) {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(Authenticator.user?.uid)
+          .doc(Authenticator().user?.uid)
           .update({'isOnline': true});
     }
   }
 
   void setOfflineStatus() async {
-    if (Authenticator.user?.uid != null) {
+    if (Authenticator().user?.uid != null) {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(Authenticator.user?.uid)
+          .doc(Authenticator().user?.uid)
           .update({
             'isOnline': false,
             'lastSeen': lastSeenFormat(DateTime.now()),
@@ -128,7 +128,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   Future<void> getUsersDetails() async {
     _users = await _usersService.fetchAllUsers('') ?? [];
-    // noti();
+    noti();
     setState(() {
       _users;
     });
@@ -145,7 +145,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if (Authenticator.user?.uid != null) {
+      if (Authenticator().user?.uid != null) {
         setOnlineStatus();
       }
     } else {
@@ -157,7 +157,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   Future<void> noti() async {
     if (widget.receiverId != null) {
       await MessageChanger().notificationCheck(
-        Authenticator.user!.uid,
+        Authenticator().user!.uid,
         widget.receiverId!,
       );
     }
@@ -251,7 +251,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             .collection('chats')
                             .doc(
                               getChatId(
-                                Authenticator.user!.uid,
+                                Authenticator().user!.uid,
                                 widget.receiverId!,
                               ),
                             ) // Chat ID
@@ -272,7 +272,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             messages.isNotEmpty
                                 ? MessageList(
                                   messages: messages,
-                                  id1: Authenticator.user!.uid,
+                                  id1: Authenticator().user!.uid,
                                   id2: reciever.id,
                                   // photo: provider.imgPath ?? '',
                                 )
@@ -357,7 +357,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   if (messageController.text.isNotEmpty) {
                                     await MessageService().sendMessage(
                                       messageController.text,
-                                      Authenticator.user!.uid,
+                                      Authenticator().user!.uid,
                                       reciever.id,
                                     );
                                   }
@@ -370,7 +370,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   messageController.text = photoServer!;
                                   await MessageService().sendMessage(
                                     messageController.text,
-                                    Authenticator.user!.uid,
+                                    Authenticator().user!.uid,
                                     reciever.id,
                                   );
                                   messageController.clear();

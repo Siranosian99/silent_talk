@@ -40,7 +40,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
 
   void checkRequestStatus(String docId) async {
-    String id = getChatId(Authenticator.user!.uid, docId);
+    String id = getChatId(Authenticator().user!.uid, docId);
 
     bool? status = await _requestsChats.getRequestStatus(id);
 
@@ -104,7 +104,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                   children: [
                     InkWell(
                       onTap: ()async {
-                        String id = getChatId(Authenticator.user!.uid, user.id);
+                        String id = getChatId(Authenticator().user!.uid, user.id);
 
                         bool status = await _requestsChats.getRequestStatus(id) ??false;
                         print(status);
@@ -113,13 +113,13 @@ class _PeopleScreenState extends State<PeopleScreen> {
                             'chat',
                             extra: {
                               'id': user.id,
-                              'senderId': Authenticator.user?.uid,
+                              'senderId': Authenticator().user?.uid,
                               'receiverId': user.id,
                             },
                           );
                         }
                         else{
-                          RequestsChats().sendRequest(false, Authenticator.user!.uid, user.id);
+                          RequestsChats().sendRequest(false, Authenticator().user!.uid, user.id);
                         }
                         print("UserId:${user.id}");
 

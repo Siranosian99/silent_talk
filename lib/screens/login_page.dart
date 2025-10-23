@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
@@ -19,19 +20,20 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-// @override
-//   void initState() {
-//   requestPermission();
-//     super.initState();
-//   }
-//   Future<void>requestPermission ()async{
-//     await FileSaver.checkAndRequestStoragePermission();
-//   }
+
+  // @override
+  //   void initState() {
+  //   requestPermission();
+  //     super.initState();
+  //   }
+  //   Future<void>requestPermission ()async{
+  //     await FileSaver.checkAndRequestStoragePermission();
+  //   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body: SafeArea(
+      body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
@@ -41,8 +43,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
               children: [
                 // App Title
                 Text(
-                 AppLocalizations.of(context)!.appName
-                  ,
+                  AppLocalizations.of(context)!.appName,
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -54,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                 LoginSignupTextfields(
                   controller: _emailController,
                   icon: Icon(Icons.email),
-                  labelText:  AppLocalizations.of(context)!.email,
+                  labelText: AppLocalizations.of(context)!.email,
                   isOn: false,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -71,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                 LoginSignupTextfields(
                   controller: _passwordController,
                   icon: Icon(Icons.password),
-                  labelText:  AppLocalizations.of(context)!.password,
+                  labelText: AppLocalizations.of(context)!.password,
                   isOn: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -90,14 +91,14 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                     onPressed: () {
                       context.goNamed('resetPassword');
                     },
-                    child: Text( AppLocalizations.of(context)!.passChange),
+                    child: Text(AppLocalizations.of(context)!.passChange),
                   ),
                 ),
                 SizedBox(height: 20),
 
                 // Login Button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // context.goNamed('people');
                     if (_formKey.currentState!.validate()) {
                       Authenticator().login(
@@ -105,11 +106,10 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                         _passwordController.text.trim(),
                         context,
                       );
-
                     }
                   },
                   child: Text(
-                      AppLocalizations.of(context)!.login,
+                    AppLocalizations.of(context)!.login,
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
@@ -118,12 +118,12 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text( AppLocalizations.of(context)!.dntHveAccount),
+                    Text(AppLocalizations.of(context)!.dntHveAccount),
                     TextButton(
                       onPressed: () {
                         context.goNamed('signUp');
                       },
-                      child: Text( AppLocalizations.of(context)!.signUp),
+                      child: Text(AppLocalizations.of(context)!.signUp),
                     ),
                   ],
                 ),
