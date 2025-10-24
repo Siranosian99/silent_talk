@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/notification/get_token.dart';
 
 import '../ids/get_userIds.dart';
@@ -30,6 +31,7 @@ class MessageChanger {
     String tokenU2 = await getUsersToken(user2);
     String userNameU1 = await getUserName(user1);
     String userNameU2 = await getUserName(user2);
+    bool isInitial = true; // 🔹 Flag to skip first snapshot
 
     _firebase
         .collection("chats")
@@ -38,12 +40,16 @@ class MessageChanger {
         .orderBy("messageTime", descending: false)
         .snapshots()
         .listen((snapshot) async {
-          for (var change in snapshot.docChanges) {
-            if (change.type == DocumentChangeType.added ) {
+      if (isInitial) {
+        isInitial = false;
+        return; // 🔹 Skip initial load (old messages)
+      }
+      for (var change in snapshot.docChanges) { {
               String senderId = change.doc['senderId'];
               String receiverId = change.doc['receiverId'];
               String receiverToken = senderId == user1 ? tokenU2 : tokenU1;
               String senderName = senderId == user1 ? userNameU1 : userNameU2;
+              if(receiverId !=Authenticator().user?.uid){
               await NotificationService.sendNotification(
                 receiverToken,
                 senderName,
@@ -51,7 +57,7 @@ class MessageChanger {
                 change.doc['senderId'],
                 change.doc['receiverId'],
               );
-            }
+            }}
           }
         });
   }

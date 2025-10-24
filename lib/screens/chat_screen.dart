@@ -128,7 +128,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   Future<void> getUsersDetails() async {
     _users = await _usersService.fetchAllUsers('') ?? [];
-    noti();
+    // noti();
     setState(() {
       _users;
     });
@@ -254,11 +254,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 Authenticator().user!.uid,
                                 widget.receiverId!,
                               ),
-                            ) // Chat ID
+                            )
                             .collection('messages')
                             .orderBy('messageTime', descending: false)
                             .snapshots(),
                     builder: (context, snapshot) {
+                       MessageChanger().notificationCheck(
+                        Authenticator().user!.uid,
+                        widget.receiverId!,
+                      );
                       if (snapshot.hasError) {
                         return Center(child: Text('Error loading messages'));
                       }

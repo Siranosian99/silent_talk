@@ -1,2 +1,1 @@
-2-notifications
 3-log out from another devices

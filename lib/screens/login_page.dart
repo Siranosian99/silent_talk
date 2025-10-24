@@ -31,6 +31,11 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
   //   }
 
   @override
+  void initState() {
+
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(

@@ -99,10 +99,7 @@ class Authenticator {
           {'token': utoken, 'deviceId': deviceId},
           SetOptions(merge: true),
         );
-        // final currentDeviceId = snapshot.data()?['deviceId'];
-        // if (currentDeviceId != deviceId) {
-        //   FirebaseAuth.instance.signOut();
-        // }
+        listenForAnotherDeviceLogin(ctx,deviceId);
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -218,7 +215,13 @@ class Authenticator {
   }
 
   Future<void> signOut(BuildContext context) async {
-    await FirebaseAuth.instance.signOut().then((_) {
+    await FirebaseAuth.instance.signOut().then((_) async{
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user?.uid)
+            .update({'token': ''});
+      }
       context.goNamed('login');
     });
   }
@@ -284,26 +287,25 @@ class Authenticator {
   //       });
   // }
 
-  // void listenForAnotherDeviceLogin(BuildContext context) {
-  //   final user = FirebaseAuth.instance.currentUser;
-  //   if (user == null) return;
-  //
-  //   FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(user.uid)
-  //       .snapshots()
-  //       .listen((snapshot) async {
-  //         if (!snapshot.exists) return;
-  //
-  //         final remoteToken = snapshot.data()?['token'];
-  //         final localToken = await GetToken.getToken();
-  //
-  //         if (remoteToken != localToken) {
-  //           await FirebaseAuth.instance.signOut();
-  //           if (context.mounted) {
-  //             context.goNamed('login');
-  //           }
-  //         }
-  //       });
-  // }
+  void listenForAnotherDeviceLogin(BuildContext context,String deviceId) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .snapshots()
+        .listen((snapshot) async {
+          if (!snapshot.exists) return;
+
+          final remoteId = snapshot.data()?['deviceId'];
+
+          if (remoteId != deviceId) {
+            await FirebaseAuth.instance.signOut();
+            if (context.mounted) {
+              context.goNamed('login');
+            }
+          }
+        });
+  }
 }
