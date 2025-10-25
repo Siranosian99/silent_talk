@@ -28,6 +28,7 @@ void main() async {
   await Hive.openBox('auth');
   await Hive.openBox('localBox');
   await Hive.openBox('lastSeen');
+  await Hive.openBox('device_id');
   await Hive.openBox('lg');
   await Firebase.initializeApp(
     options: const FirebaseOptions(

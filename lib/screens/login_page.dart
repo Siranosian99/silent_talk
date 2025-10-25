@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:googleapis/servicecontrol/v2.dart';
 import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/utils/file_saver/file_service.dart';
@@ -9,6 +10,7 @@ import 'package:silent_talk/widgets/login_signUp_textFields.dart';
 
 import '../l10n/app_localizations.dart';
 import '../mixins/navigator_mixins.dart';
+import '../service/authenticator/get_deviceId.dart';
 import '../utils/biometric/auth.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,6 +19,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
+  final Authenticator _authenticator=Authenticator();
+  late final bool boolValue;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -30,11 +34,8 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
   //     await FileSaver.checkAndRequestStoragePermission();
   //   }
 
-  @override
-  void initState() {
 
-    super.initState();
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

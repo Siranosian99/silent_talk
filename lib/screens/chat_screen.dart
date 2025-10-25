@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_contacts/src/model/contact.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,6 +23,7 @@ import 'package:silent_talk/utils/time_format/time_convertor.dart';
 import 'package:silent_talk/widgets/requests_dialog.dart';
 
 import '../service/authenticator/authenticator.dart';
+import '../service/authenticator/get_deviceId.dart';
 import '../service/ids/get_userIds.dart';
 import '../service/model/user_model.dart';
 import '../utils/biometric/auth.dart';
@@ -52,6 +54,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   TextEditingController messageController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   List<Users> _users = [];
+  late final Authenticator _authenticator;
   final Picker _picker = Picker();
   String? photoLink;
   String? photoServer;
@@ -71,14 +74,19 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    _authenticator=Authenticator();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final deviceId = await DeviceIdHelper().getDeviceId();
+        _authenticator.listenForAnotherDeviceLogin(context, deviceId);
+      }
+    });
     // loadIsAuth();
     // Authenticator().anotherDeviceLoginListener(context);
     // ;
     // request();
-    print("----------------------------${widget.receiverId}");
-    print("----------------------------${Authenticator().user?.uid}");
-
     setOnlineStatus();
     super.initState();
   }

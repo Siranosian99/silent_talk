@@ -10,6 +10,7 @@ import '../../utils/image_picker/image_picker.dart';
 import '../../utils/time_format/time_convertor.dart';
 import '../ids/get_userIds.dart';
 import '../model/user_model.dart';
+import 'get_deviceId.dart';
 
 class Authenticator {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,6 +19,7 @@ class Authenticator {
   static FirebaseAuth auth = FirebaseAuth.instance;
   CollectionReference users = firestore.collection('users');
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  bool isLoggedOut=false;
 
   Future<void> createUser(
     String name,
@@ -31,7 +33,7 @@ class Authenticator {
           .createUserWithEmailAndPassword(email: email, password: password);
       String uid = userCredential.user!.uid;
       String utoken = await GetToken.getToken();
-      final deviceId = Uuid().v4();
+      final deviceId = await DeviceIdHelper().getDeviceId();
       Users userInfo = Users(
         id: uid,
         deviceId: deviceId,
@@ -75,8 +77,6 @@ class Authenticator {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       await FirebaseAuth.instance.currentUser?.reload();
-      print("-----------------_----------------_----------------------------"
-          "${FirebaseAuth.instance.currentUser?.email}");
       if (!userCredential.user!.emailVerified) {
         ScaffoldMessenger.of(
           ctx,
@@ -89,8 +89,7 @@ class Authenticator {
         ctx.goNamed('people');
         print('Login successful!');
         String utoken = await GetToken.getToken();
-        final deviceId = Uuid().v4();
-
+        final deviceId = await DeviceIdHelper().getDeviceId();
         final docRef = FirebaseFirestore.instance
             .collection('users')
             .doc(user?.uid);
@@ -302,8 +301,11 @@ class Authenticator {
 
           if (remoteId != deviceId) {
             await FirebaseAuth.instance.signOut();
+            isLoggedOut=true;
+
+            print("--------------------------- isLoggedOut:$isLoggedOut");
             if (context.mounted) {
-              context.goNamed('login');
+              context.pushReplacementNamed('login');
             }
           }
         });
