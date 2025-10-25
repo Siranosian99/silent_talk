@@ -503,3 +503,195 @@
 //     );
 //   }
 // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import 'package:flutter/material.dart';
+// import 'package:dart_openai/dart_openai.dart';
+// class OpenAIService {
+//   final String apiKey = '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';
+//
+//   Future<String> sendMessage(String message) async {
+//     final url = Uri.parse('https://api.openai.com/v1/chat/completions');
+//
+//     final response = await http.post(
+//       url,
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': 'Bearer $apiKey',
+//       },
+//       body: json.encode({
+//         'model': 'gpt-4-turbo', // or gpt-4 if you have access
+//         'messages': [
+//           {'role': 'user', 'content': message},
+//         ],
+//       }),
+//     );
+//
+//     if (response.statusCode == 200) {
+//       final data = json.decode(response.body);
+//       final botMessage = data['choices'][0]['message']['content'];
+//       return botMessage;
+//     } else {
+//       throw Exception('Failed to send message to OpenAI API');
+//     }
+//   }
+// }
+//
+// class ChatScreen extends StatefulWidget {
+//   @override
+//   _ChatScreenState createState() => _ChatScreenState();
+// }
+//
+// class _ChatScreenState extends State<ChatScreen> {
+//   final TextEditingController _controller = TextEditingController();
+//   final OpenAIService _openAIService = OpenAIService();
+//
+//   List<Map<String, String>> messages = []; // {'role': 'user'/'bot', 'text': '...'}
+//   bool isLoading = false;
+//
+//   void sendMessage() async {
+//     final userMessage = _controller.text.trim();
+//     if (userMessage.isEmpty) return;
+//
+//     setState(() {
+//       messages.add({'role': 'user', 'text': userMessage});
+//       isLoading = true;
+//     });
+//
+//     _controller.clear();
+//
+//     try {
+//       final botResponse = await _openAIService.sendMessage(userMessage);
+//
+//       setState(() {
+//         messages.add({'role': 'bot', 'text': botResponse});
+//       });
+//     } catch (e) {
+//       setState(() {
+//         messages.add({'role': 'bot', 'text': 'Error: $e'});
+//       });
+//     } finally {
+//       setState(() {
+//         isLoading = false;
+//       });
+//     }
+//   }
+//
+//   Widget buildMessage(Map<String, String> message) {
+//     bool isUser = message['role'] == 'user';
+//     return Align(
+//       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+//       child: Container(
+//         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+//         margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+//         decoration: BoxDecoration(
+//           color: isUser ? Colors.blue : Colors.grey[300],
+//           borderRadius: BorderRadius.circular(12),
+//         ),
+//         child: Text(
+//           message['text'] ?? '',
+//           style: TextStyle(
+//             color: isUser ? Colors.white : Colors.black,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('ChatGPT-style Bot'),
+//         backgroundColor: Colors.blue,
+//       ),
+//       body: Column(
+//         children: [
+//           Expanded(
+//             child: ListView.builder(
+//               padding: EdgeInsets.all(8),
+//               itemCount: messages.length,
+//               itemBuilder: (context, index) {
+//                 return buildMessage(messages[index]);
+//               },
+//             ),
+//           ),
+//           if (isLoading) LinearProgressIndicator(),
+//           Divider(height: 1),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+//             child: Row(
+//               children: [
+//                 Expanded(
+//                   child: TextField(
+//                     controller: _controller,
+//                     textInputAction: TextInputAction.send,
+//                     onSubmitted: (_) => sendMessage(),
+//                     decoration: InputDecoration(
+//                       hintText: 'Type your message...',
+//                       border: OutlineInputBorder(
+//                         borderRadius: BorderRadius.circular(8),
+//                       ),
+//                       contentPadding: EdgeInsets.symmetric(horizontal: 12),
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(width: 8),
+//                 ElevatedButton(
+//                   onPressed: sendMessage,
+//                   child: Icon(Icons.send),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
+
+//import 'package:flutter/material.dart';
+// import 'package:silent_talk/screens/chat_screen.dart';
+// import 'package:silent_talk/utils/location/ss.dart';
+// void main() {
+//   runApp(MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'ChatGPT-style Bot',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: ChatScreen(), // Set chat screen as the main page
+//       debugShowCheckedModeBanner: false,
+//     );
+//   }
+// }
