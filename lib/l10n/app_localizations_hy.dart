@@ -130,4 +130,7 @@ class AppLocalizationsHy extends AppLocalizations {
 
   @override
   String get isAuth => 'Սարքում հավաստիացումը միացված չէ';
+
+  @override
+  String get ai => 'Արհեստական բանականության զրուցաբան';
 }

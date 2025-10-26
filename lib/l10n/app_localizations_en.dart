@@ -130,4 +130,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get isAuth => 'No Auth Activated in Device';
+
+  @override
+  String get ai => 'AI Chat Bot';
 }

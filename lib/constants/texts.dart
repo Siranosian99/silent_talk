@@ -50,4 +50,5 @@ class AppTexts {
   final String gallery="Gallery";
   final String typemsg="Type a message";
   final String isAuth="No Auth Activated in Device";
+  final String ai="Ai Chat Bot";
 }

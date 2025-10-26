@@ -344,6 +344,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Auth Activated in Device'**
   String get isAuth;
+
+  /// No description provided for @ai.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Chat Bot'**
+  String get ai;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

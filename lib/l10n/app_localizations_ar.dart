@@ -130,4 +130,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get isAuth => 'لم يتم تفعيل المصادقة على الجهاز';
+
+  @override
+  String get ai => 'روبوت الدردشة الذكي';
 }

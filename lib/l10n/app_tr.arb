@@ -40,5 +40,6 @@
   "camera": "Kamera",
   "gallery": "Galeri",
   "typemsg": "Mesaj yazın",
-  "isAuth": "Cihazda kimlik doğrulama etkinleştirilmedi"
+  "isAuth": "Cihazda kimlik doğrulama etkinleştirilmedi",
+  "ai": "Yapay Zeka Sohbet Botu"
 }

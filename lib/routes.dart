@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/screens/ai_chat_screen.dart';
 import 'package:silent_talk/screens/chat_screen.dart';
 import 'package:silent_talk/screens/login_page.dart';
 import 'package:silent_talk/screens/people_screen.dart';
@@ -155,6 +156,11 @@ final GoRouter router = GoRouter(
       path: '/request',
       name: 'request',
       builder: (context, state) => RequestScreen(),
+    ),
+    GoRoute(
+      path: '/ai',
+      name: 'ai',
+      builder: (context, state) => AiChatScreen(),
     ),
     GoRoute(
       path: '/mapLayer',

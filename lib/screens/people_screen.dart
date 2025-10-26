@@ -59,6 +59,9 @@ class _PeopleScreenState extends State<PeopleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton:FloatingActionButton(onPressed: (){
+        context.goNamed('ai');
+      },child: Image.asset('assets/icons/ai-assistant.png')),
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.chats),
         centerTitle: true,
