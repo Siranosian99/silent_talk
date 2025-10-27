@@ -31,14 +31,39 @@ class _AiChatScreenState extends State<AiChatScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Align(
-            child:TextFormField(),
             alignment: cvalue ? AlignmentGeometry.topLeft :AlignmentGeometry.topRight,
-          ),
+            child:Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  margin: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: cvalue ? Colors.blueAccent : Colors.grey.shade200,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(18),
+                      topRight: const Radius.circular(18),
+                      bottomLeft: Radius.circular(cvalue ? 18 : 0),
+                      bottomRight: Radius.circular(cvalue ? 0 : 18),
+                    ),
+                  ),
+                  child: Text(
+                    'data',
+                    style: TextStyle(
+                      color: cvalue ? Colors.white : Colors.black87,
+                      fontSize: 16,
+                    ),
+                  ),
+                )
 
+              ],
+            ),
+          ),
+          SizedBox(height: 700,),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
               decoration:InputDecoration(
+                hint:Text('Chat with AI BOT'),
                 border:OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
