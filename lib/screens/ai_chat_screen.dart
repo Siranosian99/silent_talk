@@ -31,7 +31,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Align(
-            child:,
+            child:TextFormField(),
             alignment: cvalue ? AlignmentGeometry.topLeft :AlignmentGeometry.topRight,
           ),
 
