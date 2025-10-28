@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:silent_talk/service/ai/ai_api.dart';
 import 'package:silent_talk/service/authenticator/authenticator.dart';
 import 'package:silent_talk/service/ids/get_userIds.dart';
 
@@ -59,8 +60,9 @@ class _PeopleScreenState extends State<PeopleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton:FloatingActionButton(onPressed: (){
-        context.goNamed('ai');
+      floatingActionButton:FloatingActionButton(onPressed: ()async{
+        // context.goNamed('ai');
+       await AIbotApiService().getData('Flutter');
       },child: Image.asset('assets/icons/ai-assistant.png')),
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.chats),

@@ -58,7 +58,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
               ],
             ),
           ),
-          SizedBox(height: 700,),
+          SizedBox(height: 650,),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
