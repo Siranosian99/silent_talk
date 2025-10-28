@@ -3,13 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/routes.dart';
-import 'package:silent_talk/screens/chat_screen.dart';
-import 'package:silent_talk/screens/login_page.dart';
-import 'package:silent_talk/screens/people_screen.dart';
-import 'package:silent_talk/screens/settings_screen.dart';
-import 'package:silent_talk/screens/signUp_page.dart';
+import 'package:silent_talk/service/ai/ai_api.dart';
 import 'package:silent_talk/service/notification/notification_shower.dart';
-import 'package:silent_talk/themes/app_themes.dart';
 import 'package:silent_talk/utils/biometric/auth_provider.dart';
 import 'package:silent_talk/utils/image_picker/image_picker.dart';
 import 'package:silent_talk/utils/last_seen/last_seen_provider.dart';
@@ -52,6 +47,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => AuthenticateProvider()),
         ChangeNotifierProvider(create: (_) => LastSeenProvider()),
+        ChangeNotifierProvider(create: (_) => AIbotApiService()),
       ],
       child: const MyApp(),
     ),
