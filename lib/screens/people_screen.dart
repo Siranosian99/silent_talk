@@ -61,7 +61,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton:FloatingActionButton(onPressed: ()async{
-        context.goNamed('ai');
+        context.pushNamed('ai');
        // await AIbotApiService().getData('Flutter');
       },child: Image.asset('assets/icons/ai-assistant.png')),
       appBar: AppBar(

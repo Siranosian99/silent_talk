@@ -8,6 +8,8 @@
 	<string>Silent Talk</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>NSPrivacyAccessedAPICategoryUserDefaults</key>
+    <string>Used to generate device identifier</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>

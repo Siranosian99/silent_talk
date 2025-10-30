@@ -14,6 +14,7 @@ import 'package:silent_talk/utils/themes/theme_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'l10n/app_localizations.dart';
+import 'dart:io';
 
 void main() async {
 
@@ -26,9 +27,9 @@ void main() async {
   await Hive.openBox('device_id');
   await Hive.openBox('lg');
   await Firebase.initializeApp(
-    options: const FirebaseOptions(
+    options: FirebaseOptions(
       apiKey: "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc",
-      appId: "1:156704193316:ios:8f808066187c855d3211b1",
+      appId: Platform.isAndroid ?"1:156704193316:android:12088ea8a9934d143211b1":"1:156704193316:ios:8f808066187c855d3211b1",
       //1:156704193316:ios:8f808066187c855d3211b1  //1:156704193316:android:12088ea8a9934d143211b1
       messagingSenderId: "156704193316",
       projectId: "silenttalk-53850",

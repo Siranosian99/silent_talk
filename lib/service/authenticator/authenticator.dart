@@ -98,6 +98,9 @@ class Authenticator {
           {'token': utoken, 'deviceId': deviceId},
           SetOptions(merge: true),
         );
+        print("-----------"
+            "This is SavedId in localStorage:$deviceId  "
+            "this is NewID:${snapshot.data()?['deviceId']}");
         listenForAnotherDeviceLogin(ctx,deviceId);
       }
     } on FirebaseAuthException catch (e) {

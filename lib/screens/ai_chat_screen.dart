@@ -35,48 +35,74 @@ class _AiChatScreenState extends State<AiChatScreen> {
       body: Column(
         children: [
           // --- Chat messages ---
-        provider.isFinished? Expanded(
-            child: aiMessages.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.separated(
-              padding: const EdgeInsets.all(12),
-              itemCount: aiMessages.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final msg = aiMessages[index];
-                final isUser = msg.role == 'user';
+          provider.isFinished
+              ? Expanded(
+                child:
+                    aiMessages.isEmpty
+                        ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/icons/ai-assistant.png',
+                              scale: 3,
+                            ),
+                            Text(
+                              'AI BOT',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )
+                        : ListView.separated(
+                          padding: const EdgeInsets.all(12),
+                          itemCount: aiMessages.length,
+                          separatorBuilder:
+                              (_, __) => const SizedBox(height: 8),
+                          itemBuilder: (context, index) {
+                            final msg = aiMessages[index];
+                            final isUser = msg.role == 'user';
 
-                return Align(
-                  alignment: isUser
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: isUser
-                          ? Colors.blueAccent
-                          : Colors.grey.shade300,
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(18),
-                        topRight: const Radius.circular(18),
-                        bottomLeft:
-                        Radius.circular(isUser ? 18 : 0),
-                        bottomRight:
-                        Radius.circular(isUser ? 0 : 18),
-                      ),
-                    ),
-                    child: Text(
-                      msg.content!,
-                      style: TextStyle(
-                        color: isUser ? Colors.white : Colors.black87,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ):Expanded(child: Center(child: Text("Getting Data Please Wait A Mommnet..."))),
+                            return Align(
+                              alignment:
+                                  isUser
+                                      ? Alignment.centerRight
+                                      : Alignment.centerLeft,
+                              child: Container(
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isUser
+                                          ? Colors.blueAccent
+                                          : Colors.grey.shade300,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: const Radius.circular(18),
+                                    topRight: const Radius.circular(18),
+                                    bottomLeft: Radius.circular(
+                                      isUser ? 18 : 0,
+                                    ),
+                                    bottomRight: Radius.circular(
+                                      isUser ? 0 : 18,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  msg.content!,
+                                  style: TextStyle(
+                                    color:
+                                        isUser ? Colors.white : Colors.black87,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+              )
+              : Expanded(
+                child: Center(
+                  child: Text("Getting Data Please Wait A Mommnet..."),
+                ),
+              ),
 
           // --- Input field ---
           Padding(
@@ -85,18 +111,21 @@ class _AiChatScreenState extends State<AiChatScreen> {
               controller: searchController,
               decoration: InputDecoration(
                 enabled: provider.isFinished,
-                hintText: provider.isFinished?'Chat with AI BOT':'Loading...',
+                hintText:
+                    provider.isFinished ? 'Chat with AI BOT' : 'Loading...',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 suffixIcon: IconButton(
-                  icon: provider.isFinished?Icon(Icons.send):CircularProgressIndicator(),
+                  icon:
+                      provider.isFinished
+                          ? Icon(Icons.send)
+                          : CircularProgressIndicator(),
                   onPressed: () {
                     if (searchController.text.trim().isNotEmpty) {
                       provider.getData(searchController.text.trim());
                       searchController.clear();
                       provider.isFinihsedChanger();
-
                     }
                   },
                 ),
