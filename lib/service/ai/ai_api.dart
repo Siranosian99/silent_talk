@@ -4,18 +4,29 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:silent_talk/service/model/ai_chat_model.dart';
 
+import '../../constants/api_consts.dart';
+
 class AIbotApiService with ChangeNotifier {
-  final Dio _dio = Dio(
-    BaseOptions(baseUrl: "https://openrouter.ai/api/v1/chat"),
+  final _keys=Keys();
+  bool isFinished=true;
+  late final Dio _dio = Dio(
+    BaseOptions(baseUrl: _keys.baseUrl),
   );
+  AIbotApiService(){
+    _keys;
+  }
   List<AiChatModel> ai_reply = [];
 
+  void isFinihsedChanger(){
+    isFinished= !isFinished;
+    notifyListeners();
+  }
   Future<List<AiChatModel>> getData(String query) async {
     try {
       final response = await _dio.post(
-        '/completions',
+        _keys.endPoint,
         data: json.encode({
-          "model": "minimax/minimax-m2:free",
+          "model":_keys.modelName ,
           "messages": [
             {"role": "user", "content": query},
           ],
@@ -23,24 +34,31 @@ class AIbotApiService with ChangeNotifier {
         options: Options(
           headers: {
             "Authorization":
-                "Bearer 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",
+               _keys.apiKey,
             "Content-Type": "application/json",
           },
         ),
       );
-
+      ai_reply.add(AiChatModel(role: 'user', content: query));
       if (response.statusCode == 200) {
-        // final result = response.data['choices'][0]['message'];
+        final msg = response.data['choices'][0]['message'];
         final data = AiChatModel(
-          role: response.data['choices'][0]['message']['role'],
-          reasoning: response.data['choices'][0]['message']['reasoning'],
-          refusal: response.data['choices'][0]['message']['refusal'],
-          content: response.data['choices'][0]['message']['content'],
+          role: msg['role'],
+          reasoning: msg['reasoning'],
+          refusal: msg['refusal'],
+          content: msg['content'],
         );
         ai_reply.add(data);
+        notifyListeners();
+        isFinihsedChanger();
+        debugPrint("✅ AI response added: ${data.content}");
         print("------------------------------------------------------"
             "$ai_reply");
       }
+      else {
+        debugPrint("Error: ${response.statusMessage}");
+      }
+
     } on DioException catch (e) {
       print(e.error);
     } catch (e) {
