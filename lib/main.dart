@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/constants/api_consts.dart';
 import 'package:silent_talk/routes.dart';
 import 'package:silent_talk/service/ai/ai_api.dart';
 import 'package:silent_talk/service/notification/notification_shower.dart';
@@ -17,7 +18,7 @@ import 'l10n/app_localizations.dart';
 import 'dart:io';
 
 void main() async {
-
+  final keys=Keys();
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('themes');
@@ -28,8 +29,8 @@ void main() async {
   await Hive.openBox('lg');
   await Firebase.initializeApp(
     options: FirebaseOptions(
-      apiKey: "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc",
-      appId: Platform.isAndroid ?"1:156704193316:android:12088ea8a9934d143211b1":"1:156704193316:ios:8f808066187c855d3211b1",
+      apiKey:keys.firebaseApiKey ,
+      appId: Platform.isAndroid ?keys.firebaseAndroid:keys.firebasaeIos,
       //1:156704193316:ios:8f808066187c855d3211b1  //1:156704193316:android:12088ea8a9934d143211b1
       messagingSenderId: "156704193316",
       projectId: "silenttalk-53850",
@@ -37,8 +38,8 @@ void main() async {
   );
   NotificationHandler.initialize();
   await Supabase.initialize(
-    url: 'https://qvcdgtjxkmmtmklgffyk.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2Y2RndGp4a21tdG1rbGdmZnlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMTA4ODcsImV4cCI6MjA3NTc4Njg4N30.5AyA6GGTPWCmvFtVsdvdnVXy_4m_xfxq6F8Sdz9uAtI',
+    url: keys.supabaseUrl,
+    anonKey: keys.supabaseKey,
   );
   runApp(
     MultiProvider(

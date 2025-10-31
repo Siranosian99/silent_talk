@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -94,10 +96,14 @@ class Authenticator {
             .collection('users')
             .doc(user?.uid);
         final snapshot = await docRef.get();
-        await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
+        Platform.isAndroid ? await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
           {'token': utoken, 'deviceId': deviceId},
           SetOptions(merge: true),
+        ): await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
+          {'deviceId': deviceId},
+          SetOptions(merge: true),
         );
+
         print("-----------"
             "This is SavedId in localStorage:$deviceId  "
             "this is NewID:${snapshot.data()?['deviceId']}");
