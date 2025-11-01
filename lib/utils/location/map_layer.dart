@@ -1,21 +1,23 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
+import 'package:apple_maps_flutter/apple_maps_flutter.dart' as amaps;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import '../../service/authenticator/authenticator.dart';
 import '../../service/messages/send_messages.dart';
 
 class MapSample extends StatefulWidget {
+
+  final String receiverId;
   final double latitude;
   final double longitude;
-  final String receiverId;
-
   const MapSample({
     super.key,
+    required this.receiverId,
     required this.latitude,
     required this.longitude,
-    required this.receiverId,
   });
 
   @override
@@ -23,29 +25,34 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
+
   late final Location _location;
-  Set<Marker> _markers = {};
-  late CameraPosition _kGooglePlex;
-  LatLng? _markerPosition;
-  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  Set<gmaps.Marker> _markers = {};
+  late gmaps.CameraPosition _kGooglePlex;
+  gmaps.LatLng? _markerPosition;
+  amaps.AppleMapController? mapController;
+  final Completer<gmaps.GoogleMapController> _controller =
+      Completer<gmaps.GoogleMapController>();
 
   @override
   void initState() {
     super.initState();
     _location = Location();
-    _markerPosition = LatLng(widget.latitude, widget.longitude);
+    _markerPosition = gmaps.LatLng(widget.latitude, widget.longitude);
     _setMarker(_markerPosition!);
-    _kGooglePlex = CameraPosition(
+    _kGooglePlex = gmaps.CameraPosition(
       target: _markerPosition!,
       zoom: 14.4746,
     );
   }
 
-  void _setMarker(LatLng position) {
+
+
+  void _setMarker(gmaps.LatLng position) {
     setState(() {
       _markers = {
-        Marker(
-          markerId: const MarkerId('selected_location'),
+        gmaps.Marker(
+          markerId: const gmaps.MarkerId('selected_location'),
           position: position,
           draggable: true,
           onDragEnd: (newPosition) {
@@ -57,32 +64,48 @@ class MapSampleState extends State<MapSample> {
     });
   }
 
-  void _onMapTapped(LatLng position) {
+  void _onMapTapped(gmaps.LatLng position) {
     _markerPosition = position;
     _setMarker(position); // Update marker on map tap
+  }
+
+
+  ///////IOS
+  void _onMapCreated(amaps.AppleMapController controller) {
+    mapController = controller;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        markers: _markers,
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (controller) => _controller.complete(controller),
-        onTap: _onMapTapped,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
-      ),
+      body:
+          Platform.isAndroid
+              ? gmaps.GoogleMap(
+                markers: _markers,
+                mapType: gmaps.MapType.normal,
+                initialCameraPosition: _kGooglePlex,
+                onMapCreated: (controller) => _controller.complete(controller),
+                onTap: _onMapTapped,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
+              )
+              :
+                       amaps.AppleMap(
+                        onMapCreated: _onMapCreated,
+                        initialCameraPosition: const amaps.CameraPosition(
+                          target: amaps.LatLng(0.0, 0.0),
+                        ),
+                      ),
+
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           FloatingActionButton.extended(
             onPressed: () async {
               LocationData loc = await _location.getLocation();
-              LatLng newPos = LatLng(loc.latitude!, loc.longitude!);
+              gmaps.LatLng newPos = gmaps.LatLng(loc.latitude!, loc.longitude!);
               final controller = await _controller.future;
-              controller.animateCamera(CameraUpdate.newLatLng(newPos));
+              controller.animateCamera(gmaps.CameraUpdate.newLatLng(newPos));
               _setMarker(newPos);
             },
             label: const Text('Get Current Location!'),
@@ -102,12 +125,104 @@ class MapSampleState extends State<MapSample> {
 
   void _sendLocation(String receiverId) {
     if (_markerPosition != null) {
-      final googleMapsUrl = "https://www.google.com/maps?q=${_markerPosition!.latitude},${_markerPosition!.longitude}";
-      MessageService().sendMessage(
-        googleMapsUrl,
-        Authenticator().user!.uid,
-        receiverId,
-      ).then((_) => context.pop());
+      final appleMapsUrl = 'maps://?q=${_markerPosition!.latitude},${_markerPosition!.longitude}';
+      final googleMapsUrl =
+          "https://www.google.com/maps?q=${_markerPosition!.latitude},${_markerPosition!.longitude}";
+      MessageService()
+          .sendMessage(Platform.isAndroid? googleMapsUrl:appleMapsUrl, Authenticator().user!.uid, receiverId)
+          .then((_) => context.pop());
     }
-  }
+
 }
+}
+
+// class AppleMapsExample extends StatelessWidget {
+//   AppleMapController mapController;
+//
+//   void _onMapCreated(AppleMapController controller) {
+//     mapController = controller;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//       crossAxisAlignment: CrossAxisAlignment.stretch,
+//       children: <Widget>[
+//         Expanded(
+//           child: Container(
+//             child: AppleMap(
+//               onMapCreated: _onMapCreated,
+//               initialCameraPosition: const CameraPosition(
+//                 target: LatLng(0.0, 0.0),
+//               ),
+//             ),
+//           ),
+//         ),
+//         Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//           children: <Widget>[
+//             Column(
+//               children: <Widget>[
+//                 FlatButton(
+//                   onPressed: () {
+//                     mapController.moveCamera(
+//                       CameraUpdate.newCameraPosition(
+//                         const CameraPosition(
+//                           heading: 270.0,
+//                           target: LatLng(51.5160895, -0.1294527),
+//                           pitch: 30.0,
+//                           zoom: 17,
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                   child: const Text('newCameraPosition'),
+//                 ),
+//                 FlatButton(
+//                   onPressed: () {
+//                     mapController.moveCamera(
+//                       CameraUpdate.newLatLngZoom(
+//                         const LatLng(37.4231613, -122.087159),
+//                         11.0,
+//                       ),
+//                     );
+//                   },
+//                   child: const Text('newLatLngZoom'),
+//                 ),
+//               ],
+//             ),
+//             Column(
+//               children: <Widget>[
+//                 FlatButton(
+//                   onPressed: () {
+//                     mapController.moveCamera(
+//                       CameraUpdate.zoomIn(),
+//                     );
+//                   },
+//                   child: const Text('zoomIn'),
+//                 ),
+//                 FlatButton(
+//                   onPressed: () {
+//                     mapController.moveCamera(
+//                       CameraUpdate.zoomOut(),
+//                     );
+//                   },
+//                   child: const Text('zoomOut'),
+//                 ),
+//                 FlatButton(
+//                   onPressed: () {
+//                     mapController.moveCamera(
+//                       CameraUpdate.zoomTo(16.0),
+//                     );
+//                   },
+//                   child: const Text('zoomTo'),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         )
+//       ],
+//     );
+//   }
+// }

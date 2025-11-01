@@ -102,3 +102,69 @@ class MyApp extends StatelessWidget {
 //     home: MainScreen(),
 //   );
 // }
+
+
+
+
+//import 'dart:io';
+// import 'package:flutter/material.dart';
+// import 'package:apple_maps_flutter/apple_maps_flutter.dart' as amaps;
+//
+// void main() {
+//   runApp(const MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return const MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: AppleMapExample(),
+//     );
+//   }
+// }
+//
+// class AppleMapExample extends StatefulWidget {
+//   const AppleMapExample({super.key});
+//
+//   @override
+//   State<AppleMapExample> createState() => _AppleMapExampleState();
+// }
+//
+// class _AppleMapExampleState extends State<AppleMapExample> {
+//   amaps.AppleMapController? _controller;
+//
+//   final double _latitude = 37.7749;  // Default San Francisco
+//   final double _longitude = -122.4194;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Apple Map Example')),
+//       body: Platform.isIOS
+//           ? amaps.AppleMap(
+//         onMapCreated: (controller) => _controller = controller,
+//         initialCameraPosition: amaps.CameraPosition(
+//           target: amaps.LatLng(_latitude, _longitude),
+//           zoom: 14,
+//         ),
+//         // annotations: {
+//         //   amaps.Annotation(
+//         //     annotationId: 'marker_1',
+//         //     coordinate: amaps.LatLng(_latitude, _longitude),
+//         //     title: 'San Francisco',
+//         //     subtitle: 'Golden Gate Bridge area',
+//         //   ),
+//         // },
+//       )
+//           : const Center(
+//         child: Text(
+//           'Apple Maps only available on iOS devices.',
+//           style: TextStyle(fontSize: 18),
+//         ),
+//       ),
+//     );
+//   }
+// }

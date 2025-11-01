@@ -90,16 +90,17 @@ class Authenticator {
         await user?.reload();
         ctx.goNamed('people');
         print('Login successful!');
-        String utoken = await GetToken.getToken();
+        // String utoken = await GetToken.getToken();
         final deviceId = await DeviceIdHelper().getDeviceId();
         final docRef = FirebaseFirestore.instance
             .collection('users')
             .doc(user?.uid);
         final snapshot = await docRef.get();
-        Platform.isAndroid ? await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
-          {'token': utoken, 'deviceId': deviceId},
-          SetOptions(merge: true),
-        ): await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
+        // Platform.isAndroid ? await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
+        //   {'token': utoken, 'deviceId': deviceId},
+        //   SetOptions(merge: true),
+        // ):
+        await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
           {'deviceId': deviceId},
           SetOptions(merge: true),
         );

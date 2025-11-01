@@ -73,6 +73,7 @@ dependencies:
   google_maps_flutter: ^2.13.1
   uuid: ^4.5.1
   dart_openai: ^5.1.0
+  apple_maps_flutter: ^1.4.0
 
 dev_dependencies:
   flutter_test:
