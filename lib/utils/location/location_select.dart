@@ -2,12 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 
-import '../../service/authenticator/authenticator.dart';
-import '../../service/messages/send_messages.dart';
-
 Future<void> sendLocation(String receiverId, BuildContext context) async {
-  Location location = Location();
-location.getLocation();
+  final location = Location();
+
   bool serviceEnabled = await location.serviceEnabled();
   if (!serviceEnabled) {
     serviceEnabled = await location.requestService();
@@ -20,14 +17,13 @@ location.getLocation();
     if (permissionGranted != PermissionStatus.granted) return;
   }
 
+  // ✅ Step 3: Now safely get the current location
   LocationData loc = await location.getLocation();
 
   final double? latitude = loc.latitude;
   final double? longitude = loc.longitude;
 
   if (latitude != null && longitude != null) {
-    final googleMapsUrl = "https://www.google.com/maps?q=$latitude,$longitude";
-
     await context.pushNamed(
       'mapLayer',
       extra: {
@@ -36,7 +32,6 @@ location.getLocation();
         "receiverId": receiverId,
       },
     );
-
-    print("📍 Location sent: $googleMapsUrl");
+    print("📍 Location sent: $latitude,$longitude");
   }
 }

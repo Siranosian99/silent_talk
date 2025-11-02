@@ -39,6 +39,8 @@
         <string> App wants to access your gallery</string>
         <key>NSLocationWhenInUseUsageDescription</key>
         <string>Your location is required to show you relevant meals in your area.</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>We need your location to show it on the map.</string>
         <key>NSLocationAlwaysUsageDescription</key>
         <string>Your location is required to show you relevant meals in your area.</string>
         <key>NSContactsUsageDescription</key>

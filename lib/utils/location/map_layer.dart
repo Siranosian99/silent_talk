@@ -91,6 +91,7 @@ class MapSampleState extends State<MapSample> {
               )
               :
                        amaps.AppleMap(
+                         mapType: amaps.MapType.hybrid,
                         onMapCreated: _onMapCreated,
                         initialCameraPosition: const amaps.CameraPosition(
                           target: amaps.LatLng(0.0, 0.0),

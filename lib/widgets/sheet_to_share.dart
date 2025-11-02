@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/utils/location/location_select.dart';
 
@@ -37,7 +38,7 @@ void showCustomBottomSheet(
                 Navigator.pop(context);
               }),
               _buildOption(Icons.location_on, 'Location', () async {
-                await sendLocation(id, context);
+               sendLocation(id, context);
               }),
               _buildOption(Icons.contacts, 'Contact', () {
                 context.pushNamed(
