@@ -175,7 +175,11 @@ final GoRouter router = GoRouter(
         return MapSample(latitude: latitude, longitude: longitude,receiverId: receiverId,);
       },
     ),
-
+    GoRoute(
+      path: '/mp',
+      name: 'mp',
+      builder: (context, state) => AppleMapsExample(),
+    ),
   ],
 );
 // GoRoute(

@@ -39,6 +39,7 @@ void showCustomBottomSheet(
               }),
               _buildOption(Icons.location_on, 'Location', () async {
                sendLocation(id, context);
+                // context.goNamed('mp');
               }),
               _buildOption(Icons.contacts, 'Contact', () {
                 context.pushNamed(
