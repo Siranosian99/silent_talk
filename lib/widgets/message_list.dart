@@ -11,12 +11,14 @@ import 'package:silent_talk/utils/contact/add_contact.dart';
 import 'package:silent_talk/utils/file_picker/documents.dart';
 import 'package:silent_talk/utils/file_saver/file_service.dart';
 import 'package:silent_talk/widgets/map_bubble.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../screens/text_viewer.dart';
 import '../service/authenticator/authenticator.dart';
 import '../utils/contact/send_contact.dart';
 import '../utils/file_picker/file_picker.dart';
 import '../utils/image_picker/image_picker.dart';
+import '../utils/message_type/message_checker.dart';
 
 class MessageList extends StatelessWidget {
   const MessageList({
@@ -42,9 +44,9 @@ class MessageList extends StatelessWidget {
               final parts = coords.split(",");
               if (msg.contains("https://res.cloudinary.com")) {
                 // String fileName,String urlPath, Uint8List bytes
-                Uint8List bytes = Uint8List.fromList(
-                  utf8.encode(messages[index]['message']),
-                );
+                // Uint8List bytes = Uint8List.fromList(
+                //   utf8.encode(messages[index]['message']),
+                // );
 
                 Filer.saveNetworkImage(messages[index]['message']);
                 // FileSaver.downloadAndSave(messages[index]['message'], 'file1');
@@ -63,7 +65,9 @@ class MessageList extends StatelessWidget {
                   ),
                 );
               }
-              else if (msg.contains("https://www.google.com/maps?q")){
+              else if (msg.contains("https://www.google.com/maps?q")||  messages[index]['message'].contains(
+                "maps://?q",
+              )){
                 await context.pushNamed(
                   'mapLayer',
                   extra: {
@@ -73,6 +77,11 @@ class MessageList extends StatelessWidget {
                   },
                 );
               }
+              else if(messages[index]['message'].isNotEmpty){
+                final uri = Uri.tryParse(messages[index]['message']);
+                if(MessageTypeChecker.isUrl(messages[index]['message'])){
+
+                  await launchUrl(uri!);}}
             },
             onLongPress: () {
               MessageService().deleteMessage(
@@ -90,7 +99,9 @@ class MessageList extends StatelessWidget {
               //here checkin///
               child:messages[index]['message'].contains(
                 "https://www.google.com/maps?q",
-              )?Padding(
+              ) ||  messages[index]['message'].contains(
+                "maps://?q",
+              ) ?Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: MapPreview(url: messages[index]['message'],),
               ):
@@ -105,7 +116,7 @@ class MessageList extends StatelessWidget {
                           child: Container(
                             width: 240,
                             height: 90,
-                            color:Color(0xFFFFA726)  ,// #2196F3 – bright, modern blue
+                            color:Color(0xFFFFA726),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -295,7 +306,7 @@ class MessageList extends StatelessWidget {
                         ),
                         child: Text(
                           messages[index]['message'],
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          style: TextStyle(color: Colors.white, fontSize: 16,decoration: MessageTypeChecker.isUrl(messages[index]['message'])?TextDecoration.underline:TextDecoration.none),
                         ),
                       ),
             ),

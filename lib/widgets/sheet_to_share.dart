@@ -52,7 +52,7 @@ void showCustomBottomSheet(
               }),
               // _buildOption(Icons.event, 'Event', () {}),
               // _buildOption(Icons.poll, 'Poll', () {}),
-              _buildOption(FontAwesomeIcons.spotify, 'Spotify', () {}),
+              // _buildOption(FontAwesomeIcons.spotify, 'Spotify', () {}),
               // _buildOption(Icons.share, 'Share', () {}),
             ],
           ),

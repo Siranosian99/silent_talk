@@ -33,5 +33,6 @@ Future<void> sendLocation(String receiverId, BuildContext context) async {
       },
     );
     print("📍 Location sent: $latitude,$longitude");
+    print('maps://?q=$latitude,$longitude');
   }
 }

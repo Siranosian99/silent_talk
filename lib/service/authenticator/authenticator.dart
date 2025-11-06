@@ -235,13 +235,15 @@ class Authenticator {
     });
   }
 
-  Future<void> deleteAccount() async {
+  Future<void> deleteAccount(BuildContext context) async {
     try {
       final uid = user?.uid;
 
       if (uid == null) return;
       await FirebaseFirestore.instance.collection('users').doc(uid).delete();
       await user?.delete();
+      final deviceId = await DeviceIdHelper().getDeviceId();
+      listenForAnotherDeviceLogin(context,deviceId);
       print('✅ User deleted from Auth and Firestore');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {

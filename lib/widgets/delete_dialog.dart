@@ -35,10 +35,11 @@ void showDeleteAccountDialog(BuildContext context) {
                     horizontal: 16,
                     vertical: 12,
                   ),),
-                onPressed: () {
+                onPressed: () async{
+                  await Authenticator().deleteAccount(context);
                   Navigator.of(context).pop();
                   GoRouter.of(context).goNamed('login');
-                  Authenticator().deleteAccount();
+
                 },
               ),
             ],
