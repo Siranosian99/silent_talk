@@ -4,28 +4,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:silent_talk/screens/ai_chat_screen.dart';
-import 'package:silent_talk/screens/chat_screen.dart';
-import 'package:silent_talk/screens/login_page.dart';
-import 'package:silent_talk/screens/people_screen.dart';
-import 'package:silent_talk/screens/request_screen.dart';
-import 'package:silent_talk/screens/reset_email.dart';
-import 'package:silent_talk/screens/reset_password_inside.dart';
-import 'package:silent_talk/screens/settings_screen.dart';
-import 'package:silent_talk/screens/signUp_page.dart';
-import 'package:silent_talk/screens/splash_screen.dart';
-import 'package:silent_talk/screens/update_email_screen.dart';
-import 'package:silent_talk/screens/userName_update.dart';
-import 'package:silent_talk/service/authenticator/authenticator.dart';
-import 'package:silent_talk/service/notification/notification_shower.dart';
-import 'package:silent_talk/utils/biometric/auth.dart';
-import 'package:silent_talk/utils/biometric/auth_provider.dart';
-import 'package:silent_talk/utils/location/location_guide.dart';
-import 'package:silent_talk/utils/location/map_layer.dart';
-import 'package:silent_talk/utils/location/ss.dart';
-import 'package:silent_talk/widgets/contact_shower_sheet.dart';
+import 'package:silent_talk/features/chat/screens/ai_chat_screen.dart';
+import 'package:silent_talk/features/chat/screens/chat_screen.dart';
+import 'package:silent_talk/features/auth/screens/login_page.dart';
+import 'package:silent_talk/features/user/screens/people_screen.dart';
+import 'package:silent_talk/features/chat/screens/request_screen.dart';
+import 'package:silent_talk/features/auth/screens/reset_email.dart';
+import 'package:silent_talk/features/profile/screens/reset_password_inside.dart';
+import 'package:silent_talk/features/profile/screens/settings_screen.dart';
+import 'package:silent_talk/features/auth/screens/sign_up_page.dart';
+import 'package:silent_talk/features/splash/screen/splash_screen.dart';
+import 'package:silent_talk/features/profile/screens/update_email_screen.dart';
+import 'package:silent_talk/features/profile/screens/userName_update.dart';
+import 'package:silent_talk/features/auth/services/authenticator.dart';
 
-import 'global_key.dart';
+import 'package:silent_talk/features/chat/widgets/contact_shower_sheet.dart';
+
+import 'core/utils/biometric/auth.dart';
+import 'core/utils/biometric/auth_provider.dart';
+import 'core/utils/location/map_layer.dart';
+import 'core/utils/location/ss.dart';
+import 'core/global_key.dart';
 
 final GoRouter router = GoRouter(
   navigatorKey: AppNavigator.navigatorKey,
@@ -36,8 +35,8 @@ final GoRouter router = GoRouter(
       name: 'splash',
       builder: (context, state) => SplashScreen(),
       redirect: (context, state) async {
-        final _authenticator=Authenticator();
-        final _authService=AuthService();
+        final _authenticator = Authenticator();
+        final _authService = AuthService();
         final boolValue = _authenticator.isLoggedOut;
         _authService.checkAvailable(context);
         final _authProvider = Provider.of<AuthenticateProvider>(
@@ -48,22 +47,23 @@ final GoRouter router = GoRouter(
         bool isAuth = await _authService.checkAuth(); // device auth available
         _authService.checkAvailable(context);
         final isLoggedIn = FirebaseAuth.instance.currentUser;
-        if(!boolValue){
-        if (isLoggedIn != null) {
-          // user logged in
-          if (isLocked && isAuth) {
-            return '/login';
+        if (!boolValue) {
+          if (isLoggedIn != null) {
+            // user logged in
+            if (isLocked && isAuth) {
+              return '/login';
+            } else {
+              return '/people';
+            }
           } else {
-            return '/people';
-          }
-        } else {
-          if (isLocked && isAuth) {
-            return '/login';
-          } else {
-            return '/login';
+            if (isLocked && isAuth) {
+              return '/login';
+            } else {
+              return '/login';
+            }
           }
         }
-      }}
+      },
     ),
 
     // GoRoute(
@@ -92,15 +92,16 @@ final GoRouter router = GoRouter(
       name: 'login',
       builder: (context, state) => LoginScreen(),
       redirect: (context, state) {
-        final user= FirebaseAuth.instance.currentUser;
+        final user = FirebaseAuth.instance.currentUser;
         final isLoggedIn = user;
 
         if (isLoggedIn != null && user!.emailVerified) {
           return '/people'; // user already logged in → skip login
-        }
-        else {
-          print(""
-              "verify your emailll");
+        } else {
+          print(
+            ""
+            "verify your emailll",
+          );
         }
 
         return null; // stay on /login
@@ -120,7 +121,6 @@ final GoRouter router = GoRouter(
         );
       },
     ),
-
 
     GoRoute(
       path: '/contact',
@@ -172,7 +172,11 @@ final GoRouter router = GoRouter(
         final longitude = data['longitude'] as double;
         final receiverId = data['receiverId'] as String;
 
-        return MapSample(latitude: latitude, longitude: longitude,receiverId: receiverId,);
+        return MapSample(
+          latitude: latitude,
+          longitude: longitude,
+          receiverId: receiverId,
+        );
       },
     ),
     GoRoute(

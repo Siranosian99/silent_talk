@@ -1,0 +1,140 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:silent_talk/constants/texts.dart';
+import 'package:silent_talk/features/auth/services/authenticator.dart';
+import 'package:silent_talk/features/auth/widgets/login_signUp_textFields.dart';
+
+import '../../../core/utils/image_picker/image_picker.dart';
+import '../../../l10n/app_localizations.dart';
+
+class SignUpScreen extends StatefulWidget {
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final Authenticator auth= Authenticator();
+  String? photoLink;
+  String? photoServer;
+  final TextEditingController _nameController=TextEditingController();
+  final TextEditingController _userNameController=TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final  picker=Picker();
+  Future<String?> savePhoto()async{
+   final link=await picker.galleryPicker();
+      setState(() {
+        photoLink=link;
+      });
+      return link;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // App Titlep
+              CircleAvatar(
+                radius: 60,
+                backgroundImage: photoLink !=null?FileImage(File(photoLink!)):AssetImage('assets/images/noProfile.png'),
+                child: Stack(
+                  children: [
+                   TextButton(onPressed: (){
+                     setState(() {
+                      savePhoto();
+                     });
+                   }, child: Text(photoLink == null?AppLocalizations.of(context)!.addPhoto:''))
+                  ],
+                )
+              ),
+              Text(
+                AppLocalizations.of(context)!.appName,
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
+              ),
+              SizedBox(height: 40),
+              LoginSignupTextfields(
+                controller: _userNameController,
+                icon: Icon(Icons.person),
+                labelText: AppLocalizations.of(context)!.uName,
+                isOn: false,
+              ),
+              SizedBox(height: 16),
+              LoginSignupTextfields(
+                controller:_nameController,
+                icon: Icon(Icons.nature_people),
+                labelText: AppLocalizations.of(context)!.name,
+                isOn: false,
+              ),
+              SizedBox(height: 16),
+              LoginSignupTextfields(
+                controller: _emailController,
+                icon: Icon(Icons.email),
+                labelText: AppLocalizations.of(context)!.email,
+                isOn: false,
+              ),
+              SizedBox(height: 16),
+              LoginSignupTextfields(
+                controller:_passwordController,
+                icon: Icon(Icons.password),
+                labelText: AppLocalizations.of(context)!.password,
+                isOn: true,
+              ),
+              SizedBox(height: 40),
+              // Login Button
+              ElevatedButton(
+                onPressed: () async{
+                  if(photoLink != null){
+                    photoServer=await picker.imgUploaderToServer(photoLink.toString());
+                    await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,photoServer ?? '');
+                  }
+                  else {
+                    return;
+                  }
+
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.signUp,
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+
+              SizedBox(height: 30),
+
+              // Sign Up Option
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(AppLocalizations.of(context)!.dntHveAccount),
+                  TextButton(
+                    onPressed: () {
+                      GoRouter.of(context).goNamed('login');
+                    },
+                    child: Text(AppLocalizations.of(context)!.login),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

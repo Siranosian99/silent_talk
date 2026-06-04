@@ -5,8 +5,8 @@ import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
 import 'package:apple_maps_flutter/apple_maps_flutter.dart' as amaps;
 import 'package:go_router/go_router.dart';
-import '../../service/authenticator/authenticator.dart';
-import '../../service/messages/send_messages.dart';
+import 'features/auth/services/authenticator.dart';
+import 'features/chat/services/send_messages.dart';
 
 class MapSample extends StatefulWidget {
   final String receiverId;
