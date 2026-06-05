@@ -37,8 +37,9 @@ void showDeleteAccountDialog(BuildContext context) {
                   ),),
                 onPressed: () async{
                   await Authenticator().deleteAccount(context);
-                  Navigator.of(context).pop();
-                  GoRouter.of(context).goNamed('login');
+                  if (!context.mounted) return;
+                  context.pop();
+                  context.goNamed('login');
 
                 },
               ),

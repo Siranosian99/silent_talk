@@ -41,7 +41,7 @@ class _MapPreviewState extends State<MapPreview> {
   @override
   Widget build(BuildContext context) {
     if (latitude == null || longitude == null) {
-      return Container(
+      return  Container(
         width: widget.width,
         height: widget.height,
         alignment: Alignment.center,
@@ -59,7 +59,7 @@ class _MapPreviewState extends State<MapPreview> {
     final staticMapUrl =
         'https://maps.googleapis.com/maps/api/staticmap?center=$latitude,$longitude&zoom=14&size=${widget.width.toInt()}x${widget.height.toInt()}&markers=color:red%7C$latitude,$longitude&key=AIzaSyA7Hi82BXzseAJZAlfLgxE5VGYCs-rV924';
 
-    return ClipRRect(
+    return  ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Image.network(
         staticMapUrl,

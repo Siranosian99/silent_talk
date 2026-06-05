@@ -10,18 +10,18 @@ Future<void> showContactDialog(
  await showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
+      return  AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        title: Row(
-          children: const [
+        title: const Row(
+          children:  [
             CircleAvatar(
-              child: Icon(Icons.person, color: Colors.white),
               backgroundColor: Colors.blue,
+              child: Icon(Icons.person, color: Colors.white),
             ),
             SizedBox(width: 12),
-            Text("Contact"),
+             Text("Contact"),
           ],
         ),
         content: Column(
@@ -42,7 +42,7 @@ Future<void> showContactDialog(
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
+            child:const Text("Cancel"),
           ),
           ElevatedButton.icon(
             onPressed: () {
@@ -50,7 +50,7 @@ Future<void> showContactDialog(
               context.pop();
             },
             icon: Icon(Icons.send),
-            label: Text("Send"),
+            label:const Text("Send"),
           ),
         ],
       );

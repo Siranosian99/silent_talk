@@ -27,6 +27,7 @@ Future<void> showImageSourceDialog(BuildContext context) async {
                     await Authenticator().updateProilePhoto(result).then((_){
                       picker.clearImage();
                     });
+                    if(!context.mounted) return;
                     Navigator.pop(context);
                   }
 
@@ -44,6 +45,7 @@ Future<void> showImageSourceDialog(BuildContext context) async {
                     await Authenticator().updateProilePhoto(result).then((_){
                       picker.clearImage();
                     });
+                    if(!context.mounted) return;
                     Navigator.pop(context);
                   }
                 },

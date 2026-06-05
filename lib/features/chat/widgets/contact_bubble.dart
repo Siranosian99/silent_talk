@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:silent_talk/constants/texts.dart';
 
 class ContactBubble extends StatelessWidget {
   final String name;
@@ -6,11 +7,11 @@ class ContactBubble extends StatelessWidget {
   final VoidCallback? onAdd;
 
   const ContactBubble({
-    Key? key,
+    super.key,
     required this.name,
     required this.phoneNumber,
     this.onAdd,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class ContactBubble extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: [
+        boxShadow:const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 5,
@@ -73,7 +74,7 @@ class ContactBubble extends StatelessWidget {
                 Icon(Icons.person_add, color: Colors.green.shade700, size: 20),
                 SizedBox(width: 6),
                 Text(
-                  "Add to contacts",
+                  AppTexts.instance.contact,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,

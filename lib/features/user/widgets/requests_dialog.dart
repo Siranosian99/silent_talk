@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../../constants/texts.dart';
+
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/authenticator.dart';
@@ -13,6 +12,7 @@ Future<void> showRequestDialog(BuildContext context) async {
     barrierDismissible: true,
     context: context,
     builder:
+
         (context) => AlertDialog(
       title:  Text(AppLocalizations.of(context)!.chaneImg),
       content: Column(
@@ -27,6 +27,7 @@ Future<void> showRequestDialog(BuildContext context) async {
                 await Authenticator().updateProilePhoto(result).then((_){
                   picker.clearImage();
                 });
+                if(!dialog.mounted) return;
                 Navigator.pop(context);
               }
 
@@ -44,6 +45,7 @@ Future<void> showRequestDialog(BuildContext context) async {
                 await Authenticator().updateProilePhoto(result).then((_){
                   picker.clearImage();
                 });
+                if (!context.mounted) return;
                 Navigator.pop(context);
               }
             },

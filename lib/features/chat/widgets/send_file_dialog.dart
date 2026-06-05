@@ -27,7 +27,7 @@ Future<void> showFileDialog(
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
+            child:const Text("Cancel"),
           ),
           ElevatedButton.icon(
             onPressed: () {
@@ -35,7 +35,7 @@ Future<void> showFileDialog(
               context.pop();
             },
             icon: Icon(Icons.send),
-            label: Text("Send"),
+            label:const Text("Send"),
           ),
         ],
       );

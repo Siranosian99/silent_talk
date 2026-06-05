@@ -24,7 +24,7 @@ class AppTexts {
   final String newPassword="New Password";
   final String passChange= "Change the Password";
   final String changeEmail= "Update the Email";
-  final String changeUserName="Update UserName";
+  final String changeUserName="Update Username";
   final String addPhoto="Add Photo";
   final String chats="Chats";
   final String search="Search";
@@ -51,4 +51,5 @@ class AppTexts {
   final String typemsg="Type a message";
   final String isAuth="No Auth Activated in Device";
   final String ai="Ai Chat Bot";
+  final String contact="Add to contacts";
 }

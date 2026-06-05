@@ -35,17 +35,18 @@ final GoRouter router = GoRouter(
       name: 'splash',
       builder: (context, state) => SplashScreen(),
       redirect: (context, state) async {
-        final _authenticator = Authenticator();
-        final _authService = AuthService();
-        final boolValue = _authenticator.isLoggedOut;
-        _authService.checkAvailable(context);
-        final _authProvider = Provider.of<AuthenticateProvider>(
+        final authenticator = Authenticator();
+        final authService = AuthService();
+        final boolValue = authenticator.isLoggedOut;
+        authService.checkAvailable(context);
+        final authProvider = Provider.of<AuthenticateProvider>(
           context,
           listen: false,
         );
-        bool isLocked = _authProvider.isAuth; // your app lock
-        bool isAuth = await _authService.checkAuth(); // device auth available
-        _authService.checkAvailable(context);
+        bool isLocked = authProvider.isAuth; // your app lock
+        authService.checkAvailable(context);
+        bool isAuth = await authService.checkAuth(); // device auth available
+
         final isLoggedIn = FirebaseAuth.instance.currentUser;
         if (!boolValue) {
           if (isLoggedIn != null) {
@@ -63,6 +64,7 @@ final GoRouter router = GoRouter(
             }
           }
         }
+        return null;
       },
     ),
 

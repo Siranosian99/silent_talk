@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
+import '../../../constants/sheets_const.dart';
 import '../../../core/utils/file_picker/file_picker.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/location/location_select.dart';
@@ -18,7 +19,7 @@ void showCustomBottomSheet(
   final picker = Provider.of<Picker>(context, listen: false);
   showModalBottomSheet(
     context: context,
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
     builder:
@@ -29,25 +30,25 @@ void showCustomBottomSheet(
             spacing: 24,
             runSpacing: 24,
             children: [
-              _buildOption(Icons.photo, 'Photo', () {
+              _buildOption(Icons.photo, Sheets.instance.photo, () {
                 picker.galleryPicker();
                 Navigator.pop(context);
               }),
-              _buildOption(Icons.camera_alt, 'Camera', () {
+              _buildOption(Icons.camera_alt, Sheets.instance.camera, () {
                 picker.cameraPicker();
                 Navigator.pop(context);
               }),
-              _buildOption(Icons.location_on, 'Location', () async {
+              _buildOption(Icons.location_on, Sheets.instance.location, () async {
                sendLocation(id, context);
                 // context.goNamed('mp');
               }),
-              _buildOption(Icons.contacts, 'Contact', () {
+              _buildOption(Icons.contacts, Sheets.instance.contact, () {
                 context.pushNamed(
                   'contact',
                   extra: {"id": id, "index": index}, // Passing index here
                 );
               }),
-              _buildOption(Icons.insert_drive_file, 'Document', () {
+              _buildOption(Icons.insert_drive_file, Sheets.instance.document, () {
                 pickDocumentFile(context, id);
               }),
               // _buildOption(Icons.event, 'Event', () {}),

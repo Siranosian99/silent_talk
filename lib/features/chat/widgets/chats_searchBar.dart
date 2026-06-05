@@ -7,10 +7,10 @@ class ChatSearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
   const ChatSearchBar({
-    Key? key,
+    super.key,
     required this.controller,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
