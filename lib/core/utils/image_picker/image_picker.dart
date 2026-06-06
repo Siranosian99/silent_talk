@@ -28,9 +28,10 @@ class Picker with ChangeNotifier{
       // print('Uploaded image URL: ${response.secureUrl}');
       // imgPath = response.secureUrl;
       imgPath = pickedImage?.path;
-      notifyListeners();
       imgPath!.isNotEmpty ? isImage = true : isImage = false;
+      notifyListeners();
       print(isImage);
+
       print("------------------------IMAGE PATH:$imgPath");
       return imgPath; // Return the Cloudinary link
 
@@ -56,8 +57,8 @@ class Picker with ChangeNotifier{
   void clearImage() {
     imgPath = '';
     pickedImage = null;
-    notifyListeners();
     isImage = false;
+    notifyListeners();
 
   }
 
@@ -76,8 +77,8 @@ class Picker with ChangeNotifier{
         imgPath=response.secureUrl;
         imgPath!.isNotEmpty ?isImage=true: isImage=false;
         print(isImage);
-        notifyListeners();
         print('Uploaded image URL: ${response.secureUrl}');
+        notifyListeners();
         return imgPath; // Return the Cloudinary link
 
       }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppThemeData{
   static final ThemeData lightTheme = ThemeData(
@@ -6,6 +7,11 @@ class AppThemeData{
       foregroundColor: WidgetStateProperty.all(Colors.black),
       backgroundColor:  WidgetStateProperty.all(Colors.yellowAccent),
     )),
+    appBarTheme: AppBarTheme(titleTextStyle:GoogleFonts.abel(
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      color:Colors.white
+    ), ),
     inputDecorationTheme:InputDecorationTheme(
       fillColor: Colors.red[200],
       border:OutlineInputBorder(
@@ -24,7 +30,10 @@ class AppThemeData{
         foregroundColor: WidgetStateProperty.all(Colors.black),
         backgroundColor:  WidgetStateProperty.all(Colors.yellowAccent),
       )),
-
+appBarTheme: AppBarTheme(titleTextStyle:GoogleFonts.manrope(
+  fontSize: 20,
+  fontWeight: FontWeight.w700,
+), ),
       inputDecorationTheme:InputDecorationTheme(
           fillColor: Colors.red[200],
           border:OutlineInputBorder(

@@ -65,24 +65,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: GestureDetector(
                       onTap: () async {
                         await showImageSourceDialog(context);
+                        await callUserData();
                       },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child:
-                            img.isEmpty
-                                ? Image.asset(
-                                  'assets/images/noProfile.png',
-                                  fit: BoxFit.cover,
-                                )
-                                // picture['path'] != null
-                                // ? Image.file(File(picture['path']), fit: BoxFit.cover)
-                                : Image.network(img),
-                        // CircleAvatar(
-                        //   radius: 50,
-                        //   backgroundImage: data?['image'].isEmpty
-                        //       ? AssetImage('assets/images/noProfile.png')
-                        //       :  NetworkImage(data?['image']),
-                        // ),
+                      child: SizedBox(
+                        width: 400,
+                        height: 400,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child:
+                              img.isEmpty
+                                  ? Image.asset(
+                                    'assets/images/noProfile.png',
+                                    fit: BoxFit.cover,
+                                  )
+                                  // picture['path'] != null
+                                  // ? Image.file(File(picture['path']), fit: BoxFit.cover)
+                                  : Image.network(img),
+                          // CircleAvatar(
+                          //   radius: 50,
+                          //   backgroundImage: data?['image'].isEmpty
+                          //       ? AssetImage('assets/images/noProfile.png')
+                          //       :  NetworkImage(data?['image']),
+                          // ),
+                        ),
                       ),
                     ),
                   ),
@@ -98,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Section: Account
                   sectionTitle(AppLocalizations.of(context)!.account),
                   SettingsListtile(
-                    title: Text(AppLocalizations.of(context)!.changeUserName),
+                    title: Text(AppLocalizations.of(context)!.userName),
                     leading: const Icon(Icons.edit),
                     onTap: () {
                       context.pushNamed('updateUserName');

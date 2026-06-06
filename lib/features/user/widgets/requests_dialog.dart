@@ -6,36 +6,36 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/services/authenticator.dart';
 
 
-Future<void> showRequestDialog(BuildContext context) async {
-  final picker = Provider.of<Picker>(context, listen: false);
+Future<void> showRequestDialog(BuildContext parentContext) async {
+  final picker = Provider.of<Picker>(parentContext, listen: false);
   showDialog(
     barrierDismissible: true,
-    context: context,
+    context: parentContext,
     builder:
 
-        (context) => AlertDialog(
-      title:  Text(AppLocalizations.of(context)!.chaneImg),
+        (dialogContext) => AlertDialog(
+      title:  Text(AppLocalizations.of(dialogContext)!.chaneImg),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
             leading: const Icon(Icons.camera_alt),
-            title:  Text(AppLocalizations.of(context)!.camera),
+            title:  Text(AppLocalizations.of(dialogContext)!.camera),
             onTap: () async {
               final result =await picker.cameraPicker();
               if (result != null) {
                 await Authenticator().updateProilePhoto(result).then((_){
                   picker.clearImage();
                 });
-                if(!dialog.mounted) return;
-                Navigator.pop(context);
+                if(!dialogContext.mounted) return;
+                Navigator.pop(dialogContext);
               }
 
             },
           ),
           ListTile(
             leading: const Icon(Icons.photo_library),
-            title:  Text(AppLocalizations.of(context)!.gallery),
+            title:  Text(AppLocalizations.of(dialogContext)!.gallery),
             onTap: () async {
               final path = await picker.galleryPicker();
               final localPath=path;
@@ -45,8 +45,8 @@ Future<void> showRequestDialog(BuildContext context) async {
                 await Authenticator().updateProilePhoto(result).then((_){
                   picker.clearImage();
                 });
-                if (!context.mounted) return;
-                Navigator.pop(context);
+                if (!dialogContext.mounted) return;
+                Navigator.pop(dialogContext);
               }
             },
           ),

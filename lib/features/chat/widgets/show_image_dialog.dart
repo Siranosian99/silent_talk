@@ -9,7 +9,7 @@ import '../../auth/services/authenticator.dart';
 
 Future<void> showImageSourceDialog(BuildContext context) async {
   final picker = Provider.of<Picker>(context, listen: false);
-  showDialog(
+  await showDialog(
     barrierDismissible: true,
     context: context,
     builder:

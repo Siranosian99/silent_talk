@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:silent_talk/features/chat/services/ai_api.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/user/service/get_userIds.dart';
@@ -35,7 +36,6 @@ class _PeopleScreenState extends State<PeopleScreen> {
   @override
   void initState() {
     callUsers('');
-
     super.initState();
   }
 
