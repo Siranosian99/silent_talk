@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:silent_talk/constants/texts.dart';
+import 'package:silent_talk/features/user/service/user_account.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/authenticator.dart';
@@ -14,7 +16,7 @@ class UpdateUserNameScreen extends StatefulWidget {
 class _UpdateUserNameScreenState extends State<UpdateUserNameScreen> {
   final _userName = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
+  final UserAccountEdits accountEdits=UserAccountEdits();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +51,7 @@ class _UpdateUserNameScreenState extends State<UpdateUserNameScreen> {
               SizedBox(height: 30),
               ElevatedButton.icon(
                 onPressed: () {
-                  Authenticator().updateUserName(_userName.text);
+                  accountEdits.updateUserName(_userName.text);
                 },
                 icon: Icon(Icons.update),
                 label: Text(AppLocalizations.of(context)!.userName),

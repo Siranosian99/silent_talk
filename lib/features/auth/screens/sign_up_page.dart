@@ -19,6 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final Authenticator auth= Authenticator();
   String? photoLink;
   String? photoServer;
+  final imgLink="https://i.pinimg.com/1200x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg";
   final TextEditingController _nameController=TextEditingController();
   final TextEditingController _userNameController=TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -41,10 +42,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // App Titlep
+              // App Title
               CircleAvatar(
                 radius: 60,
-                backgroundImage: photoLink !=null?FileImage(File(photoLink!)):AssetImage('assets/images/noProfile.png'),
+                backgroundImage: photoLink !=null?FileImage(File(photoLink!)):NetworkImage('https://i.pinimg.com/1200x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'),
                 child: Stack(
                   children: [
                    TextButton(onPressed: (){
@@ -99,8 +100,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     photoServer=await picker.imgUploaderToServer(photoLink.toString());
                     await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,photoServer ?? '');
                   }
-                  else {
-                    return;
+                  else   {
+                    photoServer=imgLink;
+                    await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,photoServer?? '');
                   }
 
                 },

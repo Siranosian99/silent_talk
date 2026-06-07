@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/features/user/service/user_account.dart';
 
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../l10n/app_localizations.dart';
@@ -8,6 +9,7 @@ import '../../auth/services/authenticator.dart';
 
 Future<void> showRequestDialog(BuildContext parentContext) async {
   final picker = Provider.of<Picker>(parentContext, listen: false);
+  final UserAccountEdits accountEdit=UserAccountEdits();
   showDialog(
     barrierDismissible: true,
     context: parentContext,
@@ -24,7 +26,7 @@ Future<void> showRequestDialog(BuildContext parentContext) async {
             onTap: () async {
               final result =await picker.cameraPicker();
               if (result != null) {
-                await Authenticator().updateProilePhoto(result).then((_){
+                await accountEdit.updateProilePhoto(result).then((_){
                   picker.clearImage();
                 });
                 if(!dialogContext.mounted) return;
@@ -42,7 +44,7 @@ Future<void> showRequestDialog(BuildContext parentContext) async {
               final result=await picker.imgUploaderToServer(localPath.toString());
 
               if (result != null) {
-                await Authenticator().updateProilePhoto(result).then((_){
+                await accountEdit.updateProilePhoto(result).then((_){
                   picker.clearImage();
                 });
                 if (!dialogContext.mounted) return;

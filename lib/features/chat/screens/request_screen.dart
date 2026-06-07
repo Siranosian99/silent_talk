@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
+import 'package:silent_talk/features/user/service/get_userIds.dart';
 
 import '../../auth/services/request_check.dart';
-import '../../user/model/request_model.dart';
-import '../../user/model/user_model.dart';
+
 import '../../user/service/users_service.dart';
 
 class RequestScreen extends StatefulWidget {
@@ -20,6 +20,7 @@ class _RequestScreenState extends State<RequestScreen> {
   // Map<String, dynamic>? data;
   final UsersService _usersService = UsersService();
   final RequestsChats _requestsChats = RequestsChats();
+  final Authenticator _authenticator=Authenticator();
 
   @override
   void initState() {
@@ -34,12 +35,16 @@ class _RequestScreenState extends State<RequestScreen> {
       body: StreamBuilder<QuerySnapshot>(
         stream:
             FirebaseFirestore.instance
-                .collection('requests') // Chat ID
-                .where('requestReceiverId', isEqualTo: Authenticator().user?.uid)
+                .collection('requests')// Chat ID
+                // .where('requestReceiverId', isEqualTo: _authenticator.user?.uid)
+                .where(
+              'participants',
+              arrayContains: _authenticator.user!.uid,
+            )
                 .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error loading messages'));
+            return Center(child: Text('Error loading requests'));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -51,9 +56,15 @@ class _RequestScreenState extends State<RequestScreen> {
             separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final data = requests[index].data() as Map<String, dynamic>;
-              final senderId = data['requestSenderId'];
+              String doucmentId=getChatId( data['requestSenderId'], data['requestReceiverId']);
+              final isSender =
+                  data['requestSenderId'] == _authenticator.user!.uid;
+              final otherUserId = isSender
+                  ? data['requestReceiverId']
+                  : data['requestSenderId'];
+
               return FutureBuilder<Map<String, dynamic>?>(
-                future: _usersService.getUserDataById(senderId),
+                future: _usersService.getUserDataById(otherUserId),
                 // async call
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
@@ -110,7 +121,7 @@ class _RequestScreenState extends State<RequestScreen> {
                         ),
 
                         // Accept Button
-                        data['requestStatus']? ElevatedButton(
+                        (data['requestStatus'] ?? false)? ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.black,
@@ -128,7 +139,7 @@ class _RequestScreenState extends State<RequestScreen> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                _requestsChats.acceptRequest(data['docId']);
+                                isSender? null: _requestsChats.acceptRequest(data['docId']);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
@@ -141,11 +152,11 @@ class _RequestScreenState extends State<RequestScreen> {
                                   vertical: 8,
                                 ),
                               ),
-                              child: Text("Accept"),
+                              child: Text(isSender? "Pending":"Accept"),
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                print("Accepted request #$index");
+                                _requestsChats.rejectRequest(doucmentId);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,

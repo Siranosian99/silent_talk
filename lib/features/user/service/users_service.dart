@@ -3,14 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:silent_talk/features/user/service/get_userIds.dart';
 
 import '../../auth/services/authenticator.dart';
-import '../model/request_model.dart';
+import '../../chat/model/request_model.dart';
 import '../model/user_model.dart';
 
 class UsersService {
   CollectionReference users = FirebaseFirestore.instance.collection(
     'users',
   );
-
+  final Authenticator authenticator=Authenticator();
 
   Future<List<Users>?> fetchAllUsers(String name) async {
     try {
@@ -29,7 +29,7 @@ class UsersService {
 
       // Map each document to its data
       return snapshot?.docs.where((doc) =>
-      doc.id != Authenticator().user?.uid
+      doc.id != authenticator.user?.uid
       ) // hide current user
           .map((doc) {
         return Users(
@@ -55,11 +55,11 @@ class UsersService {
 
   Future<Map<String, dynamic>?> getUserData() async {
 
-    if (Authenticator().user == null) return null;
+    if (authenticator.user == null) return null;
 
     final doc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(Authenticator().user?.uid)
+        .doc(authenticator.user?.uid)
         .get();
 
     if (!doc.exists) return null;
@@ -67,7 +67,7 @@ class UsersService {
   }
   Future<Map<String, dynamic>?> getUserDataById(String id) async {
 
-    if (Authenticator().user == null) return null;
+    if (authenticator.user == null) return null;
 
     final doc = await FirebaseFirestore.instance
         .collection('users')

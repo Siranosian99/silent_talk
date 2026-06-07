@@ -1,6 +1,7 @@
 class Request {
   final String requestSenderId;
   final String requestReceiverId;
+  final List<String> participants;
   final String requestId;
   bool requestStatus;
 
@@ -8,6 +9,7 @@ class Request {
     required this.requestSenderId,
     required this.requestReceiverId,
     required this.requestId,
+    required this.participants,
     this.requestStatus = false,
   });
 
@@ -17,6 +19,7 @@ class Request {
       requestId:data['requestId'] ?? '' ,
       requestSenderId: data['requestSenderId'] ?? '',
       requestReceiverId: data['requestReceiverId'] ?? '',
+      participants: data['participants'] ?? '',
       requestStatus: data['requestStatus'] ?? false,
     );
   }
@@ -28,6 +31,7 @@ class Request {
       'requestSenderId': requestSenderId,
       'requestReceiverId': requestReceiverId,
       'requestStatus': requestStatus,
+      'participants':participants,
     };
   }
 }

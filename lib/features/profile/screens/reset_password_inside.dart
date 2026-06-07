@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/auth/widgets/login_signUp_textFields.dart';
+import 'package:silent_talk/features/user/service/user_account.dart';
 
 import '../../../core/mixins/navigator_mixins.dart';
 import '../../../l10n/app_localizations.dart';
@@ -17,7 +18,7 @@ class _ResetInsideAppState extends State<ResetInsideApp> with NavigatorMixin {
   final TextEditingController _currentController = TextEditingController();
   final TextEditingController _newController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  final UserAccountEdits accountEdits=UserAccountEdits();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +71,7 @@ class _ResetInsideAppState extends State<ResetInsideApp> with NavigatorMixin {
                   onPressed: () {
                     // context.goNamed('people');
                     if (_formKey.currentState!.validate()) {
-                      Authenticator().updateUserPassword(currentPassword: _currentController.text, newPassword: _newController.text);
+                    accountEdits.updateUserPassword(currentPassword: _currentController.text, newPassword: _newController.text);
                     }
                   },
                   child: Text(

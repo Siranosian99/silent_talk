@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:silent_talk/constants/texts.dart';
+import 'package:silent_talk/features/user/service/user_account.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/authenticator.dart';
@@ -14,6 +15,7 @@ class UpdateEmailScreen extends StatefulWidget {
 class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final UserAccountEdits accountEdits=UserAccountEdits();
 
 
   @override
@@ -50,7 +52,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
               SizedBox(height: 30),
               ElevatedButton.icon(
                 onPressed: (){
-                  Authenticator().updateEmail(_emailController.text,);
+                  accountEdits.updateEmail(_emailController.text,);
                 },
                 icon: Icon(Icons.update),
                 label: Text(AppLocalizations.of(context)!.changeEmail),
