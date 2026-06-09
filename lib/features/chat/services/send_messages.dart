@@ -26,7 +26,6 @@ class MessageService {
             "senderId": uId1,
             "receiverId": uId2,
             "messageTime": formatTimeWithSeconds(DateTime.now()),
-            "status":"uploading",
             // Firestore server time
           })
           .then((DocumentReference doc) {
@@ -50,13 +49,13 @@ class MessageService {
 
     print("Message ss deleted");
   }
-  Future<void> sendedMessages(String uId1, String uId2, String docId) async {
+  Future<void> updateMessages(String uId1, String uId2, String docId) async {
     await FirebaseFirestore.instance
         .collection("chats")
         .doc(getChatId(uId1, uId2))
         .collection("messages")
         .doc(docId)
-        .set({'status' :"sent"});
+        .set({'message' :"sent"});
     //    await FirebaseFirestore.instance.collection('requests').doc(docId).set(
     //       {'requestStatus': true},
     //       SetOptions(merge: true),

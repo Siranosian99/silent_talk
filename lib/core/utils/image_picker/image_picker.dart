@@ -80,17 +80,18 @@ class Picker with ChangeNotifier{
     try {
       pickedImage = await picker.pickImage(source: ImageSource.camera);
       if (pickedImage != null) {
-        final localPath = pickedImage?.path;
-        CloudinaryResponse response = await cloudinary.uploadFile(
-          CloudinaryFile.fromFile(
-            localPath ?? '',
-            resourceType: CloudinaryResourceType.Image,
-          ),
-        );
-        imgPath=response.secureUrl;
-        imgPath!.isNotEmpty ?isImage=true: isImage=false;
+        // final localPath = pickedImage?.path;
+        // CloudinaryResponse response = await cloudinary.uploadFile(
+        //   CloudinaryFile.fromFile(
+        //     localPath ?? '',
+        //     resourceType: CloudinaryResourceType.Image,
+        //   ),
+        // );
+        imgPath = pickedImage?.path;
+        imgPath!.isNotEmpty ? isImage = true : isImage = false;
         print(isImage);
-        print('Uploaded image URL: ${response.secureUrl}');
+        print(pickedImage?.path);
+        // print('Uploaded image URL: ${response.secureUrl}');
         notifyListeners();
         return imgPath; // Return the Cloudinary link
 
@@ -100,6 +101,9 @@ class Picker with ChangeNotifier{
     }
     return null; // No image picked or upload failed
   }
+
+
+
   // bool isImageChanger(bool isImage){
   //   isImage= !isImage;
   //   print(isImage);

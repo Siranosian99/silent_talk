@@ -392,8 +392,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                     }
                                     messageController.clear();
                                   }
-                                  photoServer = await provider
-                                      .imgUploaderToServer(photoLink.toString());
+                                  // photoServer = await provider
+                                  //     .imgUploaderToServer(photoLink.toString());
+                                  photoServer=await provider.galleryPicker();
                                   if (photoServer != null ||
                                       photoServer!.isNotEmpty) {
                                     messageController.text = photoServer!;

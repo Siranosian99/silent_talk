@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -136,17 +137,23 @@ class MessageList extends StatelessWidget {
                         ),
                       ),
                     )
-                    : msg.contains("https://res.cloudinary.com")
+                    : msg.contains("/data/")
                     ? Padding(
                       padding: const EdgeInsets.only(top: 12, bottom: 12),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          msg,
-                          fit: BoxFit.cover,
+                        child: Image.file(
+                          File(msg),
                           width: 250,
                           height: 250,
+                          fit: BoxFit.cover,
                         ),
+                        // child: Image.network(
+                        //   msg,
+                        //   fit: BoxFit.cover,
+                        //   width: 250,
+                        //   height: 250,
+                        // ),
                       ),
                     )
                     : msg.contains("Name:")
