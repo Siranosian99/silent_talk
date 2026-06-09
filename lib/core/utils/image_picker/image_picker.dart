@@ -1,5 +1,6 @@
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
 
@@ -41,9 +42,21 @@ class Picker with ChangeNotifier{
     return null; // No image picked or upload failed
   }
   Future<String?> imgUploaderToServer(String imgPath)async{
+    final compressedImage =
+    await FlutterImageCompress.compressAndGetFile(
+      imgPath,
+      '${imgPath}_compressed.jpg',
+      quality: 90,
+      minWidth: 2000,
+      minHeight: 2000,
+    );
+
+    if (compressedImage == null) {
+      return null;
+    }
     CloudinaryResponse response = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(
-          imgPath ?? '',
+          compressedImage.path,
           resourceType: CloudinaryResourceType.Image,
         )
     );

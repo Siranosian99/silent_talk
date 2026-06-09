@@ -6,16 +6,16 @@ import 'package:silent_talk/features/user/model/user_model.dart';
 import '../../user/service/users_service.dart';
 
 class ChatsGridView extends StatefulWidget {
-  ChatsGridView({super.key});
+  const ChatsGridView({super.key});
 
   @override
   State<ChatsGridView> createState() => _ChatsGridViewState();
 }
 
 class _ChatsGridViewState extends State<ChatsGridView> {
-  // );
+
   late List<Users> users = [];
-  UsersService _usersService = UsersService();
+  final UsersService _usersService = UsersService();
 
   Future<void> callUsers() async {
     users = await _usersService.fetchAllUsers('') ?? [];
