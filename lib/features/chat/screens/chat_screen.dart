@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_contacts/src/model/contact.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,6 @@ import 'package:silent_talk/features/chat/services/get_messages.dart';
 import 'package:silent_talk/features/chat/services/send_messages.dart';
 
 import 'package:silent_talk/features/user/service/users_service.dart';
-
 
 import '../../../core/notification/message_detecter.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
@@ -53,8 +53,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   List<Users> _users = [];
   late final Authenticator _authenticator;
   final Picker _picker = Picker();
-  String? photoLink;
-  String? photoServer;
+
+  // String? photoLink;
+  // String? photoServer;
   bool? isAuthActive;
 
   // List<ChatModel> _chats = [];
@@ -71,13 +72,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    _authenticator=Authenticator();
+    _authenticator = Authenticator();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final deviceId = await DeviceIdHelper().getDeviceId();
-        if(!context.mounted) return;
+        if (!context.mounted) return;
         _authenticator.listenForAnotherDeviceLogin(context, deviceId);
       }
     });
@@ -117,8 +118,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           });
     }
   }
-
-
 
   @override
   void didChangeDependencies() {
@@ -161,7 +160,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   Future<void> noti() async {
     if (widget.receiverId != null) {
       await MessageChanger().notificationCheck(
-       _authenticator.user!.uid,
+        _authenticator.user!.uid,
         widget.receiverId!,
       );
     }
@@ -187,10 +186,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     setOfflineStatus();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<Picker>(context);
     final lastProvider = Provider.of<LastSeenProvider>(context);
+    final messageService = MessageService();
     final reciever = getReceiver();
     return Scaffold(
       body:
@@ -283,8 +284,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             .orderBy('messageTime', descending: false)
                             .snapshots(),
                     builder: (context, snapshot) {
-                       MessageChanger().notificationCheck(
-                       _authenticator.user!.uid,
+                      MessageChanger().notificationCheck(
+                        _authenticator.user!.uid,
                         widget.receiverId!,
                       );
                       if (snapshot.hasError) {
@@ -325,98 +326,155 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     },
                   ),
                   Stack(
-                    children: [Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: TextFormField(
-                        readOnly: provider.isImage,
-                        controller: messageController,
-                        decoration: InputDecoration(
-                          hint:
-                          provider.isImage
-                              ? Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.file(
-                                  File(provider.imgPath ?? ''),
-                                  fit: BoxFit.cover,
-                                  width: 100,
-                                  height: 100,
-                                ),
-                              ),
-                              CircleAvatar(
-                                backgroundColor: Colors.black.withOpacity(
-                                  0.6,
-                                ),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    provider.clearImage();
-                                  },
-                                ),
-                              ),
-                            ],
-                          )
-                              : Text(AppTexts.instance.typemsg),
-                          filled: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 16,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide.none,
-                          ),
-                          prefixIcon: IconButton(
-                            icon: const Icon(Icons.attach_file),
-                            onPressed: () {
-                              showCustomBottomSheet(context, 21, reciever.id);
-                            },
-                          ),
-                          suffixIcon: Column(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.send),
-                                onPressed: () async {
-                                  photoLink = provider.imgPath;
-                                  if (photoLink == null || photoLink!.isEmpty) {
-                                    if (messageController.text.isNotEmpty) {
-                                      await MessageService().sendMessage(
-                                        messageController.text,
-                                        Authenticator().user!.uid,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: TextFormField(
+                          readOnly: provider.isImage,
+                          controller: messageController,
+                          decoration: InputDecoration(
+                            hint:
+                                provider.isImage
+                                    ? Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          child: Image.file(
+                                            File(provider.imgPath ?? ''),
+                                            fit: BoxFit.cover,
+                                            width: 100,
+                                            height: 100,
+                                          ),
+                                        ),
+                                        CircleAvatar(
+                                          backgroundColor: Colors.black
+                                              .withOpacity(0.6),
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              provider.clearImage();
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                    : Text(AppTexts.instance.typemsg),
+                            filled: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              borderSide: BorderSide.none,
+                            ),
+                            prefixIcon: IconButton(
+                              icon: const Icon(Icons.attach_file),
+                              onPressed: () {
+                                showCustomBottomSheet(context, 21, reciever.id);
+                              },
+                            ),
+                            suffixIcon: Column(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.send),
+                                  onPressed: () async {
+                                    final photoLink = provider.imgPath;
+                                    final text = messageController.text.trim();
+
+                                    //normal Message
+                                    if (photoLink == null ||
+                                        photoLink.isEmpty) {
+                                      if (text.isNotEmpty) {
+                                        await messageService.sendMessage(
+                                          text,
+                                          Authenticator().user!.uid,
+                                          reciever.id,
+                                        );
+                                      }
+                                      messageController.clear();
+                                      return;
+                                    }
+                                    final docId = await messageService
+                                        .sendMessage(
+                                          photoLink,
+                                          _authenticator.user!.uid,
+                                          reciever.id,
+                                        );
+                                    String cloudinaryUpload =
+                                        await _picker.imgUploaderToServer(
+                                          photoLink,
+                                        ) ??
+                                        '';
+                                    if (cloudinaryUpload.isNotEmpty) {
+                                      await messageService.updateMessages(
+                                        cloudinaryUpload,
+                                        _authenticator.user!.uid,
                                         reciever.id,
+                                        docId,
                                       );
                                     }
                                     messageController.clear();
-                                  }
-                                  // photoServer = await provider
-                                  //     .imgUploaderToServer(photoLink.toString());
-                                  photoServer=await provider.galleryPicker();
-                                  if (photoServer != null ||
-                                      photoServer!.isNotEmpty) {
-                                    messageController.text = photoServer!;
-                                    await MessageService().sendMessage(
-                                      messageController.text,
-                                      _authenticator.user!.uid,
-                                      reciever.id,
-                                    );
-                                    messageController.clear();
                                     provider.clearImage();
-                                  }
-
-                                },
-                              ),
-                            ],
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),]
+                    ],
                   ),
                 ],
               ),
     );
   }
 }
+
+// onPressed: () async {
+//                                     final photoLink = provider.imgPath;
+//                                     final text = messageController.text.trim();
+//
+//                                     // TEXT MESSAGE
+//                                     if (photoLink == null || photoLink.isEmpty) {
+//                                       if (text.isNotEmpty) {
+//                                         await messageService.sendMessage(
+//                                           text,
+//                                           Authenticator().user!.uid,
+//                                           reciever.id,
+//                                         );
+//                                       }
+//
+//                                       messageController.clear(); // ✔ burada
+//                                       return;
+//                                     }
+//
+//                                     // IMAGE MESSAGE
+//
+//                                     final docId = await messageService.sendMessage(
+//                                       photoLink,
+//                                       Authenticator().user!.uid,
+//                                       reciever.id,
+//                                     );
+//
+//                                     messageController.clear(); // 🔥 BURAYA AL
+//
+//                                     final cloudUrl =
+//                                         await _picker.imgUploaderToServer(photoLink) ?? '';
+//
+//                                     if (cloudUrl.isNotEmpty) {
+//                                       await messageService.updateMessages(
+//                                         cloudUrl,
+//                                         Authenticator().user!.uid,
+//                                         reciever.id,
+//                                         docId,
+//                                       );
+//                                     }
+//
+//                                     provider.clearImage();
+//                                   }

@@ -137,25 +137,81 @@ class MessageList extends StatelessWidget {
                         ),
                       ),
                     )
-                    : msg.contains("/data/")
+                //: msg.contains("/data/") || msg.contains("https://res.cloudinary.com/")
+                // ? Padding(
+                //   padding: const EdgeInsets.only(top: 12, bottom: 12),
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.circular(20),
+                //     child: Image.file(
+                //       File(msg),
+                //       width: 250,
+                //       height: 250,
+                //       fit: BoxFit.cover,
+                //     ),
+                //   ),
+                // )
+                    : msg.startsWith("/data/")
                     ? Padding(
-                      padding: const EdgeInsets.only(top: 12, bottom: 12),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.file(
-                          File(msg),
+                  padding: const EdgeInsets.only(top: 12, bottom: 12),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child:
+                    messages[index]['senderId'] == authenticator.user?.uid
+                        ? Image.file(
+                      File(msg),
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.cover,
+                    )
+                        : const SizedBox(
+                      width: 250,
+                      height: 250,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ),
+                )
+                    : msg is String &&
+                    msg.startsWith("https://res.cloudinary.com/")
+                    ? Padding(
+                  padding: const EdgeInsets.only(top: 12, bottom: 12),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      msg,
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (
+                          context,
+                          child,
+                          loadingProgress,
+                          ) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+
+                        return const SizedBox(
                           width: 250,
                           height: 250,
-                          fit: BoxFit.cover,
-                        ),
-                        // child: Image.network(
-                        //   msg,
-                        //   fit: BoxFit.cover,
-                        //   width: 250,
-                        //   height: 250,
-                        // ),
-                      ),
-                    )
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return const SizedBox(
+                          width: 250,
+                          height: 250,
+                          child: Center(
+                            child: Icon(Icons.broken_image),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                )
                     : msg.contains("Name:")
                     ? Container(
                       width: 300,

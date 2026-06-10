@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
+import 'package:silent_talk/features/chat/services/send_messages.dart';
 
 class Picker with ChangeNotifier{
   static final ImagePicker picker = ImagePicker();
@@ -10,6 +11,7 @@ class Picker with ChangeNotifier{
   XFile? pickedImage;
   bool isImage=false;
   bool isPressed=false;
+  final messageService=MessageService();
   final cloudinary = CloudinaryPublic('dcmkerxac', 'silent_talk', cache: false);
 
   Future<String?> galleryPicker() async {
@@ -61,6 +63,7 @@ class Picker with ChangeNotifier{
         )
     );
     imgPath=response.secureUrl;
+
     return imgPath;
     print('================Succses');
     print('Uploaded image URL: ${response.secureUrl}');

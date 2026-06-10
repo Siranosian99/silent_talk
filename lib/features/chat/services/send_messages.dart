@@ -10,32 +10,28 @@ class MessageService {
     return DateFormat('hh:mm a').format(dateTime); // Example: "02:30 PM"
   }
 
-  Future<void> sendMessage(String message, String uId1, String uId2) async {
+  Future<String> sendMessage(String message, String uId1, String uId2) async {
     try {
 
-      CollectionReference messages = FirebaseFirestore.instance
+      final messages = FirebaseFirestore.instance
           .collection("chats")
           .doc(getChatId(uId1, uId2))
           .collection("messages");
-      String docId = '';
-      await messages
-          .add({
-            "docId": docId,
+      final docRef =messages.doc();
+      await docRef.set({
+            "docId": docRef.id,
             "chatId": getChatId(uId1, uId2),
             "message": message,
             "senderId": uId1,
             "receiverId": uId2,
             "messageTime": formatTimeWithSeconds(DateTime.now()),
             // Firestore server time
-          })
-          .then((DocumentReference doc) {
-            messages.doc(doc.id).update({"docId": doc.id});
-            // print("------------${doc.id}----------");
           });
-
       print("WORKING");
+      return docRef.id;
     } catch (e) {
       print("Message Didnt Send");
+      return '';
     }
   }
 
@@ -49,17 +45,17 @@ class MessageService {
 
     print("Message ss deleted");
   }
-  Future<void> updateMessages(String uId1, String uId2, String docId) async {
+  Future<void> updateMessages(String message,String uId1, String uId2, String docId) async {
     await FirebaseFirestore.instance
         .collection("chats")
         .doc(getChatId(uId1, uId2))
         .collection("messages")
         .doc(docId)
-        .set({'message' :"sent"});
+        .update({'message' :message});
     //    await FirebaseFirestore.instance.collection('requests').doc(docId).set(
     //       {'requestStatus': true},
     //       SetOptions(merge: true),
 
-    print("Message Sent");
+    print("Message Updated");
   }
 }
