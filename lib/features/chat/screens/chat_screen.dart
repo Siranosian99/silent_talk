@@ -189,11 +189,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<Picker>(context);
     final lastProvider = Provider.of<LastSeenProvider>(context);
     final messageService = MessageService();
     final reciever = getReceiver();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body:
           _users.isEmpty
               ? Center(child: CircularProgressIndicator())
@@ -203,9 +203,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     alignment: Alignment.bottomLeft,
                     children: [
                       Container(
-                        padding: EdgeInsets.only(left: 40),
+                        padding: EdgeInsets.only(left: 50,top: 20),
                         width: double.infinity,
-                        height: 90,
+                        height: 110,
                         color: Color.fromRGBO(52, 136, 176, 0.91),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -216,7 +216,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               alignment: Alignment.bottomRight,
                               children: [
                                 CircleAvatar(
-                                  radius: 40,
+                                  radius: 35,
                                   backgroundImage:
                                       reciever!.image.isEmpty
                                           ? AssetImage(
@@ -270,166 +270,173 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       ),
                     ],
                   ),
-                  StreamBuilder<QuerySnapshot>(
-                    stream:
-                        FirebaseFirestore.instance
-                            .collection('chats')
-                            .doc(
-                              getChatId(
-                                _authenticator.user!.uid,
-                                widget.receiverId!,
-                              ),
-                            )
-                            .collection('messages')
-                            .orderBy('messageTime', descending: false)
-                            .snapshots(),
-                    builder: (context, snapshot) {
-                      MessageChanger().notificationCheck(
-                        _authenticator.user!.uid,
-                        widget.receiverId!,
-                      );
-                      if (snapshot.hasError) {
-                        return Center(child: Text('Error loading messages'));
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-
-                      final messages = snapshot.data!.docs;
-                      return Expanded(
-                        child:
-                            messages.isNotEmpty
-                                ? MessageList(
-                                  messages: messages,
-                                  id1: _authenticator.user!.uid,
-                                  id2: reciever.id,
-                                  // photo: provider.imgPath ?? '',
-                                )
-                                : Center(
-                                  child: Text(
-                                    "No messages yet. Start the conversation!",
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
-                                      // Semi-bold
-                                      color: Color.fromRGBO(97, 119, 138, 1),
-                                      // Make it fully opaque
-                                      fontStyle: FontStyle.italic,
-                                      // Optional: gives it a stylish slant
-                                      letterSpacing:
-                                          0.3, // Slight spacing for polish
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream:
+                          FirebaseFirestore.instance
+                              .collection('chats')
+                              .doc(
+                                getChatId(
+                                  _authenticator.user!.uid,
+                                  widget.receiverId!,
                                 ),
-                      );
-                    },
+                              )
+                              .collection('messages')
+                              .orderBy('messageTime', descending: false)
+                              .snapshots(),
+                      builder: (context, snapshot) {
+                        MessageChanger().notificationCheck(
+                          _authenticator.user!.uid,
+                          widget.receiverId!,
+                        );
+                        if (snapshot.hasError) {
+                          return Center(child: Text('Error loading messages'));
+                        }
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+
+                        final messages = snapshot.data!.docs;
+                        return Expanded(
+                          child:
+                              messages.isNotEmpty
+                                  ? MessageList(
+                                    messages: messages,
+                                    id1: _authenticator.user!.uid,
+                                    id2: reciever.id,
+                                    // photo: provider.imgPath ?? '',
+                                  )
+                                  : Center(
+                                    child: Text(
+                                      "No messages yet. Start the conversation!",
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600,
+                                        // Semi-bold
+                                        color: Color.fromRGBO(97, 119, 138, 1),
+                                        // Make it fully opaque
+                                        fontStyle: FontStyle.italic,
+                                        // Optional: gives it a stylish slant
+                                        letterSpacing:
+                                            0.3, // Slight spacing for polish
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                        );
+                      },
+                    ),
                   ),
-                  Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: TextFormField(
-                          readOnly: provider.isImage,
-                          controller: messageController,
-                          decoration: InputDecoration(
-                            hint:
+                 Consumer<Picker>(
+                    builder: (context, provider, child) {
+                      return Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: TextFormField(
+                              readOnly: provider.isImage,
+                              controller: messageController,
+                              decoration: InputDecoration(
+                                hint:
                                 provider.isImage
                                     ? Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          child: Image.file(
-                                            File(provider.imgPath ?? ''),
-                                            fit: BoxFit.cover,
-                                            width: 100,
-                                            height: 100,
-                                          ),
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                        12,
+                                      ),
+                                      child: Image.file(
+                                        File(provider.imgPath ?? ''),
+                                        fit: BoxFit.cover,
+                                        width: 100,
+                                        height: 100,
+                                      ),
+                                    ),
+                                    CircleAvatar(
+                                      backgroundColor: Colors.black
+                                          .withOpacity(0.6),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.close,
+                                          color: Colors.white,
                                         ),
-                                        CircleAvatar(
-                                          backgroundColor: Colors.black
-                                              .withOpacity(0.6),
-                                          child: IconButton(
-                                            icon: Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                            ),
-                                            onPressed: () {
-                                              provider.clearImage();
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                                        onPressed: () {
+                                          provider.clearImage();
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                )
                                     : Text(AppTexts.instance.typemsg),
-                            filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: BorderSide.none,
-                            ),
-                            prefixIcon: IconButton(
-                              icon: const Icon(Icons.attach_file),
-                              onPressed: () {
-                                showCustomBottomSheet(context, 21, reciever.id);
-                              },
-                            ),
-                            suffixIcon: Column(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.send),
-                                  onPressed: () async {
-                                    final photoLink = provider.imgPath;
-                                    final text = messageController.text.trim();
+                                filled: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 16,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: BorderSide.none,
+                                ),
+                                prefixIcon: IconButton(
+                                  icon: const Icon(Icons.attach_file),
+                                  onPressed: () {
+                                    showCustomBottomSheet(context, 21, reciever.id);
+                                  },
+                                ),
+                                suffixIcon: Column(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.send),
+                                      onPressed: () async {
+                                        final photoLink = provider.imgPath;
+                                        final text = messageController.text.trim();
 
-                                    //normal Message
-                                    if (photoLink == null ||
-                                        photoLink.isEmpty) {
-                                      if (text.isNotEmpty) {
-                                        await messageService.sendMessage(
-                                          text,
-                                          Authenticator().user!.uid,
-                                          reciever.id,
-                                        );
-                                      }
-                                      messageController.clear();
-                                      return;
-                                    }
-                                    final docId = await messageService
-                                        .sendMessage(
+                                        //normal Message
+                                        if (photoLink == null ||
+                                            photoLink.isEmpty) {
+                                          if (text.isNotEmpty) {
+                                            await messageService.sendMessage(
+                                              text,
+                                              Authenticator().user!.uid,
+                                              reciever.id,
+                                            );
+                                          }
+                                          return;
+                                        }
+                                        messageController.clear();
+                                        provider.clearImage();
+                                        final docId = await messageService
+                                            .sendMessage(
                                           photoLink,
                                           _authenticator.user!.uid,
                                           reciever.id,
                                         );
-                                    String cloudinaryUpload =
-                                        await _picker.imgUploaderToServer(
-                                          photoLink,
-                                        ) ??
-                                        '';
-                                    if (cloudinaryUpload.isNotEmpty) {
-                                      await messageService.updateMessages(
-                                        cloudinaryUpload,
-                                        _authenticator.user!.uid,
-                                        reciever.id,
-                                        docId,
-                                      );
-                                    }
-                                    messageController.clear();
-                                    provider.clearImage();
-                                  },
+                                        String cloudinaryUpload =
+                                            await _picker.imgUploaderToServer(
+                                              photoLink,
+                                            ) ??
+                                                '';
+                                        if (cloudinaryUpload.isNotEmpty) {
+                                          await messageService.updateMessages(
+                                            cloudinaryUpload,
+                                            _authenticator.user!.uid,
+                                            reciever.id,
+                                            docId,
+                                          );
+                                        }
+
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
+                        ],
+                      );
+                    },
+                  )
+
                 ],
               ),
     );

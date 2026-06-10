@@ -19,6 +19,7 @@ import '../../../core/utils/file_picker/file_picker.dart';
 import '../../../core/utils/file_saver/file_service.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/message_type/message_checker.dart';
+import 'chat_image_bubble.dart';
 import 'text_viewer.dart';
 import '../../auth/services/authenticator.dart';
 
@@ -174,43 +175,10 @@ class MessageList extends StatelessWidget {
                 )
                     : msg is String &&
                     msg.startsWith("https://res.cloudinary.com/")
-                    ? Padding(
-                  padding: const EdgeInsets.only(top: 12, bottom: 12),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      msg,
-                      width: 250,
-                      height: 250,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (
-                          context,
-                          child,
-                          loadingProgress,
-                          ) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-
-                        return const SizedBox(
-                          width: 250,
-                          height: 250,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return const SizedBox(
-                          width: 250,
-                          height: 250,
-                          child: Center(
-                            child: Icon(Icons.broken_image),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                    ?  ChatImage(
+                  imageUrl: msg,
+                  isMe: messages[index]['senderId'] ==
+                      authenticator.user?.uid,
                 )
                     : msg.contains("Name:")
                     ? Container(

@@ -7,7 +7,7 @@ import '../../chat/model/request_model.dart';
 import 'authenticator.dart';
 
 class RequestsChats {
-    Future<void> sendRequest(bool request, String uId1, String uId2) async {
+    Future<String> sendRequest(bool request, String uId1, String uId2) async {
       try {
         final requests = FirebaseFirestore.instance
             .collection("requests")
@@ -27,12 +27,13 @@ class RequestsChats {
             "createdAt": FieldValue.serverTimestamp(),
           });
 
-          print("✅ Request added from $uId1 to $uId2");
+          return "✅ Request send to user";
         } else {
-          print("⚠️ Request already exists between $uId1 and $uId2");
+
+          return "⚠️ Request already exists ";
         }
       } catch (e) {
-        print("❌ Request didn't send: $e");
+        return"❌ Request didn't send: $e";
       }
     }
 

@@ -25,6 +25,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
   late List<Users> users = [];
   final UsersService _usersService = UsersService();
   final RequestsChats _requestsChats=RequestsChats();
+  final Authenticator _authenticator=Authenticator();
 
   Future<void> callUsers(String query) async {
     users = await _usersService.fetchAllUsers(query) ?? [];
@@ -41,7 +42,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
 
   void checkRequestStatus(String docId) async {
-    String id = getChatId(Authenticator().user!.uid, docId);
+    String id = getChatId(_authenticator.user!.uid, docId);
 
     bool? status = await _requestsChats.getRequestStatus(id);
 
@@ -109,22 +110,29 @@ class _PeopleScreenState extends State<PeopleScreen> {
                   children: [
                     InkWell(
                       onTap: ()async {
-                        String id = getChatId(Authenticator().user!.uid, user.id);
+                        String id = getChatId(_authenticator.user!.uid, user.id);
 
                         bool status = await _requestsChats.getRequestStatus(id) ??false;
-                        print(status);
+                        final message = await _requestsChats.sendRequest(status,_authenticator.user!.uid, user.id);
+                        if(!context.mounted) return;
+                        status ? null:
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(message),
+                          ),
+                        );
                         if(status){
                           GoRouter.of(context).pushNamed(
                             'chat',
                             extra: {
                               'id': user.id,
-                              'senderId': Authenticator().user?.uid,
+                              'senderId': _authenticator.user?.uid,
                               'receiverId': user.id,
                             },
                           );
                         }
                         else{
-                          RequestsChats().sendRequest(false, Authenticator().user!.uid, user.id);
+                          RequestsChats().sendRequest(false, _authenticator.user!.uid, user.id);
                         }
                         print("UserId:${user.id}");
 
