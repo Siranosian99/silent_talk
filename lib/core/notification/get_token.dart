@@ -11,3 +11,21 @@ class GetToken {
 
 }
 
+//Login/Register
+// ↓
+// FCM Token Al
+// ↓
+// Token'ı Firestore'a Kaydet
+// ↓
+// Mesaj Gönder
+// ↓
+// Firestore'a Kaydet
+// ↓
+// Karşı Tarafın Token'ını Bul
+// ↓
+// Backend/Cloud Function ile FCM Gönder
+// ↓
+// Telefon Notification Gösterir
+// ↓
+// Tıklanınca ChatScreen Açılır
+

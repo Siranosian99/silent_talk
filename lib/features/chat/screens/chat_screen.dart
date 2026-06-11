@@ -50,6 +50,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   TextEditingController messageController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  // final _messageChanger=MessageChanger();
   List<Users> _users = [];
   late final Authenticator _authenticator;
   final Picker _picker = Picker();
@@ -78,7 +79,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final deviceId = await DeviceIdHelper().getDeviceId();
-        if (!context.mounted) return;
         _authenticator.listenForAnotherDeviceLogin(context, deviceId);
       }
     });
@@ -157,14 +157,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
   }
 
-  Future<void> noti() async {
-    if (widget.receiverId != null) {
-      await MessageChanger().notificationCheck(
-        _authenticator.user!.uid,
-        widget.receiverId!,
-      );
-    }
-  }
+  // Future<void> noti() async {
+  //   if (widget.receiverId != null) {
+  //     await _messageChanger.notificationCheck(
+  //       _authenticator.user!.uid,
+  //       widget.receiverId!,
+  //     );
+  //   }
+  // }
 
   // void scrollToBottom() {
   //   Future.delayed(const Duration(milliseconds: 100), () {
@@ -303,10 +303,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               .orderBy('messageTime', descending: false)
                               .snapshots(),
                       builder: (context, snapshot) {
-                        MessageChanger().notificationCheck(
-                          _authenticator.user!.uid,
-                          widget.receiverId!,
-                        );
+                      // _messageChanger.notificationCheck(
+                      //     _authenticator.user!.uid,
+                      //     widget.receiverId!,
+                      //   );
                         if (snapshot.hasError) {
                           return Center(child: Text('Error loading messages'));
                         }
