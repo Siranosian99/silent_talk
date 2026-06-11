@@ -25,7 +25,6 @@ class ChatSearchBar extends StatelessWidget {
           hintText: AppLocalizations.of(context)!.search,
           hintStyle: TextStyle(color: Colors.grey.shade500),
           filled: true,
-          fillColor: Colors.grey.shade100,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(21),
             borderSide: BorderSide.none,

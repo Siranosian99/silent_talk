@@ -86,6 +86,11 @@ class MessageList extends StatelessWidget {
           },
           onLongPress: () {
             MessageService().deleteMessage(id1, id2, messages[index]['docId']);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Message Deleted successfully'),
+              ),
+            );
           },
           child: Align(
             alignment:

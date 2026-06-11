@@ -106,13 +106,25 @@ class Authenticator {
         print("-----------"
             "This is SavedId in localStorage:$deviceId  "
             "this is NewID:${snapshot.data()?['deviceId']}");
+        if(!ctx.mounted) return;
         listenForAnotherDeviceLogin(ctx,deviceId);
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+    }on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'user-not-found':
+          throw Exception('No user found for that email.');
+
+        case 'wrong-password':
+          throw Exception('Wrong password provided.');
+
+        case 'invalid-credential':
+          throw Exception('Invalid email or password.');
+
+        case 'invalid-email':
+          throw Exception('Invalid email format.');
+
+        default:
+          throw Exception(e.message ?? 'Login failed.');
       }
     }
   }

@@ -217,12 +217,30 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               children: [
                                 CircleAvatar(
                                   radius: 35,
-                                  backgroundImage:
-                                      reciever!.image.isEmpty
-                                          ? AssetImage(
-                                            "assets/images/noProfile.png",
-                                          )
-                                          : NetworkImage(reciever.image),
+                                  backgroundColor: Colors.grey.shade300,
+                                  child: ClipOval(
+                                    child: ( reciever!.image.isEmpty)
+                                        ? Image.asset(
+                                      'assets/images/noProfile.png',
+                                      width: 70,
+                                      height: 70,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Image.network(
+                                      reciever.image,
+                                      width: 70,
+                                      height: 70,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) {
+                                        return Image.asset(
+                                          'assets/images/noProfile.png',
+                                          width: 70,
+                                          height: 70,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 CircleAvatar(
                                   backgroundColor:

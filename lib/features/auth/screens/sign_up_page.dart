@@ -16,26 +16,28 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final Authenticator auth= Authenticator();
+  final Authenticator auth = Authenticator();
   String? photoLink;
   String? photoServer;
-  final imgLink="https://i.pinimg.com/1200x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg";
-  final TextEditingController _nameController=TextEditingController();
-  final TextEditingController _userNameController=TextEditingController();
+  final imgLink =
+      "https://i.pinimg.com/1200x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg";
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final  picker=Picker();
-  Future<String?> savePhoto()async{
-   final link=await picker.galleryPicker();
-      setState(() {
-        photoLink=link;
-      });
-      return link;
+  final picker = Picker();
+
+  Future<String?> savePhoto() async {
+    final link = await picker.galleryPicker();
+    setState(() {
+      photoLink = link;
+    });
+    return link;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -45,16 +47,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // App Title
               CircleAvatar(
                 radius: 60,
-                backgroundImage: photoLink !=null?FileImage(File(photoLink!)):NetworkImage('https://i.pinimg.com/1200x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg'),
+                backgroundImage:
+                    photoLink != null
+                        ? FileImage(File(photoLink!))
+                        : NetworkImage(
+                          'https://i.pinimg.com/1200x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg',
+                        ),
                 child: Stack(
                   children: [
-                   TextButton(onPressed: (){
-                     setState(() {
-                      savePhoto();
-                     });
-                   }, child: Text(photoLink == null?AppLocalizations.of(context)!.addPhoto:''))
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          savePhoto();
+                        });
+                      },
+                      child: Text(
+                        photoLink == null
+                            ? AppLocalizations.of(context)!.addPhoto
+                            : '',
+                      ),
+                    ),
                   ],
-                )
+                ),
               ),
               Text(
                 AppLocalizations.of(context)!.appName,
@@ -73,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               SizedBox(height: 16),
               LoginSignupTextfields(
-                controller:_nameController,
+                controller: _nameController,
                 icon: Icon(Icons.nature_people),
                 labelText: AppLocalizations.of(context)!.name,
                 isOn: false,
@@ -87,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               SizedBox(height: 16),
               LoginSignupTextfields(
-                controller:_passwordController,
+                controller: _passwordController,
                 icon: Icon(Icons.password),
                 labelText: AppLocalizations.of(context)!.password,
                 isOn: true,
@@ -95,16 +109,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(height: 40),
               // Login Button
               ElevatedButton(
-                onPressed: () async{
-                  if(photoLink != null){
-                    photoServer=await picker.imgUploaderToServer(photoLink.toString());
-                    await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,photoServer ?? '');
+                onPressed: () async {
+                  try {
+                    if (photoLink != null) {
+                      photoServer = await picker.imgUploaderToServer(
+                        photoLink.toString(),
+                      );
+                      await auth.createUser(
+                        _nameController.text,
+                        _userNameController.text,
+                        _emailController.text,
+                        _passwordController.text,
+                        photoServer ?? '',
+                      );
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Account created successfully'),
+                        ),
+                      );
+                    } else {
+                      photoServer = imgLink;
+                      await auth.createUser(
+                        _nameController.text,
+                        _userNameController.text,
+                        _emailController.text,
+                        _passwordController.text,
+                        photoServer ?? '',
+                      );
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Account created successfully'),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          e.toString().replaceFirst('Exception: ', ''),
+                        ),
+                      ),
+                    );
                   }
-                  else   {
-                    photoServer=imgLink;
-                    await  auth.createUser(_nameController.text, _userNameController.text, _emailController.text, _passwordController.text,photoServer?? '');
-                  }
-
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 80, vertical: 14),

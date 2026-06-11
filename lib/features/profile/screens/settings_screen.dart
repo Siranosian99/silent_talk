@@ -80,7 +80,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   )
                                   // picture['path'] != null
                                   // ? Image.file(File(picture['path']), fit: BoxFit.cover)
-                                  : Image.network(img),
+                                  : Image.network(img,errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/images/noProfile.png',
+                                  fit: BoxFit.cover,
+                                );
+                              },),
                           // CircleAvatar(
                           //   radius: 50,
                           //   backgroundImage: data?['image'].isEmpty

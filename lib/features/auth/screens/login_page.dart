@@ -105,13 +105,30 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                 ElevatedButton(
                   onPressed: () async {
                     // context.goNamed('people');
-                    if (_formKey.currentState!.validate()) {
-                      Authenticator().login(
-                        _emailController.text.trim(),
-                        _passwordController.text.trim(),
-                        context,
+                    try{
+                      if (_formKey.currentState!.validate()) {
+                    await    Authenticator().login(
+                          _emailController.text.trim(),
+                          _passwordController.text.trim(),
+                          context,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Login successfully'),
+                          ),
+                        );
+                      }
+                    }
+                    catch(e){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            e.toString().replaceFirst('Exception: ', ''),
+                          ),
+                        ),
                       );
                     }
+
                   },
                   child: Text(
                     AppLocalizations.of(context)!.login,

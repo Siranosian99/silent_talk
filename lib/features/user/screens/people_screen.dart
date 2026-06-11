@@ -139,11 +139,31 @@ class _PeopleScreenState extends State<PeopleScreen> {
                       },
                       child: CircleAvatar(
                         radius: 35,
-                        backgroundImage:
-                            user.image.isEmpty
-                                ? AssetImage('assets/images/noProfile.png')
-                                : NetworkImage(user.image),
-                      ),
+                        backgroundColor: Colors.grey.shade300,
+                        child: ClipOval(
+                          child: (user.image.isEmpty)
+                              ? Image.asset(
+                            'assets/images/noProfile.png',
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                          )
+                              : Image.network(
+                            user.image,
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) {
+                              return Image.asset(
+                                'assets/images/noProfile.png',
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          ),
+                        ),
+                      )
                     ),
                     const SizedBox(height: 8),
                     Text(
