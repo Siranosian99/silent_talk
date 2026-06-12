@@ -36,7 +36,7 @@ void main() async {
       projectId: "silenttalk-53850",
     ),
   );
-  NotificationHandler.initialize();
+  await NotificationHandler.initialize();
   await Supabase.initialize(
     url: keys.supabaseUrl,
     anonKey: keys.supabaseKey,
