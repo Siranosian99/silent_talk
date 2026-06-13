@@ -97,5 +97,27 @@ class UserAccountEdits {
       print('Failed to update image: $e');
     }
   }
+  Future<bool> updateNotification( bool value) async {
+    try {
+      if (user?.uid == null) {
+        print('❌ User is not authenticated.');
+        return false;
+      }
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .update({
+        'isNotification': value,
+      });
+
+      return true;
+    } on FirebaseException catch (e) {
+      print('❌ Firestore Error: ${e.message}');
+      return false;
+    } catch (e) {
+      print('❌ Unexpected Error: $e');
+      return false;
+    }
+  }
 //
 }

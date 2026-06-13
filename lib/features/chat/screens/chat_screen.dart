@@ -418,6 +418,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                               Authenticator().user!.uid,
                                               reciever.id,
                                             );
+                                            messageController.clear();
                                           }
                                           return;
                                         }

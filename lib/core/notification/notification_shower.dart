@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
+import 'package:silent_talk/features/auth/services/authenticator.dart';
 
 
 import '../global_key.dart';
@@ -15,9 +17,21 @@ import 'notification_helper.dart';
 class NotificationHandler {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   static final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+
   static Future<void> initialize() async {
     // Initialize Firebase
     await Firebase.initializeApp();
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(Authenticator().user?.uid)
+          .update({
+        'token': newToken,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      print("TOKEN UPDATED: $newToken");
+    });
 
     // Request notification permissions (required for iOS)
     await FirebaseMessaging.instance.requestPermission();
@@ -59,6 +73,18 @@ class NotificationHandler {
 
     // Handle Notification when the app is opened from the background
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      final context = AppNavigator.navigatorKey.currentContext;
+      final data = message.data;
+      // final route = data['route'];
+      final senderId = data['senderId'];
+      if (context == null) return;
+      if(!context.mounted) return;
+      GoRouter.of(context).pushNamed(
+        'chat',
+        extra: {
+          'receiverId': senderId,
+        },
+      );
       // if (message.data.isNotEmpty) {
       //   String screen = message.data['screen'];
       //   AppNavigator.navigatorKey.currentState?.pushNamed(screen);
@@ -77,7 +103,7 @@ class NotificationHandler {
     });
 
     // Handle background notifications (app running in the background)
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     // Create Notification Channel for Android (Required for Android 8.0 and above)
     final AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -92,7 +118,7 @@ class NotificationHandler {
   }
 
   // Background message handler (app terminated or in the background)
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  static Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
     print("Background Notification: ${message.notification?.title}");
     _showNotification(message);
@@ -112,11 +138,10 @@ class NotificationHandler {
     // String receiverId = message.data['receiverId'];
 
     final data = message.data;
-
     final route = data['route'];
     final senderId = data['senderId'];
-    final title = data['title'] ?? 'No title';
-    final body = data['body'] ?? 'No body';
+    final title =message.notification?.title ;
+    final body = message.notification?.body ;
     await _localNotifications.show(
       0,
       title,

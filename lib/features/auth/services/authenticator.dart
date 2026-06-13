@@ -19,7 +19,7 @@ class Authenticator {
   static FirebaseAuth auth = FirebaseAuth.instance;
   CollectionReference users = firestore.collection('users');
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  bool isLoggedOut=false;
+  bool isLoggedOut = false;
 
   Future<void> createUser(
     String name,
@@ -32,9 +32,10 @@ class Authenticator {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       String uid = userCredential.user!.uid;
-      String utoken = await GetToken.getToken();
+      String uToken = await GetToken.getToken();
       final deviceId = await DeviceIdHelper().getDeviceId();
       Users userInfo = Users(
+
         id: uid,
         deviceId: deviceId,
         image: image,
@@ -42,9 +43,10 @@ class Authenticator {
         userName: userName,
         email: email,
         password: password,
-        token: utoken,
+        token: uToken,
         lastSeen: lastSeenFormat(DateTime.now()),
         isOnline: false,
+        isNotification: false,
       );
       userCredential.user?.sendEmailVerification();
       await users
@@ -98,18 +100,25 @@ class Authenticator {
         //   {'token': utoken, 'deviceId': deviceId},
         //   SetOptions(merge: true),
         // ):
-        await FirebaseFirestore.instance.collection('users').doc(user?.uid).set(
-          {'deviceId': deviceId},
-          SetOptions(merge: true),
-        );
+        final token = await GetToken.getToken();
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user?.uid)
+            .set({
+              'deviceId': deviceId,
+              'token': token,
+              'updatedAt': FieldValue.serverTimestamp(),
+            }, SetOptions(merge: true));
 
-        print("-----------"
-            "This is SavedId in localStorage:$deviceId  "
-            "this is NewID:${snapshot.data()?['deviceId']}");
-        if(!ctx.mounted) return;
-        listenForAnotherDeviceLogin(ctx,deviceId);
+        print(
+          "-----------"
+          "This is SavedId in localStorage:$deviceId  "
+          "this is NewID:${snapshot.data()?['deviceId']}",
+        );
+        if (!ctx.mounted) return;
+        listenForAnotherDeviceLogin(ctx, deviceId);
       }
-    }on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
           throw Exception('No user found for that email.');
@@ -234,7 +243,7 @@ class Authenticator {
   // }
 
   Future<void> signOut(BuildContext context) async {
-    await FirebaseAuth.instance.signOut().then((_) async{
+    await FirebaseAuth.instance.signOut().then((_) async {
       if (user != null) {
         await FirebaseFirestore.instance
             .collection('users')
@@ -253,7 +262,7 @@ class Authenticator {
       await FirebaseFirestore.instance.collection('users').doc(uid).delete();
       await user?.delete();
       final deviceId = await DeviceIdHelper().getDeviceId();
-      listenForAnotherDeviceLogin(context,deviceId);
+      listenForAnotherDeviceLogin(context, deviceId);
       print('✅ User deleted from Auth and Firestore');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
@@ -308,7 +317,7 @@ class Authenticator {
   //       });
   // }
 
-  void listenForAnotherDeviceLogin(BuildContext context,String deviceId) {
+  void listenForAnotherDeviceLogin(BuildContext context, String deviceId) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
@@ -323,7 +332,7 @@ class Authenticator {
 
           if (remoteId != deviceId) {
             await FirebaseAuth.instance.signOut();
-            isLoggedOut=true;
+            isLoggedOut = true;
 
             print("--------------------------- isLoggedOut:$isLoggedOut");
             if (context.mounted) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/texts.dart';
+import 'package:silent_talk/core/notification/notification_switch.dart';
 import '../../../core/utils/biometric/auth_provider.dart';
 import '../../../core/utils/last_seen/last_seen_provider.dart';
 import '../../../core/utils/themes/theme_provider.dart';
@@ -47,6 +48,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final authProvider = Provider.of<AuthenticateProvider>(context);
     final lastProvider = Provider.of<LastSeenProvider>(context);
+    final notifProvider = Provider.of<NotificationProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
@@ -149,13 +152,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingsListtile(
                     leading: const Icon(Icons.notifications),
                     title: Text(AppLocalizations.of(context)!.messages),
-                    trailing: Switch(value: true, onChanged: null),
+                    trailing: Switch(value:notifProvider.isNotification , onChanged:(value)=> notifProvider.isNotificationSwitch()),
+                    //trailing: Switch(value: lastProvider.isSeen, onChanged: (value)=> lastProvider.lastSeenSwitch()),
                   ),
-                  SettingsListtile(
-                    leading: const Icon(Icons.vibration),
-                    title: Text(AppLocalizations.of(context)!.soundVib),
-                    trailing: Switch(value: false, onChanged: null),
-                  ),
+                  // SettingsListtile(
+                  //   leading: const Icon(Icons.vibration),
+                  //   title: Text(AppLocalizations.of(context)!.soundVib),
+                  //   trailing: Switch(value: false, onChanged: null),
+                  // ),
 
                   // Section: Security & Privacy
                   sectionTitle(AppLocalizations.of(context)!.security),

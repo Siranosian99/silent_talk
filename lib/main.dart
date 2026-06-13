@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/api_consts.dart';
+import 'package:silent_talk/core/notification/notification_switch.dart';
 import 'package:silent_talk/routes.dart';
 import 'package:silent_talk/features/chat/services/ai_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -26,6 +28,7 @@ void main() async {
   await Hive.openBox('localBox');
   await Hive.openBox('lastSeen');
   await Hive.openBox('device_id');
+  await Hive.openBox('notification');
   await Hive.openBox('lg');
   await Firebase.initializeApp(
     options: FirebaseOptions(
@@ -37,6 +40,8 @@ void main() async {
     ),
   );
   await NotificationHandler.initialize();
+  // Handle background notifications (app running in the background)
+  FirebaseMessaging.onBackgroundMessage(NotificationHandler.firebaseMessagingBackgroundHandler);
   await Supabase.initialize(
     url: keys.supabaseUrl,
     anonKey: keys.supabaseKey,
@@ -45,11 +50,13 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+
         ChangeNotifierProvider(create: (_) => Picker()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => AuthenticateProvider()),
         ChangeNotifierProvider(create: (_) => LastSeenProvider()),
-        ChangeNotifierProvider(create: (_) => AIbotApiService()),
+        ChangeNotifierProvider(create: (_) => AIbotApiService(),),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
       child: const MyApp(),
     ),

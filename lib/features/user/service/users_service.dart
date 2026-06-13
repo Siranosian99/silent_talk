@@ -43,6 +43,7 @@ class UsersService {
             token: doc['token'],
             image: doc['image'],
             isOnline: doc['isOnline'],
+          isNotification: doc['isNotification']
         );
       }).toList();
     } catch (e) {
@@ -63,7 +64,7 @@ class UsersService {
         .get();
 
     if (!doc.exists) return null;
-    return doc.data(); // ✅ This gives you a Map<String, dynamic>
+    return doc.data();
   }
   Future<Map<String, dynamic>?> getUserDataById(String id) async {
 
@@ -75,8 +76,10 @@ class UsersService {
         .get();
 
     if (!doc.exists) return null;
-    return doc.data(); // ✅ This gives you a Map<String, dynamic>
+    return doc.data();
   }
+
+
 
 
 }
