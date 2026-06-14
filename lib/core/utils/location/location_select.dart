@@ -24,6 +24,7 @@ Future<void> sendLocation(String receiverId, BuildContext context) async {
   final double? longitude = loc.longitude;
 
   if (latitude != null && longitude != null) {
+    if(!context.mounted) return;
     await context.pushNamed(
       'mapLayer',
       extra: {

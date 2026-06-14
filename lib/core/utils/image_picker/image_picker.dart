@@ -92,10 +92,11 @@ class Picker with ChangeNotifier{
         // );
         imgPath = pickedImage?.path;
         imgPath!.isNotEmpty ? isImage = true : isImage = false;
-        print(isImage);
-        print(pickedImage?.path);
-        // print('Uploaded image URL: ${response.secureUrl}');
         notifyListeners();
+        print("-----------$isImage");
+        print("---------------${pickedImage?.path}");
+        // print('Uploaded image URL: ${response.secureUrl}');
+
         return imgPath; // Return the Cloudinary link
 
       }

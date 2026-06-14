@@ -30,16 +30,20 @@ void showCustomBottomSheet(
             spacing: 24,
             runSpacing: 24,
             children: [
-              _buildOption(Icons.photo, Sheets.instance.photo, () {
-                picker.galleryPicker();
+              _buildOption(Icons.photo, Sheets.instance.photo, () async{
+                await picker.galleryPicker();
+                if(!context.mounted) return;
                 Navigator.pop(context);
               }),
-              _buildOption(Icons.camera_alt, Sheets.instance.camera, () {
-                picker.cameraPicker();
+              _buildOption(Icons.camera_alt, Sheets.instance.camera, ()async {
+                await picker.cameraPicker();
+                if(!context.mounted) return;
                 Navigator.pop(context);
               }),
               _buildOption(Icons.location_on, Sheets.instance.location, () async {
-               sendLocation(id, context);
+              await sendLocation(id, context);
+              if(!context.mounted) return;
+              Navigator.pop(context);
                 // context.goNamed('mp');
               }),
               _buildOption(Icons.contacts, Sheets.instance.contact, () {

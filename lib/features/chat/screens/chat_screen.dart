@@ -50,6 +50,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   TextEditingController messageController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final messageService = MessageService();
+
   // final _messageChanger=MessageChanger();
   List<Users> _users = [];
   late final Authenticator _authenticator;
@@ -189,8 +191,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final lastProvider = Provider.of<LastSeenProvider>(context);
-    final messageService = MessageService();
+
     final reciever = getReceiver();
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -203,7 +206,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     alignment: Alignment.bottomLeft,
                     children: [
                       Container(
-                        padding: EdgeInsets.only(left: 50,top: 20),
+                        padding: EdgeInsets.only(left: 50,top: 20,right: 50),
                         width: double.infinity,
                         height: 110,
                         color: Color.fromRGBO(52, 136, 176, 0.91),
@@ -219,7 +222,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   radius: 35,
                                   backgroundColor: Colors.grey.shade300,
                                   child: ClipOval(
-                                    child: ( reciever!.image.isEmpty)
+                                    child: (reciever!.image.isEmpty)
                                         ? Image.asset(
                                       'assets/images/noProfile.png',
                                       width: 70,
@@ -284,7 +287,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         onPressed: () {
                           context.goNamed('people');
                         },
-                        icon: Icon(Icons.navigate_before, size: 30),
+                        icon:isArabic ? Icon(Icons.navigate_next, size: 30): Icon(Icons.navigate_before, size: 30),
                       ),
                     ],
                   ),

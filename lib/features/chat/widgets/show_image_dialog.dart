@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -24,16 +26,28 @@ Future<void> showImageSourceDialog(BuildContext context) async {
                 leading: const Icon(Icons.camera_alt),
                 title:  Text(AppLocalizations.of(context)!.camera),
                 onTap: () async {
-                  final result =await picker.cameraPicker();
+                  final path = await picker.cameraPicker();
+                  final localPath=path;
+                  final result=await picker.imgUploaderToServer(localPath.toString());
+
                   if (result != null) {
-                    await accountEdits.updateProilePhoto(result).then((_){
-                      picker.clearImage();
-                    });
+                    await accountEdits.updateProilePhoto(result);
+                    picker.clearImage();
                     if(!context.mounted) return;
                     Navigator.pop(context);
                   }
-
                 },
+                // onTap: () async {
+                //   final result =await picker.cameraPicker();
+                //   if (result != null) {
+                //     await accountEdits.updateProilePhoto(result).then((_){
+                //       picker.clearImage();
+                //     });
+                //     if(!context.mounted) return;
+                //     Navigator.pop(context);
+                //   }
+                //
+                // },
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library),
