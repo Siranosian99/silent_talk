@@ -6,11 +6,11 @@ class MapPreview extends StatefulWidget {
   final String url;
 
   const MapPreview({
-    Key? key,
+    super.key,
     this.width = 200,
     this.height = 150,
     required this.url,
-  }) : super(key: key);
+  });
 
   @override
   State<MapPreview> createState() => _MapPreviewState();

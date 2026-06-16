@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ffi';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,6 +26,7 @@ import 'core/utils/biometric/auth_provider.dart';
 import 'core/utils/location/map_layer.dart';
 import 'core/utils/location/ss.dart';
 import 'core/global_key.dart';
+import 'features/chat/widgets/map_bubble.dart';
 
 final GoRouter router = GoRouter(
   navigatorKey: AppNavigator.navigatorKey,
@@ -99,12 +101,7 @@ final GoRouter router = GoRouter(
 
         if (isLoggedIn != null && user!.emailVerified) {
           return '/people'; // user already logged in → skip login
-        } else {
-          print(
-            ""
-            "verify your emailll",
-          );
-        }
+        } else {}
 
         return null; // stay on /login
       },
@@ -185,6 +182,16 @@ final GoRouter router = GoRouter(
       path: '/mp',
       name: 'mp',
       builder: (context, state) => AppleMapsExample(),
+    ),
+    GoRoute(
+      path: '/maps',
+      name: 'maps',
+      builder: (context, state) {
+
+
+        return MapPreview(url: '',
+        );
+      },
     ),
   ],
 );
