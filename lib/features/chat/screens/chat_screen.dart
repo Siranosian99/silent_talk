@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/texts.dart';
+import 'package:silent_talk/core/utils/location/location_select.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/auth/services/request_check.dart';
 import 'package:silent_talk/features/chat/services/get_messages.dart';
@@ -29,6 +30,7 @@ import '../widgets/sheet_to_share.dart';
 
 class ChatScreen extends StatefulWidget {
   final String? name;
+
 
   // final int? id;
   // final String? senderId;
@@ -81,6 +83,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final deviceId = await DeviceIdHelper().getDeviceId();
+        // if(!context.mounted) return;
         _authenticator.listenForAnotherDeviceLogin(context, deviceId);
       }
     });
