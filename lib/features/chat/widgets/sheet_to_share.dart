@@ -41,7 +41,7 @@ void showCustomBottomSheet(
                 Navigator.pop(context);
               }),
               _buildOption(Icons.location_on, Sheets.instance.location, () async {
-              await sendLocation(id, context);
+              await openMap(id, context);
               //   context.goNamed('maps');
               if(!context.mounted) return;
               Navigator.pop(context);

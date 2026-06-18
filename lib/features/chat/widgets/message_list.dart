@@ -104,7 +104,7 @@ class MessageList extends StatelessWidget {
                         msg.contains("maps://?q")
                     ? Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('')
+                      child: MapPreview(url: msg)
                     )
                     : (msg.contains('.txt') ||
                         msg.contains('.pdf') ||

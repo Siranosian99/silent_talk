@@ -30,6 +30,7 @@ void main() async {
   await Hive.openBox('device_id');
   await Hive.openBox('notification');
   await Hive.openBox('lg');
+  await Hive.openBox('location_cache');
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey:keys.firebaseApiKey ,

@@ -12,7 +12,8 @@ class DocumentsUtilty {
     final publicUrl = supabase.storage.from('documents').getPublicUrl(fileName);
     if (path.isNotEmpty && fileName.isNotEmpty) {
       await supabase.storage
-          .from('documents')
+          .from(''
+          '')
           .upload(
             fileName,
             documentfile,

@@ -183,16 +183,16 @@ final GoRouter router = GoRouter(
       name: 'mp',
       builder: (context, state) => AppleMapsExample(),
     ),
-    GoRoute(
-      path: '/maps',
-      name: 'maps',
-      builder: (context, state) {
-
-
-        return MapPreview(url: '',
-        );
-      },
-    ),
+    // GoRoute(
+    //   path: '/maps',
+    //   name: 'maps',
+    //   builder: (context, state) {
+    //
+    //
+    //     return MapPreview(url: '',
+    //     );
+    //   },
+    // ),
   ],
 );
 // GoRoute(

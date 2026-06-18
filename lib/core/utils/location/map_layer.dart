@@ -6,6 +6,7 @@ import 'package:apple_maps_flutter/apple_maps_flutter.dart' as amaps;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
+import 'package:silent_talk/core/utils/location/location_cache.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../features/auth/services/authenticator.dart';
@@ -161,8 +162,11 @@ class MapSampleState extends State<MapSample> {
             Platform.isAndroid ? googleMapsUrl : appleMapsUrl,
             Authenticator().user!.uid,
             receiverId,
-          )
-          .then((_) => context.pop());
+          );
+      LocationCache.save(  Platform.isAndroid ? _markerPosition!.latitude:_amarkerPosition!.latitude,   Platform.isAndroid? _markerPosition!.longitude:_amarkerPosition!.longitude);
+      if(!context.mounted) return ;
+      context.pop();
+
     }
   }
 }
