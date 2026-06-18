@@ -17,6 +17,7 @@ void showCustomBottomSheet(
   String? fileName,
 }) {
   final picker = Provider.of<Picker>(context, listen: false);
+  final _filePicker=FileHelper();
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -54,7 +55,8 @@ void showCustomBottomSheet(
                 );
               }),
               _buildOption(Icons.insert_drive_file, Sheets.instance.document, () {
-                pickDocumentFile(context, id);
+                _filePicker.pickTheFile();
+                // pickDocumentFile(context, id);
               }),
               // _buildOption(Icons.event, 'Event', () {}),
               // _buildOption(Icons.poll, 'Poll', () {}),

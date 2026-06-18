@@ -12,5 +12,6 @@ class Keys {
   // final supabaseKey='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2Y2RndGp4a21tdG1rbGdmZnlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyMTA4ODcsImV4cCI6MjA3NTc4Njg4N30.5AyA6GGTPWCmvFtVsdvdnVXy_4m_xfxq6F8Sdz9uAtI';
   final supabaseUrl = 'https://beubjhdpxtiljhaumhss.supabase.co';
 
-  final supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldWJqaGRweHRpbGpoYXVtaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODExNzgsImV4cCI6MjA5NzM1NzE3OH0._d6r_4v0UXgEQHEeVq9fFj1wVgELRg_E7FsmPDEqeas";
+  final supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldWJqaGRweHRpbGpoYXVtaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODExNzgsImV4cCI6MjA5NzM1NzE3OH0._d6r_4v0UXgEQHEeVq9fFj1wVgELRg_E7FsmPDEqeas";
 }

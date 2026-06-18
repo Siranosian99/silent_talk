@@ -38,7 +38,7 @@ class MessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authenticator = Authenticator();
-    final provider = Provider.of<Picker>(context);
+    // final provider = Provider.of<Picker>(context);
     return ListView.builder(
       itemBuilder: (context, index) {
         final msg = messages[index]['message'];
@@ -59,11 +59,12 @@ class MessageList extends StatelessWidget {
                 msg.contains('.pdf') ||
                 msg.contains('.doc') ||
                 msg.contains('.docx')) {
-              DocumentsUtilty().saveFromLink(msg, msg.split('/').last);
+              // DocumentsUtilty().saveFromLink(msg, msg.split('/').last);
               SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: SelectableText(
-                  await readFileContent(msg).toString(),
+                  '',
+                  // await readFileContent(msg).toString(),
                   style: const TextStyle(fontSize: 16, fontFamily: 'monospace'),
                 ),
               );
