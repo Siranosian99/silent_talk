@@ -31,7 +31,6 @@ import '../widgets/sheet_to_share.dart';
 class ChatScreen extends StatefulWidget {
   final String? name;
 
-
   // final int? id;
   // final String? senderId;
   final String? receiverId;
@@ -209,7 +208,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     alignment: Alignment.bottomLeft,
                     children: [
                       Container(
-                        padding: EdgeInsets.only(left: 50,top: 20,right: 50),
+                        padding: EdgeInsets.only(left: 50, top: 20, right: 50),
                         width: double.infinity,
                         height: 110,
                         color: Color.fromRGBO(52, 136, 176, 0.91),
@@ -225,27 +224,28 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   radius: 35,
                                   backgroundColor: Colors.grey.shade300,
                                   child: ClipOval(
-                                    child: (reciever!.image.isEmpty)
-                                        ? Image.asset(
-                                      'assets/images/noProfile.png',
-                                      width: 70,
-                                      height: 70,
-                                      fit: BoxFit.cover,
-                                    )
-                                        : Image.network(
-                                      reciever.image,
-                                      width: 70,
-                                      height: 70,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) {
-                                        return Image.asset(
-                                          'assets/images/noProfile.png',
-                                          width: 70,
-                                          height: 70,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                    ),
+                                    child:
+                                        (reciever!.image.isEmpty)
+                                            ? Image.asset(
+                                              'assets/images/noProfile.png',
+                                              width: 70,
+                                              height: 70,
+                                              fit: BoxFit.cover,
+                                            )
+                                            : Image.network(
+                                              reciever.image,
+                                              width: 70,
+                                              height: 70,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) {
+                                                return Image.asset(
+                                                  'assets/images/noProfile.png',
+                                                  width: 70,
+                                                  height: 70,
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                            ),
                                   ),
                                 ),
                                 CircleAvatar(
@@ -290,7 +290,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         onPressed: () {
                           context.goNamed('people');
                         },
-                        icon:isArabic ? Icon(Icons.navigate_next, size: 30): Icon(Icons.navigate_before, size: 30),
+                        icon:
+                            isArabic
+                                ? Icon(Icons.navigate_next, size: 30)
+                                : Icon(Icons.navigate_before, size: 30),
                       ),
                     ],
                   ),
@@ -309,14 +312,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               .orderBy('messageTime', descending: false)
                               .snapshots(),
                       builder: (context, snapshot) {
-                      // _messageChanger.notificationCheck(
-                      //     _authenticator.user!.uid,
-                      //     widget.receiverId!,
-                      //   );
+                        // _messageChanger.notificationCheck(
+                        //     _authenticator.user!.uid,
+                        //     widget.receiverId!,
+                        //   );
                         if (snapshot.hasError) {
                           return Center(child: Text('Error loading messages'));
                         }
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
                         }
 
@@ -351,7 +355,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       },
                     ),
                   ),
-                 Consumer<Picker>(
+                  Consumer<Picker>(
                     builder: (context, provider, child) {
                       return Stack(
                         children: [
@@ -362,36 +366,35 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               controller: messageController,
                               decoration: InputDecoration(
                                 hint:
-                                provider.isImage
-                                    ? Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        12,
-                                      ),
-                                      child: Image.file(
-                                        File(provider.imgPath ?? ''),
-                                        fit: BoxFit.cover,
-                                        width: 100,
-                                        height: 100,
-                                      ),
-                                    ),
-                                    CircleAvatar(
-                                      backgroundColor: Colors.black
-                                          .withOpacity(0.6),
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          provider.clearImage();
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                    : Text(AppTexts.instance.typemsg),
+                                    provider.isImage
+                                        ? Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: Image.file(
+                                                File(provider.imgPath ?? ''),
+                                                fit: BoxFit.cover,
+                                                width: 100,
+                                                height: 100,
+                                              ),
+                                            ),
+                                            CircleAvatar(
+                                              backgroundColor: Colors.black
+                                                  .withOpacity(0.6),
+                                              child: IconButton(
+                                                icon: Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  provider.clearImage();
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                        : Text(AppTexts.instance.typemsg),
                                 filled: true,
                                 contentPadding: const EdgeInsets.symmetric(
                                   vertical: 12,
@@ -404,7 +407,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 prefixIcon: IconButton(
                                   icon: const Icon(Icons.attach_file),
                                   onPressed: () {
-                                    showCustomBottomSheet(context, 21, reciever.id);
+                                    showCustomBottomSheet(
+                                      context,
+                                      21,
+                                      reciever.id,
+                                      _authenticator.user!.uid,
+                                    );
                                   },
                                 ),
                                 suffixIcon: Column(
@@ -413,7 +421,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                       icon: const Icon(Icons.send),
                                       onPressed: () async {
                                         final photoLink = provider.imgPath;
-                                        final text = messageController.text.trim();
+                                        final text =
+                                            messageController.text.trim();
 
                                         //normal Message
                                         if (photoLink == null ||
@@ -421,7 +430,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                           if (text.isNotEmpty) {
                                             await messageService.sendMessage(
                                               text,
-                                              Authenticator().user!.uid,
+                                              _authenticator.user!.uid,
                                               reciever.id,
                                             );
                                             messageController.clear();
@@ -432,15 +441,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                         provider.clearImage();
                                         final docId = await messageService
                                             .sendMessage(
-                                          photoLink,
-                                          _authenticator.user!.uid,
-                                          reciever.id,
-                                        );
+                                              photoLink,
+                                              _authenticator.user!.uid,
+                                              reciever.id,
+                                            );
                                         String cloudinaryUpload =
                                             await _picker.imgUploaderToServer(
                                               photoLink,
                                             ) ??
-                                                '';
+                                            '';
                                         if (cloudinaryUpload.isNotEmpty) {
                                           await messageService.updateMessages(
                                             cloudinaryUpload,
@@ -449,7 +458,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             docId,
                                           );
                                         }
-
                                       },
                                     ),
                                   ],
@@ -460,8 +468,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         ],
                       );
                     },
-                  )
-
+                  ),
                 ],
               ),
     );

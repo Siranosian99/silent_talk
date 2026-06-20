@@ -13,11 +13,11 @@ import 'contact_shower_sheet.dart';
 void showCustomBottomSheet(
   BuildContext context,
   int index,
-  String id, {
+  String receiverId,String senderId, {
   String? fileName,
 }) {
   final picker = Provider.of<Picker>(context, listen: false);
-  final _filePicker=FileHelper();
+  final filePicker=FileHelper();
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -42,7 +42,7 @@ void showCustomBottomSheet(
                 Navigator.pop(context);
               }),
               _buildOption(Icons.location_on, Sheets.instance.location, () async {
-              await openMap(id, context);
+              await openMap(receiverId, context);
               //   context.goNamed('maps');
               if(!context.mounted) return;
               Navigator.pop(context);
@@ -51,11 +51,11 @@ void showCustomBottomSheet(
               _buildOption(Icons.contacts, Sheets.instance.contact, () {
                 context.pushNamed(
                   'contact',
-                  extra: {"id": id, "index": index}, // Passing index here
+                  extra: {"id": receiverId, "index": index}, // Passing index here
                 );
               }),
               _buildOption(Icons.insert_drive_file, Sheets.instance.document, () {
-                _filePicker.pickTheFile();
+                filePicker.pickTheFile(context,senderId,receiverId);
                 // pickDocumentFile(context, id);
               }),
               // _buildOption(Icons.event, 'Event', () {}),

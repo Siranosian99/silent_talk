@@ -59,12 +59,11 @@ class MessageList extends StatelessWidget {
                 msg.contains('.pdf') ||
                 msg.contains('.doc') ||
                 msg.contains('.docx')) {
-              // DocumentsUtilty().saveFromLink(msg, msg.split('/').last);
+              DocumentsUtilty().saveFromLink(msg, msg.split('/').last);
               SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: SelectableText(
-                  '',
-                  // await readFileContent(msg).toString(),
+                  readFileContent(msg).toString(),
                   style: const TextStyle(fontSize: 16, fontFamily: 'monospace'),
                 ),
               );

@@ -10,6 +10,7 @@ import '../../../features/auth/services/authenticator.dart';
 import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 // Future<void> pickDocumentFile(BuildContext context, String receiverId) async {
 //   FilePickerResult? result = await FilePicker.platform.pickFiles(
 //     type: FileType.custom,
@@ -40,66 +41,50 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 //   }
 // }
 
-// Future<String> readFileContent(String path) async {
-//   final file = File(path);
-//   final content = await file.readAsString();
-//   return content;
-//   print('Text content: $content');
-//   // now send this content to your chat
-// }
-//Future<void> pickDocumentFile(BuildContext context, String receiverId) async {
-//   final result = await FilePicker.platform.pickFiles(
-//     type: FileType.custom,
-//     allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
-//   );
-//
-//   if (result != null && result.files.single.path != null) {
-//     final path = result.files.single.path!;
-//     final fileName = result.names[0]!;
-//
-//     print("📄 Selected document: $fileName");
-//     print("📂 Path: $path");
-//
-//     // Show a preview or confirmation dialog
-//     showFileDialog(context, fileName, () async {
-//       // ✅ 1. Upload to Supabase first
-//       final uploader = DocumentUploader();
-//       final fileUrl = await uploader.uploadDocument(path, fileName);
-//
-//       if (fileUrl != null) {
-//         // ✅ 2. Send message with Supabase URL to Firebase
-//         await MessageService().sendMessage(
-//           fileUrl, // send Supabase file URL, not local path
-//           Authenticator().user!.uid,
-//           receiverId,
-//         );
-//
-//         print("✅ Message sent with document: $fileUrl");
-//       } else {
-//         print("❌ Upload failed — message not sent.");
-//       }
-//     });
-//   } else {
-//     print("⚠️ No document selected");
-//   }
-// }
-class FileHelper{
-  Future<String?> pickTheFile()async {
+Future<String> readFileContent(String path) async {
+  final file = File(path);
+  final content = await file.readAsString();
+  return content;
+}
 
+class FileHelper {
+  Future<String?> pickTheFile(BuildContext context, String senderId,String reciverId) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ['txt', 'pdf', 'doc', 'docx']    );
-    final String? resultFile=result?.files.single.path;
-    if(resultFile == null){
+      allowedExtensions: ['txt', 'pdf', 'doc', 'docx'],
+    );
+    final String? resultFile = result?.files.single.path;
+    // final String? fileName = result?.files.single.name ;
+
+    if (resultFile == null) {
       return null;
     }
-      print("--this is result of File:$resultFile");
-    await StorageService().uploadFile(resultFile);
-      return resultFile;
+    if (!context.mounted) {
+      return null;
+    }
+
+    final fileUrl = await StorageService().uploadFile(resultFile);
+    final fileName = Uri.decodeComponent(
+      Uri.parse(fileUrl!).pathSegments.last,
+    );
+    print('This is File URL:$fileUrl');
+    if (!context.mounted) {
+      return null;
+    }
+    await showFileDialog(
+      context,fileName,
+          () async {
+        await MessageService().sendMessage(
+          fileUrl,
+          senderId,
+          reciverId,
+        );
+      },
+    );
+    return resultFile;
   }
 }
-
 
 class StorageService {
   final supabase = Supabase.instance.client;
@@ -108,25 +93,25 @@ class StorageService {
     try {
       final file = File(filePath);
 
-      if (await file.exists()) {
+      if (!await file.exists()) {
         return null;
       }
 
-      final fileName = file.path.split('/').last;
+      final fileName = file.path
+          .split('/')
+          .last;
 
-      final uniqueName =
-          '${DateTime.now().millisecondsSinceEpoch}_$fileName';
+      final uniqueName = '${DateTime
+          .now()
+          .millisecondsSinceEpoch}_$fileName';
 
-
-      await supabase.storage
-          .from('documents')
-          .upload(uniqueName, file);
-
+      await supabase.storage.from('documents').upload(uniqueName, file);
 
       final publicUrl = supabase.storage
           .from('documents')
           .getPublicUrl(uniqueName);
-      print('uploadeddd');
+
+      print('---------------upload complete');
       return publicUrl;
     } catch (e) {
       print('Upload Error: $e');
