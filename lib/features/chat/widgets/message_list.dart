@@ -42,11 +42,12 @@ class MessageList extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         final msg = messages[index]['message'];
+        final type= messages[index].data() as Map<String, dynamic>;
         return GestureDetector(
           onTap: () async {
             final coords = msg.split("q=").last;
             final parts = coords.split(",");
-            if (msg.contains("https://res.cloudinary.com")) {
+            if (type['type']=='image') {
               // String fileName,String urlPath, Uint8List bytes
               // Uint8List bytes = Uint8List.fromList(
               //   utf8.encode(messages[index]['message']),
@@ -55,10 +56,7 @@ class MessageList extends StatelessWidget {
               Filer.saveNetworkImage(msg);
               // FileSaver.downloadAndSave(messages[index]['message'], 'file1');
               print(msg);
-            } else if (msg.contains('.txt') ||
-                msg.contains('.pdf') ||
-                msg.contains('.doc') ||
-                msg.contains('.docx')) {
+            } else if (type['type']=='document') {
               DocumentsUtilty().saveFromLink(msg, msg.split('/').last);
               SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
@@ -67,8 +65,7 @@ class MessageList extends StatelessWidget {
                   style: const TextStyle(fontSize: 16, fontFamily: 'monospace'),
                 ),
               );
-            } else if (msg.contains("https://www.google.com/maps?q") ||
-                msg.contains("maps://?q")) {
+            } else if (type['type']=='location') {
               await context.pushNamed(
                 'mapLayer',
                 extra: {
@@ -100,16 +97,12 @@ class MessageList extends StatelessWidget {
 
             //here checkin//
             child:
-                msg.contains("https://www.google.com/maps?q") ||
-                        msg.contains("maps://?q")
+                type['type']=='location'
                     ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: MapPreview(url: msg)
                     )
-                    : (msg.contains('.txt') ||
-                        msg.contains('.pdf') ||
-                        msg.contains('.doc') ||
-                        msg.contains('.docx'))
+                    : (type['type']=='document')
                     ? Padding(
                       padding: const EdgeInsets.all(12),
                       child: ClipRRect(
@@ -156,7 +149,8 @@ class MessageList extends StatelessWidget {
                 //     ),
                 //   ),
                 // )
-                    : msg.startsWith("/data/")
+                //     :
+                :type['type']=='image'
                     ? Padding(
                   padding: const EdgeInsets.only(top: 12, bottom: 12),
                   child: ClipRRect(
@@ -178,14 +172,13 @@ class MessageList extends StatelessWidget {
                     ),
                   ),
                 )
-                    : msg is String &&
-                    msg.startsWith("https://res.cloudinary.com/")
+                    : type['type']=='image'
                     ?  ChatImage(
                   imageUrl: msg,
                   isMe: messages[index]['senderId'] ==
                       authenticator.user?.uid,
                 )
-                    : msg.contains("Name:")
+                    : type['type']=='contact'
                     ? Container(
                       width: 300,
                       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),

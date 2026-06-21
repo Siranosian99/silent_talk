@@ -432,6 +432,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                               text,
                                               _authenticator.user!.uid,
                                               reciever.id,
+                                              "text"
                                             );
                                             messageController.clear();
                                           }
@@ -444,11 +445,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                               photoLink,
                                               _authenticator.user!.uid,
                                               reciever.id,
+                                          "image"
                                             );
                                         String cloudinaryUpload =
                                             await _picker.imgUploaderToServer(
-                                              photoLink,
-                                            ) ??
+                                              photoLink,) ??
                                             '';
                                         if (cloudinaryUpload.isNotEmpty) {
                                           await messageService.updateMessages(

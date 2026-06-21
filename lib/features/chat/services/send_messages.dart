@@ -10,7 +10,7 @@ class MessageService {
     return DateFormat('hh:mm a').format(dateTime); // Example: "02:30 PM"
   }
 
-  Future<String> sendMessage(String message, String uId1, String uId2) async {
+  Future<String> sendMessage(String message, String uId1, String uId2,String type) async {
     try {
 
       final messages = FirebaseFirestore.instance
@@ -21,6 +21,7 @@ class MessageService {
       await docRef.set({
             "docId": docRef.id,
             "chatId": getChatId(uId1, uId2),
+            "type":type,
             "message": message,
             "senderId": uId1,
             "receiverId": uId2,

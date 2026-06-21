@@ -79,6 +79,7 @@ class FileHelper {
           fileUrl,
           senderId,
           reciverId,
+          "document"
         );
       },
     );

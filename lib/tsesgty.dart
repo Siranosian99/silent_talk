@@ -151,6 +151,7 @@ class _MapSampleState extends State<MapSample> {
         Platform.isAndroid ? googleMapsUrl : appleMapsUrl,
         Authenticator().user!.uid,
         receiverId,
+        ''
       )
           .then((_) => context.pop());
     }

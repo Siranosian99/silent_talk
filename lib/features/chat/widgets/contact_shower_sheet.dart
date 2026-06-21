@@ -191,6 +191,7 @@ class _ContactItem extends StatelessWidget {
                 contactDetails(contact),
                 Authenticator().user!.uid,
                 id,
+                "contact"
               );
             },
           );

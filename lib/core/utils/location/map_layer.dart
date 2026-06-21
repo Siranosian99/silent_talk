@@ -162,6 +162,7 @@ class MapSampleState extends State<MapSample> {
             Platform.isAndroid ? googleMapsUrl : appleMapsUrl,
             Authenticator().user!.uid,
             receiverId,
+        "location"
           );
       LocationCache.save(  Platform.isAndroid ? _markerPosition!.latitude:_amarkerPosition!.latitude,   Platform.isAndroid? _markerPosition!.longitude:_amarkerPosition!.longitude);
       if(!context.mounted) return ;

@@ -19,7 +19,7 @@ Future<void> showFileDialog(
               child: Image.asset('assets/icons/document.png'),
             ),
             const SizedBox(width: 12),
-            Text(fileName),
+            Expanded(child: Text(fileName)),
           ],
         ),
         actions: [
