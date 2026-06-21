@@ -43,6 +43,7 @@ class MessageList extends StatelessWidget {
       itemBuilder: (context, index) {
         final msg = messages[index]['message'];
         final type= messages[index].data() as Map<String, dynamic>;
+        final fileName = msg.split('/').last.split('_').last;
         return GestureDetector(
           onTap: () async {
             final coords = msg.split("q=").last;
@@ -104,12 +105,12 @@ class MessageList extends StatelessWidget {
                     )
                     : (type['type']=='document')
                     ? Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.only(left: 23,right: 10,),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
-                          width: 240,
-                          height: 90,
+                          width: 250,
+                          height: 100,
                           color: Color(0xFFFFA726),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -120,7 +121,7 @@ class MessageList extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  msg.split('/').last,
+                                  fileName,
                                   maxLines: 1,
                                   overflow: TextOverflow.clip,
                                   style: GoogleFonts.poppins(
@@ -136,49 +137,16 @@ class MessageList extends StatelessWidget {
                         ),
                       ),
                     )
-                //: msg.contains("/data/") || msg.contains("https://res.cloudinary.com/")
-                // ? Padding(
-                //   padding: const EdgeInsets.only(top: 12, bottom: 12),
-                //   child: ClipRRect(
-                //     borderRadius: BorderRadius.circular(20),
-                //     child: Image.file(
-                //       File(msg),
-                //       width: 250,
-                //       height: 250,
-                //       fit: BoxFit.cover,
-                //     ),
-                //   ),
-                // )
-                //     :
-                :type['type']=='image'
-                    ? Padding(
-                  padding: const EdgeInsets.only(top: 12, bottom: 12),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child:
-                    messages[index]['senderId'] == authenticator.user?.uid
-                        ? Image.file(
-                      File(msg),
-                      width: 250,
-                      height: 250,
-                      fit: BoxFit.cover,
-                    )
-                        : const SizedBox(
-                      width: 250,
-                      height: 250,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  ),
-                )
+
                     : type['type']=='image'
                     ?  ChatImage(
                   imageUrl: msg,
                   isMe: messages[index]['senderId'] ==
                       authenticator.user?.uid,
                 )
-                    : type['type']=='contact'
+
+                    : // here contacts
+             type['type']=='contact'
                     ? Container(
                       width: 300,
                       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -272,31 +240,6 @@ class MessageList extends StatelessWidget {
                         ],
                       ),
                     )
-                    // : messages[index]['message'].contains(
-                    //   "https://res.cloudinary.com:",
-                    // )
-                    // ? Container(
-                    //   margin: const EdgeInsets.symmetric(
-                    //     vertical: 6,
-                    //     horizontal: 12,
-                    //   ),
-                    //   padding: const EdgeInsets.all(12),
-                    //   constraints: const BoxConstraints(maxWidth: 250),
-                    //   decoration: BoxDecoration(
-                    //     color:
-                    //         messages[index]['senderId'] ==
-                    //                 Authenticator().user?.uid
-                    //             ? Color.fromRGBO(24, 85, 115, 0.91)
-                    //             : Color.fromRGBO(40, 174, 39, 0.91),
-                    //     borderRadius: const BorderRadius.only(
-                    //       topLeft: Radius.circular(20),
-                    //       topRight: Radius.circular(20),
-                    //       bottomLeft: Radius.circular(20),
-                    //     ),
-                    //   ),
-                    //   child: Image.network(messages[index]['message']),
-                    // )
-                    // :
                     : Container(
                       margin: const EdgeInsets.symmetric(
                         vertical: 6,

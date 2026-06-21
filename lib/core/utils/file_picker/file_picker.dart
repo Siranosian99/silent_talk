@@ -11,35 +11,7 @@ import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Future<void> pickDocumentFile(BuildContext context, String receiverId) async {
-//   FilePickerResult? result = await FilePicker.platform.pickFiles(
-//     type: FileType.custom,
-//     allowedExtensions: ['pdf', 'doc', 'docx', 'txt'], // you can add more
-//   );
-//
-//   if (result != null && result.files.single.path != null) {
-//     String path = result.files.single.path!;
-//     final fileName = result.names[0]!;
-//     print("before----------------------$path");
-//     print("before----------------------$fileName");
-//
-//     if(!context.mounted) return;
-//     showFileDialog(context, result.names[0].toString(), () async {
-//       print("----------------------inside code");
-//       String fileUrl= await DocumentsUtilty().uploadDocuments(path, fileName) ?? '';
-//       print("--------------$fileUrl");
-//       MessageService().sendMessage(
-//         fileUrl!,
-//         Authenticator().user!.uid,
-//         receiverId,
-//       );
-//       print("after------------------------------------------${result.names[0]}");
-//       print("after-------------------------------Selected document path: $path");
-//     });
-//   } else {
-//     print("No document selected or There is Another error");
-//   }
-// }
+
 
 Future<String> readFileContent(String path) async {
   final file = File(path);
@@ -48,6 +20,8 @@ Future<String> readFileContent(String path) async {
 }
 
 class FileHelper {
+  final storageService=StorageService();
+  final messageService=MessageService();
   Future<String?> pickTheFile(BuildContext context, String senderId,String reciverId) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
@@ -64,7 +38,7 @@ class FileHelper {
       return null;
     }
 
-    final fileUrl = await StorageService().uploadFile(resultFile);
+    final fileUrl = await storageService.uploadFile(resultFile);
     final fileName = Uri.decodeComponent(
       Uri.parse(fileUrl!).pathSegments.last,
     );
@@ -75,7 +49,7 @@ class FileHelper {
     await showFileDialog(
       context,fileName,
           () async {
-        await MessageService().sendMessage(
+        await messageService.sendMessage(
           fileUrl,
           senderId,
           reciverId,
