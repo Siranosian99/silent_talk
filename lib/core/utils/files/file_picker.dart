@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:silent_talk/core/utils/file_picker/documents.dart';
 import 'package:silent_talk/features/chat/services/send_messages.dart';
 
 import '../../../features/chat/widgets/send_file_dialog.dart';
@@ -11,17 +10,16 @@ import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'documents.dart';
+import 'link_parse.dart';
 
 
-Future<String> readFileContent(String path) async {
-  final file = File(path);
-  final content = await file.readAsString();
-  return content;
-}
+
 
 class FileHelper {
   final storageService=StorageService();
   final messageService=MessageService();
+
   Future<String?> pickTheFile(BuildContext context, String senderId,String reciverId) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
@@ -50,7 +48,7 @@ class FileHelper {
       context,fileName,
           () async {
         await messageService.sendMessage(
-          fileUrl,
+            extractPath(fileUrl),
           senderId,
           reciverId,
           "document"
@@ -59,38 +57,13 @@ class FileHelper {
     );
     return resultFile;
   }
+  // Future<String> readFileContent(String path) async {
+  //   final file = File(path);
+  //   final content = await file.readAsString();
+  //   return content;
+  // }
 }
 
-class StorageService {
-  final supabase = Supabase.instance.client;
 
-  Future<String?> uploadFile(String filePath) async {
-    try {
-      final file = File(filePath);
 
-      if (!await file.exists()) {
-        return null;
-      }
 
-      final fileName = file.path
-          .split('/')
-          .last;
-
-      final uniqueName = '${DateTime
-          .now()
-          .millisecondsSinceEpoch}_$fileName';
-
-      await supabase.storage.from('documents').upload(uniqueName, file);
-
-      final publicUrl = supabase.storage
-          .from('documents')
-          .getPublicUrl(uniqueName);
-
-      print('---------------upload complete');
-      return publicUrl;
-    } catch (e) {
-      print('Upload Error: $e');
-      return null;
-    }
-  }
-}

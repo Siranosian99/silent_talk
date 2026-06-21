@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/constants/api_consts.dart';
 import 'package:silent_talk/features/chat/services/send_messages.dart';
 
 import 'package:silent_talk/features/chat/widgets/map_bubble.dart';
@@ -14,9 +15,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/utils/contact/add_contact.dart';
 import '../../../core/utils/contact/send_contact.dart';
-import '../../../core/utils/file_picker/documents.dart';
-import '../../../core/utils/file_picker/file_picker.dart';
-import '../../../core/utils/file_saver/file_service.dart';
+
+import '../../../core/utils/files/file_service.dart';
+import '../../../core/utils/files/documents.dart';
+import '../../../core/utils/files/file_picker.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/message_type/message_checker.dart';
 import 'chat_image_bubble.dart';
@@ -38,6 +40,8 @@ class MessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authenticator = Authenticator();
+    final storageService=StorageService();
+    final messageService=  MessageService();
     // final provider = Provider.of<Picker>(context);
     return ListView.builder(
       itemBuilder: (context, index) {
@@ -58,14 +62,8 @@ class MessageList extends StatelessWidget {
               // FileSaver.downloadAndSave(messages[index]['message'], 'file1');
               print(msg);
             } else if (type['type']=='document') {
-              DocumentsUtilty().saveFromLink(msg, msg.split('/').last);
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: SelectableText(
-                  readFileContent(msg).toString(),
-                  style: const TextStyle(fontSize: 16, fontFamily: 'monospace'),
-                ),
-              );
+             //here to download pdf files
+              storageService.downloadFile(msg);
             } else if (type['type']=='location') {
               await context.pushNamed(
                 'mapLayer',
@@ -82,13 +80,17 @@ class MessageList extends StatelessWidget {
               }
             }
           },
-          onLongPress: () {
-            MessageService().deleteMessage(id1, id2, messages[index]['docId']);
+          onLongPress: ()async {
+        await  messageService.deleteMessage(id1, id2, messages[index]['docId']);
+          if(!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Message Deleted successfully'),
               ),
             );
+          },
+          onDoubleTap: ()async{
+            storageService.openDocument(msg);
           },
           child: Align(
             alignment:
