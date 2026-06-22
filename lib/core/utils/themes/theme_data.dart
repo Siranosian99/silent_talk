@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Light Theme
+  static final lightThemeCard = BoxDecoration(
+    color: Colors.blueAccent,
+    borderRadius: BorderRadius.circular(30.0),
+    border: Border.all(color: Colors.black, width: 2.0),
+    boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5.0)],
+  );
+
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primarySwatch: Colors.indigo,
@@ -68,4 +75,11 @@ class AppTheme {
       bodyMedium: TextStyle(color: Colors.white70),
     ),
   );
+  static final darkThemeCard = BoxDecoration(
+    color: Colors.deepPurple,
+    borderRadius: BorderRadius.circular(30.0),
+    border: Border.all(color: Colors.black, width: 2.0),
+    boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5.0)],
+  );
+
 }

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:silent_talk/core/utils/themes/theme_provider.dart';
 import 'package:silent_talk/features/chat/services/ai_api.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/user/service/get_userIds.dart';
 
 import 'package:silent_talk/features/user/service/users_service.dart';
 
+import '../../../core/utils/themes/theme_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/request_check.dart';
 import '../model/user_model.dart';
@@ -21,11 +24,10 @@ class PeopleScreen extends StatefulWidget {
 class _PeopleScreenState extends State<PeopleScreen> {
   final TextEditingController searchController = TextEditingController();
 
-
   late List<Users> users = [];
   final UsersService _usersService = UsersService();
-  final RequestsChats _requestsChats=RequestsChats();
-  final Authenticator _authenticator=Authenticator();
+  final RequestsChats _requestsChats = RequestsChats();
+  final Authenticator _authenticator = Authenticator();
 
   Future<void> callUsers(String query) async {
     users = await _usersService.fetchAllUsers(query) ?? [];
@@ -39,7 +41,6 @@ class _PeopleScreenState extends State<PeopleScreen> {
     callUsers('');
     super.initState();
   }
-
 
   void checkRequestStatus(String docId) async {
     String id = getChatId(_authenticator.user!.uid, docId);
@@ -55,16 +56,19 @@ class _PeopleScreenState extends State<PeopleScreen> {
     } else {
       print("No request found");
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark=themeProvider.isDark;
     return Scaffold(
-      floatingActionButton:FloatingActionButton(onPressed: ()async{
-        context.pushNamed('ai');
-       // await AIbotApiService().getData('Flutter');
-      },child: Image.asset('assets/icons/ai-assistant.png')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          context.pushNamed('ai');
+        },
+        child: Image.asset('assets/icons/ai-assistant.png'),
+      ),
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.chats),
         centerTitle: true,
@@ -89,39 +93,39 @@ class _PeopleScreenState extends State<PeopleScreen> {
           ChatSearchBar(
             controller: searchController,
             onChanged: (value) {
-            callUsers(value);
+              callUsers(value);
             },
           ),
           SizedBox(height: 20),
           // Grid of users
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: ListView.builder(
               itemCount: users.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.75,
-              ),
               itemBuilder: (context, index) {
                 final user = users[index];
                 return Column(
                   children: [
                     InkWell(
-                      onTap: ()async {
-                        String id = getChatId(_authenticator.user!.uid, user.id);
-
-                        bool status = await _requestsChats.getRequestStatus(id) ??false;
-                        final message = await _requestsChats.sendRequest(status,_authenticator.user!.uid, user.id);
-                        if(!context.mounted) return;
-                        status ? null:
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(message),
-                          ),
+                      onTap: () async {
+                        String id = getChatId(
+                          _authenticator.user!.uid,
+                          user.id,
                         );
-                        if(status){
+
+                        bool status =
+                            await _requestsChats.getRequestStatus(id) ?? false;
+                        final message = await _requestsChats.sendRequest(
+                          status,
+                          _authenticator.user!.uid,
+                          user.id,
+                        );
+                        if (!context.mounted) return;
+                        status
+                            ? null
+                            : ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(SnackBar(content: Text(message)));
+                        if (status) {
                           GoRouter.of(context).pushNamed(
                             'chat',
                             extra: {
@@ -130,46 +134,103 @@ class _PeopleScreenState extends State<PeopleScreen> {
                               'receiverId': user.id,
                             },
                           );
-                        }
-                        else{
-                          RequestsChats().sendRequest(false, _authenticator.user!.uid, user.id);
+                        } else {
+                          RequestsChats().sendRequest(
+                            false,
+                            _authenticator.user!.uid,
+                            user.id,
+                          );
                         }
                         print("UserId:${user.id}");
-
                       },
-                      child: CircleAvatar(
-                        radius: 35,
-                        backgroundColor: Colors.grey.shade300,
-                        child: ClipOval(
-                          child: (user.image.isEmpty)
-                              ? Image.asset(
-                            'assets/images/noProfile.png',
-                            width: 70,
-                            height: 70,
-                            fit: BoxFit.cover,
-                          )
-                              : Image.network(
-                            user.image,
-                            width: 70,
-                            height: 70,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) {
-                              return Image.asset(
-                                'assets/images/noProfile.png',
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.cover,
-                              );
-                            },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          decoration: isDark?AppTheme.darkThemeCard:AppTheme.lightThemeCard,
+                          child: Row(
+
+
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircleAvatar(
+                                  radius: 40,
+                                  backgroundColor: Colors.grey.shade300,
+                                  child: ClipOval(
+                                    child:
+                                        (user.image.isEmpty)
+                                            ? Image.asset(
+                                              'assets/images/noProfile.png',
+                                              width: 70,
+                                              height: 70,
+                                              fit: BoxFit.cover,
+                                            )
+                                            : Image.network(
+                                              user.image,
+                                              width: 70,
+                                              height: 70,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) {
+                                                return Image.asset(
+                                                  'assets/images/noProfile.png',
+                                                  width: 70,
+                                                  height: 70,
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                            ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                   "Username: ${user.userName}",
+                                    style: GoogleFonts.lato(
+                                      textStyle: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    "Name: ${user.userName}",
+                                    style: GoogleFonts.lato(
+                                      textStyle: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    "Email: ${user.email}",
+                                    style: GoogleFonts.lato(
+                                      textStyle: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              )
+
+
+
+                            ],
                           ),
                         ),
-                      )
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      user.name,
-                      style: const TextStyle(fontSize: 14),
-                      overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 );
@@ -181,54 +242,3 @@ class _PeopleScreenState extends State<PeopleScreen> {
     );
   }
 }
-//StreamBuilder<QuerySnapshot>(
-//                     stream:
-//                         FirebaseFirestore.instance
-//                             .collection('chats')
-//                             .doc(
-//                               getChatId(
-//                                 Authenticator.user!.uid,
-//                                 widget.receiverId!,
-//                               ),
-//                             ) // Chat ID
-//                             .collection('messages')
-//                             .orderBy('messageTime', descending: false)
-//                             .snapshots(),
-//                     builder: (context, snapshot) {
-//                       if (snapshot.hasError) {
-//                         return Center(child: Text('Error loading messages'));
-//                       }
-//                       if (snapshot.connectionState == ConnectionState.waiting) {
-//                         return Center(child: CircularProgressIndicator());
-//                       }
-//
-//                       final messages = snapshot.data!.docs;
-//                       return Expanded(
-//                         child:
-//                             messages.isNotEmpty
-//                                 ? MessageList(
-//                                   messages: messages,
-//                                   id1: Authenticator.user!.uid,
-//                                   id2: reciever.id,
-//                                   // photo: provider.imgPath ?? '',
-//                                 )
-//                                 : Center(
-//                                   child: Text(
-//                                     "No messages yet. Start the conversation!",
-//                                     style: TextStyle(
-//                                       fontSize: 17,
-//                                       fontWeight: FontWeight.w600,
-//                                       // Semi-bold
-//                                       color: Color.fromRGBO(97, 119, 138, 1),
-//                                       // Make it fully opaque
-//                                       fontStyle: FontStyle.italic,
-//                                       // Optional: gives it a stylish slant
-//                                       letterSpacing:
-//                                           0.3, // Slight spacing for polish
-//                                     ),
-//                                     textAlign: TextAlign.center,
-//                                   ),
-//                                 ),
-//                       );
-//                     },
-//                   ),

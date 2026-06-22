@@ -53,18 +53,16 @@ class MessageList extends StatelessWidget {
             final coords = msg.split("q=").last;
             final parts = coords.split(",");
             if (type['type']=='image') {
-              // String fileName,String urlPath, Uint8List bytes
-              // Uint8List bytes = Uint8List.fromList(
-              //   utf8.encode(messages[index]['message']),
-              // );
+
 
               Filer.saveNetworkImage(msg);
-              // FileSaver.downloadAndSave(messages[index]['message'], 'file1');
               print(msg);
-            } else if (type['type']=='document') {
-             //here to download pdf files
-              storageService.downloadFile(msg);
-            } else if (type['type']=='location') {
+            }
+            // else if (type['type']=='document') {
+            //  //here to download pdf files
+            //   storageService.downloadFile(msg);
+            // }
+            else if (type['type']=='location') {
               await context.pushNamed(
                 'mapLayer',
                 extra: {
@@ -89,9 +87,6 @@ class MessageList extends StatelessWidget {
               ),
             );
           },
-          onDoubleTap: ()async{
-            storageService.openDocument(msg);
-          },
           child: Align(
             alignment:
                 messages[index]['senderId'] == authenticator.user?.uid
@@ -107,37 +102,8 @@ class MessageList extends StatelessWidget {
                     )
                     : (type['type']=='document')
                     ? Padding(
-                      padding: const EdgeInsets.only(left: 23,right: 10,),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          width: 250,
-                          height: 100,
-                          color: Color(0xFFFFA726),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Image.asset(
-                                'assets/icons/document.png',
-                                scale: 15,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  fileName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.clip,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.indigoAccent,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      padding: const EdgeInsets.only(left: 25,right: 15,bottom: 10),
+                      child: documentWidget(fileName: fileName,storageService: storageService,msg: msg,),
                     )
 
                     : type['type']=='image'
@@ -278,6 +244,62 @@ class MessageList extends StatelessWidget {
       },
 
       itemCount: messages.length,
+    );
+  }
+}
+
+class documentWidget extends StatelessWidget {
+  const documentWidget({
+    super.key,
+    required this.fileName,
+    required this.storageService,
+    required this.msg,
+  });
+
+  final dynamic fileName;
+  final StorageService storageService;
+  final String msg;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: 250,
+        height: 100,
+        color: Color(0xFF3B82F6),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'assets/icons/document.png',
+                scale: 10,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                fileName,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFFFFFFF),
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            IconButton(onPressed: (){
+              storageService.openDocument(msg);
+            }, icon: Icon(Icons.open_in_new)),
+            IconButton(onPressed: (){
+              storageService.downloadFile(msg);
+            }, icon: Icon(Icons.get_app))
+          ],
+        ),
+      ),
     );
   }
 }
