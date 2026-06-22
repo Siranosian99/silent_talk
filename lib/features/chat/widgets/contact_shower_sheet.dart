@@ -80,7 +80,7 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     final reciever = getReceiver();
-    return MaterialApp(
+    return reciever== null? CircularProgressIndicator(): MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scrollbarTheme: ScrollbarThemeData(
@@ -93,7 +93,7 @@ class _ContactScreenState extends State<ContactScreen> {
           leading: IconButton(
             onPressed: () {
               context
-                  .pop(); // ✅ This works because the original ChatScreen is still in memory
+                  .pop();
             },
             icon: Icon(Icons.navigate_before),
           ),
@@ -118,7 +118,7 @@ class _ContactScreenState extends State<ContactScreen> {
                     return _ContactItem(
                       contact: _contacts[index],
                       index: index,
-                      id: reciever!.id,
+                      id: reciever.id,
                     );
                   },
                   separatorBuilder:
@@ -135,11 +135,11 @@ class _ContactScreenState extends State<ContactScreen> {
 
 class _ContactItem extends StatelessWidget {
   const _ContactItem({
-    Key? key,
+    super.key,
     required this.contact,
     required this.index,
     required this.id,
-  }) : super(key: key);
+  });
 
   static final height = 86.0;
 

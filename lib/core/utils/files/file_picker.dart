@@ -13,14 +13,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'documents.dart';
 import 'link_parse.dart';
 
-
-
-
 class FileHelper {
-  final storageService=StorageService();
-  final messageService=MessageService();
+  final storageService = StorageService();
+  final messageService = MessageService();
 
-  Future<String?> pickTheFile(BuildContext context, String senderId,String reciverId) async {
+  Future<String?> pickTheFile(
+    BuildContext context,
+    String senderId,
+    String receiverId,
+  ) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
@@ -28,42 +29,30 @@ class FileHelper {
     );
     final String? resultFile = result?.files.single.path;
     // final String? fileName = result?.files.single.name ;
+    if (resultFile == null || !context.mounted) return null;
+    final finalFileName = resultFile.split('/').last;
 
-    if (resultFile == null) {
-      return null;
-    }
+    await showFileDialog(context, finalFileName, () async {
+      final fileUrl = await storageService.uploadFile(resultFile);
+      if (fileUrl == null) return;
+      await messageService.sendMessage(
+        extractPath(fileUrl),
+        senderId,
+        receiverId,
+        "document",
+      );
+    });
+
     if (!context.mounted) {
       return null;
     }
 
-    final fileUrl = await storageService.uploadFile(resultFile);
-    final fileName = Uri.decodeComponent(
-      Uri.parse(fileUrl!).pathSegments.last,
-    );
-    print('This is File URL:$fileUrl');
-    if (!context.mounted) {
-      return null;
-    }
-    await showFileDialog(
-      context,fileName,
-          () async {
-        await messageService.sendMessage(
-            extractPath(fileUrl),
-          senderId,
-          reciverId,
-          "document"
-        );
-      },
-    );
     return resultFile;
   }
+
   // Future<String> readFileContent(String path) async {
   //   final file = File(path);
   //   final content = await file.readAsString();
   //   return content;
   // }
 }
-
-
-
-

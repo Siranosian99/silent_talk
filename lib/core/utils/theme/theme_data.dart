@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   // Light Theme
   static final lightThemeCard = BoxDecoration(
-    color: Colors.blueAccent,
+    color: Colors.indigo,
     borderRadius: BorderRadius.circular(30.0),
     border: Border.all(color: Colors.black, width: 2.0),
     boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5.0)],

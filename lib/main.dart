@@ -5,6 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/api_consts.dart';
 import 'package:silent_talk/core/notification/notification_switch.dart';
+import 'package:silent_talk/providers/loading_provider.dart';
 import 'package:silent_talk/routes.dart';
 import 'package:silent_talk/features/chat/services/ai_api.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,8 +15,9 @@ import 'core/utils/biometric/auth_provider.dart';
 import 'core/utils/image_picker/image_picker.dart';
 import 'core/utils/last_seen/last_seen_provider.dart';
 import 'core/utils/localization/local_provider.dart';
-import 'core/utils/themes/theme_data.dart';
-import 'core/utils/themes/theme_provider.dart';
+import 'core/utils/theme/theme_data.dart';
+import 'core/utils/theme/theme_provider.dart';
+
 import 'l10n/app_localizations.dart';
 import 'dart:io';
 
@@ -57,6 +59,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthenticateProvider()),
         ChangeNotifierProvider(create: (_) => LastSeenProvider()),
         ChangeNotifierProvider(create: (_) => AIbotApiService(),),
+        ChangeNotifierProvider(create: (_) => LoadingProvider(),),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
       child: const MyApp(),

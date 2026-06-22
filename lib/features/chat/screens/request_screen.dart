@@ -20,7 +20,7 @@ class _RequestScreenState extends State<RequestScreen> {
   // Map<String, dynamic>? data;
   final UsersService _usersService = UsersService();
   final RequestsChats _requestsChats = RequestsChats();
-  final Authenticator _authenticator=Authenticator();
+  final Authenticator _authenticator = Authenticator();
 
   @override
   void initState() {
@@ -35,12 +35,9 @@ class _RequestScreenState extends State<RequestScreen> {
       body: StreamBuilder<QuerySnapshot>(
         stream:
             FirebaseFirestore.instance
-                .collection('requests')// Chat ID
+                .collection('requests') // Chat ID
                 // .where('requestReceiverId', isEqualTo: _authenticator.user?.uid)
-                .where(
-              'participants',
-              arrayContains: _authenticator.user!.uid,
-            )
+                .where('participants', arrayContains: _authenticator.user!.uid)
                 .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -56,12 +53,16 @@ class _RequestScreenState extends State<RequestScreen> {
             separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final data = requests[index].data() as Map<String, dynamic>;
-              String doucmentId=getChatId( data['requestSenderId'], data['requestReceiverId']);
+              String doucmentId = getChatId(
+                data['requestSenderId'],
+                data['requestReceiverId'],
+              );
               final isSender =
                   data['requestSenderId'] == _authenticator.user!.uid;
-              final otherUserId = isSender
-                  ? data['requestReceiverId']
-                  : data['requestSenderId'];
+              final otherUserId =
+                  isSender
+                      ? data['requestReceiverId']
+                      : data['requestSenderId'];
 
               return FutureBuilder<Map<String, dynamic>?>(
                 future: _usersService.getUserDataById(otherUserId),
@@ -90,10 +91,17 @@ class _RequestScreenState extends State<RequestScreen> {
                         // Profile Image
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: NetworkImage(userData['image']),
-                          backgroundColor:
-                              Colors
-                                  .grey[200], // optional placeholder background
+                          child: Image.network(
+                            userData['image'],
+                            filterQuality: FilterQuality.high,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) {
+                              return Image.asset(
+                                'assets/images/noProfile.png',
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          ),
                         ),
                         SizedBox(width: 12),
                         // Username + Full name
@@ -121,26 +129,8 @@ class _RequestScreenState extends State<RequestScreen> {
                         ),
 
                         // Accept Button
-                        (data['requestStatus'] ?? false)? ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                          ),
-                          onPressed: () { },
-                          child: Text("Accepted"),
-                        ):Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                isSender? null: _requestsChats.acceptRequest(data['docId']);
-                              },
+                        (data['requestStatus'] ?? false)
+                            ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 foregroundColor: Colors.black,
@@ -152,27 +142,51 @@ class _RequestScreenState extends State<RequestScreen> {
                                   vertical: 8,
                                 ),
                               ),
-                              child: Text(isSender? "Pending":"Accept"),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                _requestsChats.rejectRequest(doucmentId);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                              onPressed: () {},
+                              child: Text("Accepted"),
+                            )
+                            : Column(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    isSender
+                                        ? null
+                                        : _requestsChats.acceptRequest(
+                                          data['docId'],
+                                        );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    foregroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                  child: Text(isSender ? "Pending" : "Accept"),
                                 ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _requestsChats.rejectRequest(doucmentId);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                  child: Text("Cancel"),
                                 ),
-                              ),
-                              child: Text("Cancel"),
+                              ],
                             ),
-                          ],
-                        ),
                       ],
                     ),
                   );

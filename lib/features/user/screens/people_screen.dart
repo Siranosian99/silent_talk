@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:silent_talk/core/utils/themes/theme_provider.dart';
 import 'package:silent_talk/features/chat/services/ai_api.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/user/service/get_userIds.dart';
 
 import 'package:silent_talk/features/user/service/users_service.dart';
 
-import '../../../core/utils/themes/theme_data.dart';
+import '../../../core/utils/theme/theme_data.dart';
+import '../../../core/utils/theme/theme_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/request_check.dart';
 import '../model/user_model.dart';
@@ -201,7 +201,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
-                                    "Name: ${user.userName}",
+                                    "Name: ${user.name}",
                                     style: GoogleFonts.lato(
                                       textStyle: TextStyle(
                                         color: Color(0xFFFFFFFF),

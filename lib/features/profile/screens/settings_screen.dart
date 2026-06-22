@@ -5,7 +5,7 @@ import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/core/notification/notification_switch.dart';
 import '../../../core/utils/biometric/auth_provider.dart';
 import '../../../core/utils/last_seen/last_seen_provider.dart';
-import '../../../core/utils/themes/theme_provider.dart';
+import '../../../core/utils/theme/theme_provider.dart';
 import '../../../core/widgets/language_dropDown.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/authenticator.dart';

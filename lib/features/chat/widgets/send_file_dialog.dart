@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:silent_talk/providers/loading_provider.dart';
 
 Future<void> showFileDialog(
   BuildContext context,
@@ -10,7 +12,7 @@ Future<void> showFileDialog(
   await showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
+    return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
@@ -30,6 +32,7 @@ Future<void> showFileDialog(
           ElevatedButton.icon(
             onPressed: () async {
               await onTap();
+
               if (!context.mounted) return;
               context.pop();
             },
