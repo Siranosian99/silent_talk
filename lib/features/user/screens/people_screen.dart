@@ -185,44 +185,46 @@ class _PeopleScreenState extends State<PeopleScreen> {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                   "Username: ${user.userName}",
-                                    style: GoogleFonts.lato(
-                                      textStyle: TextStyle(
-                                        color: Color(0xFFFFFFFF),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                     "Username: ${user.userName}",
+                                      style: GoogleFonts.lato(
+                                        textStyle: TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    "Name: ${user.name}",
-                                    style: GoogleFonts.lato(
-                                      textStyle: TextStyle(
-                                        color: Color(0xFFFFFFFF),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700,
+                                    Text(
+                                      "Name: ${user.name}",
+                                      style: GoogleFonts.lato(
+                                        textStyle: TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    "Email: ${user.email}",
-                                    style: GoogleFonts.lato(
-                                      textStyle: TextStyle(
-                                        color: Color(0xFFFFFFFF),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700,
+                                    Text(
+                                      "Email: ${user.email}",
+                                      style: GoogleFonts.lato(
+                                        textStyle: TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
+                                  ],
+                                ),
                               )
 
 

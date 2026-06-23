@@ -21,12 +21,13 @@ import '../../../core/utils/files/documents.dart';
 import '../../../core/utils/files/file_picker.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/message_type/message_checker.dart';
+import '../../../providers/loading_provider.dart';
 import 'chat_image_bubble.dart';
 import 'text_viewer.dart';
 import '../../auth/services/authenticator.dart';
 
 class MessageList extends StatelessWidget {
-  const MessageList({
+   MessageList({
     super.key,
     required this.messages,
     required this.id1,
@@ -36,33 +37,29 @@ class MessageList extends StatelessWidget {
   final List<QueryDocumentSnapshot<Object?>> messages;
   final String id1;
   final String id2;
+  final authenticator = Authenticator();
+  final storageService = StorageService();
+  final messageService = MessageService();
 
   @override
   Widget build(BuildContext context) {
-    final authenticator = Authenticator();
-    final storageService=StorageService();
-    final messageService=  MessageService();
+    final loadingProvider = Provider.of<LoadingProvider>(context);
+
     // final provider = Provider.of<Picker>(context);
-    return ListView.builder(
+    return  ListView.builder(
       itemBuilder: (context, index) {
         final msg = messages[index]['message'];
-        final type= messages[index].data() as Map<String, dynamic>;
+        final type = messages[index].data() as Map<String, dynamic>;
         final fileName = msg.split('/').last.split('_').last;
         return GestureDetector(
           onTap: () async {
             final coords = msg.split("q=").last;
             final parts = coords.split(",");
-            if (type['type']=='image') {
-
-
+            if (type['type'] == 'image') {
               Filer.saveNetworkImage(msg);
               print(msg);
             }
-            // else if (type['type']=='document') {
-            //  //here to download pdf files
-            //   storageService.downloadFile(msg);
-            // }
-            else if (type['type']=='location') {
+            else if (type['type'] == 'location') {
               await context.pushNamed(
                 'mapLayer',
                 extra: {
@@ -78,13 +75,15 @@ class MessageList extends StatelessWidget {
               }
             }
           },
-          onLongPress: ()async {
-        await  messageService.deleteMessage(id1, id2, messages[index]['docId']);
-          if(!context.mounted) return;
+          onLongPress: () async {
+            await messageService.deleteMessage(
+              id1,
+              id2,
+              messages[index]['docId'],
+            );
+            if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Message Deleted successfully'),
-              ),
+              const SnackBar(content: Text('Message Deleted successfully')),
             );
           },
           child: Align(
@@ -95,26 +94,33 @@ class MessageList extends StatelessWidget {
 
             //here checkin//
             child:
-                type['type']=='location'
+                type['type'] == 'location'
                     ? Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: MapPreview(url: msg)
+                      child: MapPreview(url: msg),
                     )
-                    : (type['type']=='document')
+                    : (type['type'] == 'document')
                     ? Padding(
-                      padding: const EdgeInsets.only(left: 25,right: 15,bottom: 10),
-                      child: documentWidget(fileName: fileName,storageService: storageService,msg: msg,),
+                      padding: const EdgeInsets.only(
+                        left: 25,
+                        right: 15,
+                        bottom: 10,
+                      ),
+                      child: documentWidget(
+                        fileName: fileName,
+                        storageService: storageService,
+                        msg: msg, provider: loadingProvider,
+                      ),
                     )
-
-                    : type['type']=='image'
-                    ?  ChatImage(
-                  imageUrl: msg,
-                  isMe: messages[index]['senderId'] ==
-                      authenticator.user?.uid,
-                )
-
+                    : type['type'] == 'image'
+                    ? ChatImage(
+                      imageUrl: msg,
+                      isMe:
+                          messages[index]['senderId'] ==
+                          authenticator.user?.uid,
+                    )
                     : // here contacts
-             type['type']=='contact'
+                    type['type'] == 'contact'
                     ? Container(
                       width: 300,
                       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -254,11 +260,13 @@ class documentWidget extends StatelessWidget {
     required this.fileName,
     required this.storageService,
     required this.msg,
+    required this.provider,
   });
 
   final dynamic fileName;
   final StorageService storageService;
   final String msg;
+  final LoadingProvider provider;
 
   @override
   Widget build(BuildContext context) {
@@ -273,10 +281,7 @@ class documentWidget extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                'assets/icons/document.png',
-                scale: 10,
-              ),
+              child: Image.asset('assets/icons/document.png', scale: 10),
             ),
             Expanded(
               child: Text(
@@ -291,12 +296,30 @@ class documentWidget extends StatelessWidget {
                 ),
               ),
             ),
-            IconButton(onPressed: (){
-              storageService.openDocument(msg);
-            }, icon: Icon(Icons.open_in_new)),
-            IconButton(onPressed: (){
-              storageService.downloadFile(msg);
-            }, icon: Icon(Icons.get_app))
+            IconButton(
+              onPressed: () async {
+                try {
+                  provider.setLoading(true);
+                  await storageService.openDocument(msg);
+                  provider.setLoading(false);
+                } finally {
+                  provider.setLoading(false);
+                }
+              },
+              icon: provider.isLoading? Icon(Icons.timelapse):Icon(Icons.open_in_new),
+            ),
+            IconButton(
+              onPressed: () async {
+                try {
+                  provider.setLoading(true);
+                  await storageService.downloadFile(msg);
+                  provider.setLoading(false);
+                } finally {
+                  provider.setLoading(false);
+                }
+              },
+              icon: provider.isLoading? Icon(Icons.timelapse):Icon(Icons.get_app),
+            ),
           ],
         ),
       ),

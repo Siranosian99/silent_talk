@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:silent_talk/providers/loading_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,6 +15,7 @@ class StorageService {
   final authenticator = Authenticator();
 
   Future<String?> uploadFile(String filePath) async {
+
     try {
       final file = File(filePath);
 
