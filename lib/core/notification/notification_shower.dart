@@ -22,6 +22,7 @@ class NotificationHandler {
     // Initialize Firebase
     await Firebase.initializeApp();
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      print('here notification');
       await FirebaseFirestore.instance
           .collection('users')
           .doc(Authenticator().user?.uid)
