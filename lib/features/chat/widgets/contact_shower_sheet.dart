@@ -80,7 +80,7 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     final reciever = getReceiver();
-    return reciever== null? CircularProgressIndicator(): MaterialApp(
+    return reciever== null? Center(child: CircularProgressIndicator()): MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scrollbarTheme: ScrollbarThemeData(

@@ -141,6 +141,7 @@ class MapSampleState extends State<MapSample> {
                 initialCameraPosition: _kApplePlex,
               ),
 
+
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _sendLocation(widget.receiverId);
@@ -148,6 +149,7 @@ class MapSampleState extends State<MapSample> {
         label: const Text('Send Location!'),
         icon: const Icon(Icons.location_on_rounded),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterTop,
     );
   }
 

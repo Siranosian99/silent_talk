@@ -7,6 +7,7 @@ import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/user/service/get_userIds.dart';
 
 import 'package:silent_talk/features/user/service/users_service.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../core/utils/theme/theme_data.dart';
 import '../../../core/utils/theme/theme_provider.dart';
@@ -25,13 +26,33 @@ class _PeopleScreenState extends State<PeopleScreen> {
   final TextEditingController searchController = TextEditingController();
 
   late List<Users> users = [];
+  List<Users> fakeUsers = List.generate(
+    8,
+        (index) => Users(
+      id: 'loading_$index',
+      deviceId: '',
+      image: '',
+      userName: 'Loading...',
+      name: 'Loading User',
+      email: 'loading@email.com',
+      password: '',
+      token: '',
+      lastSeen: '',
+      isOnline: false,
+      isNotification: false,
+    ),
+  );
+  bool isLoading = true;
+
   final UsersService _usersService = UsersService();
   final RequestsChats _requestsChats = RequestsChats();
   final Authenticator _authenticator = Authenticator();
 
   Future<void> callUsers(String query) async {
+    setState(() => isLoading = true);
     users = await _usersService.fetchAllUsers(query) ?? [];
     setState(() {
+      isLoading = false;
       users;
     });
   }
@@ -61,7 +82,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark=themeProvider.isDark;
+    final isDark = themeProvider.isDark;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -99,144 +120,148 @@ class _PeopleScreenState extends State<PeopleScreen> {
           SizedBox(height: 20),
           // Grid of users
           Expanded(
-            child: ListView.builder(
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                final user = users[index];
-                return Column(
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        String id = getChatId(
-                          _authenticator.user!.uid,
-                          user.id,
-                        );
+            child: Skeletonizer(
+              enabled: isLoading,
+              child: ListView.builder(
+                itemCount: isLoading ?8:users.length,
+                itemBuilder: (context, index) {
 
-                        bool status =
-                            await _requestsChats.getRequestStatus(id) ?? false;
-                        final message = await _requestsChats.sendRequest(
-                          status,
-                          _authenticator.user!.uid,
-                          user.id,
-                        );
-                        if (!context.mounted) return;
-                        status
-                            ? null
-                            : ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(content: Text(message)));
-                        if (status) {
-                          GoRouter.of(context).pushNamed(
-                            'chat',
-                            extra: {
-                              'id': user.id,
-                              'senderId': _authenticator.user?.uid,
-                              'receiverId': user.id,
-                            },
-                          );
-                        } else {
-                          RequestsChats().sendRequest(
-                            false,
+                  final user = isLoading ? fakeUsers[index] : users[index];
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          String id = getChatId(
                             _authenticator.user!.uid,
                             user.id,
                           );
-                        }
-                        print("UserId:${user.id}");
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          width: double.infinity,
-                          height: 100,
-                          decoration: isDark?AppTheme.darkThemeCard:AppTheme.lightThemeCard,
-                          child: Row(
 
-
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(
-                                  radius: 40,
-                                  backgroundColor: Colors.grey.shade300,
-                                  child: ClipOval(
-                                    child:
-                                        (user.image.isEmpty)
-                                            ? Image.asset(
-                                              'assets/images/noProfile.png',
-                                              width: 70,
-                                              height: 70,
-                                              fit: BoxFit.cover,
-                                            )
-                                            : Image.network(
-                                              user.image,
-                                              width: 70,
-                                              height: 70,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) {
-                                                return Image.asset(
-                                                  'assets/images/noProfile.png',
-                                                  width: 70,
-                                                  height: 70,
-                                                  fit: BoxFit.cover,
-                                                );
-                                              },
-                                            ),
+                          bool status =
+                              await _requestsChats.getRequestStatus(id) ??
+                              false;
+                          final message = await _requestsChats.sendRequest(
+                            status,
+                            _authenticator.user!.uid,
+                            user.id,
+                          );
+                          if (!context.mounted) return;
+                          status
+                              ? null
+                              : ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text(message)));
+                          if (status) {
+                            GoRouter.of(context).pushNamed(
+                              'chat',
+                              extra: {
+                                'id': user.id,
+                                'senderId': _authenticator.user?.uid,
+                                'receiverId': user.id,
+                              },
+                            );
+                          } else {
+                            RequestsChats().sendRequest(
+                              false,
+                              _authenticator.user!.uid,
+                              user.id,
+                            );
+                          }
+                          print("UserId:${user.id}");
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Container(
+                            width: double.infinity,
+                            height: 100,
+                            decoration:
+                                isDark
+                                    ? AppTheme.darkThemeCard
+                                    : AppTheme.lightThemeCard,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CircleAvatar(
+                                    radius: 40,
+                                    backgroundColor: Colors.grey.shade300,
+                                    child: ClipOval(
+                                      child:
+                                          (user.image.isEmpty)
+                                              ? Image.asset(
+                                                'assets/images/noProfile.png',
+                                                width: 70,
+                                                height: 70,
+                                                fit: BoxFit.cover,
+                                              )
+                                              : Image.network(
+                                                user.image,
+                                                width: 70,
+                                                height: 70,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (_, __, ___) {
+                                                  return Image.asset(
+                                                    'assets/images/noProfile.png',
+                                                    width: 70,
+                                                    height: 70,
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                },
+                                              ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                     "Username: ${user.userName}",
-                                      style: GoogleFonts.lato(
-                                        textStyle: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w700,
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Username: ${user.userName}",
+                                        style: GoogleFonts.lato(
+                                          textStyle: TextStyle(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                      "Name: ${user.name}",
-                                      style: GoogleFonts.lato(
-                                        textStyle: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w700,
+                                      Text(
+                                        "Name: ${user.name}",
+                                        style: GoogleFonts.lato(
+                                          textStyle: TextStyle(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                      "Email: ${user.email}",
-                                      style: GoogleFonts.lato(
-                                        textStyle: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w700,
+                                      Text(
+                                        "Email: ${user.email}",
+                                        style: GoogleFonts.lato(
+                                          textStyle: TextStyle(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              )
-
-
-
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ],

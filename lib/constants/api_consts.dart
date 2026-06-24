@@ -14,4 +14,6 @@ class Keys {
 
   final supabaseKey =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldWJqaGRweHRpbGpoYXVtaHNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODExNzgsImV4cCI6MjA5NzM1NzE3OH0._d6r_4v0UXgEQHEeVq9fFj1wVgELRg_E7FsmPDEqeas";
+
+  final googleMapKey = "AIzaSyA7Hi82BXzseAJZAlfLgxE5VGYCs-rV924";
 }

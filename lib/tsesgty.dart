@@ -1,197 +1,130 @@
-import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
-import 'package:apple_maps_flutter/apple_maps_flutter.dart' as amaps;
-import 'package:go_router/go_router.dart';
-import 'features/auth/services/authenticator.dart';
-import 'features/chat/services/send_messages.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 
-class MapSample extends StatefulWidget {
-  final String receiverId;
-  final double latitude;
-  final double longitude;
+import 'constants/api_consts.dart';
 
-  const MapSample({
-    super.key,
-    required this.receiverId,
-    required this.latitude,
-    required this.longitude,
-  });
+class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
 
   @override
-  State<MapSample> createState() => _MapSampleState();
+  State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapSampleState extends State<MapSample> {
-  late final Location _location;
-  gmaps.LatLng? _gMarkerPosition;
-  amaps.LatLng? _aMarkerPosition;
+class _MapScreenState extends State<MapScreen> {
+  GoogleMapController? mapController;
 
-  Set<gmaps.Marker> _gMarkers = {};
-  Set<amaps.Annotation>? _aAnnotations;
+  LatLng? currentPosition;
+  LatLng destination = LatLng(40.2010, 44.5500); // message location
 
-  amaps.AppleMapController? _appleMapController;
-  final Completer<gmaps.GoogleMapController> _googleController =
-  Completer<gmaps.GoogleMapController>();
-
-  late gmaps.CameraPosition _kGooglePlex;
-  late amaps.CameraPosition _kApplePlex;
+  Set<Marker> markers = {};
+  Set<Polyline> polylines = {};
 
   @override
   void initState() {
     super.initState();
-    _location = Location();
-
-    _gMarkerPosition = gmaps.LatLng(widget.latitude, widget.longitude);
-    _aMarkerPosition = amaps.LatLng(widget.latitude, widget.longitude);
-
-    _gSetMarker(_gMarkerPosition!);
-    _aSetMarker(_aMarkerPosition!);
-
-    _kGooglePlex = gmaps.CameraPosition(
-      target: _gMarkerPosition!,
-      zoom: 14.5,
-    );
-
-    _kApplePlex = amaps.CameraPosition(
-      target: _aMarkerPosition!,
-      zoom: 14.5,
-    );
+    getCurrentLocation();
   }
 
-  /// Google Maps Marker
-  void _gSetMarker(gmaps.LatLng position) {
+  // 1. Current location
+  Future<void> getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    currentPosition = LatLng(position.latitude, position.longitude);
+
     setState(() {
-      _gMarkers = {
-        gmaps.Marker(
-          markerId: const gmaps.MarkerId('selected_location'),
-          position: position,
-          draggable: true,
-          onDragEnd: (newPos) {
-            _gMarkerPosition = newPos;
-            _gSetMarker(newPos);
-          },
-        ),
-      };
+      markers.add(Marker(
+        markerId: MarkerId("start"),
+        position: currentPosition!,
+      ));
+
+      markers.add(Marker(
+        markerId: MarkerId("end"),
+        position: destination,
+      ));
+    });
+
+    await getRoute();
+  }
+
+  // 2. Google Directions API
+  Future<void> getRoute() async {
+    final apiKey = Keys().googleMapKey;
+
+    final url =
+        "https://maps.googleapis.com/maps/api/directions/json?"
+        "origin=${currentPosition!.latitude},${currentPosition!.longitude}"
+        "&destination=${destination.latitude},${destination.longitude}"
+        "&key=$apiKey";
+
+    final response = await http.get(Uri.parse(url));
+    final data = jsonDecode(response.body);
+
+    final points = data["routes"][0]["overview_polyline"]["points"];
+
+    List<LatLng> routeCoords = decodePolyline(points);
+
+    setState(() {
+      polylines.add(Polyline(
+        polylineId: PolylineId("route"),
+        points: routeCoords,
+        color: Colors.blue,
+        width: 5,
+      ));
     });
   }
 
-  /// Apple Maps Annotation
-  void _aSetMarker(amaps.LatLng position) {
-    setState(() {
-      _aMarkerPosition = position;
-      _aAnnotations = {
-        amaps.Annotation(
-          annotationId:  amaps.AnnotationId('my_marker'),
-          position: position,
-          draggable: true,
-          onDragEnd: (newPos) {
-            _aMarkerPosition = newPos;
-            _aSetMarker(newPos);
-          },
-        ),
-      };
-    });
-  }
+  // 3. Decode polyline
+  List<LatLng> decodePolyline(String encoded) {
+    List<LatLng> points = [];
+    int index = 0, len = encoded.length;
+    int lat = 0, lng = 0;
 
-  void _onGoogleMapTapped(gmaps.LatLng position) {
-    _gMarkerPosition = position;
-    _gSetMarker(position);
-  }
+    while (index < len) {
+      int b, shift = 0, result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lat += dlat;
 
-  void _onAppleMapTapped(amaps.LatLng position) {
-    _aMarkerPosition = position;
-    _aSetMarker(position);
-  }
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lng += dlng;
 
-  void _onAppleMapCreated(amaps.AppleMapController controller) {
-    _appleMapController = controller;
-  }
-
-  Future<void> _moveToCurrentLocation() async {
-    LocationData loc = await _location.getLocation();
-    final gPos = gmaps.LatLng(loc.latitude!, loc.longitude!);
-    final aPos = amaps.LatLng(loc.latitude!, loc.longitude!);
-
-    if (Platform.isAndroid) {
-      final controller = await _googleController.future;
-      controller.animateCamera(gmaps.CameraUpdate.newLatLng(gPos));
-      _gSetMarker(gPos);
-    } else if (Platform.isIOS) {
-      _appleMapController?.moveCamera(
-        amaps.CameraUpdate.newCameraPosition(
-          amaps.CameraPosition(
-            target: aPos,
-            zoom: 17,
-            pitch: 30,
-            heading: 0,
-          ),
-        ),
-      );
-      _aSetMarker(aPos);
+      points.add(LatLng(lat / 1E5, lng / 1E5));
     }
-  }
 
-  void _sendLocation(String receiverId) {
-    if (_gMarkerPosition != null) {
-      final latitude = Platform.isAndroid
-          ? _gMarkerPosition!.latitude
-          : _aMarkerPosition!.latitude;
-      final longitude = Platform.isAndroid
-          ? _gMarkerPosition!.longitude
-          : _aMarkerPosition!.longitude;
-
-      final appleMapsUrl = 'maps://?q=$latitude,$longitude';
-      final googleMapsUrl = 'https://www.google.com/maps?q=$latitude,$longitude';
-
-      MessageService()
-          .sendMessage(
-        Platform.isAndroid ? googleMapsUrl : appleMapsUrl,
-        Authenticator().user!.uid,
-        receiverId,
-        ''
-      )
-          .then((_) => context.pop());
-    }
+    return points;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Platform.isAndroid
-          ? gmaps.GoogleMap(
-        initialCameraPosition: _kGooglePlex,
-        markers: _gMarkers,
-        onMapCreated: (controller) => _googleController.complete(controller),
-        onTap: _onGoogleMapTapped,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
-      )
-          : amaps.AppleMap(
-        initialCameraPosition: _kApplePlex,
-        mapType: amaps.MapType.hybrid,
-        onMapCreated: _onAppleMapCreated,
-        onTap: _onAppleMapTapped,
-        annotations: _aAnnotations ?? {},
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          FloatingActionButton.extended(
-            onPressed: _moveToCurrentLocation,
-            label: const Text('Get Current Location'),
-            icon: const Icon(Icons.my_location),
-          ),
-          FloatingActionButton.extended(
-            onPressed: () => _sendLocation(widget.receiverId),
-            label: const Text('Send Location'),
-            icon: const Icon(Icons.location_on),
-          ),
-        ],
+      body: currentPosition == null
+          ? Center(child: CircularProgressIndicator())
+          : GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: currentPosition!,
+          zoom: 14,
+        ),
+        markers: markers,
+        polylines: polylines,
+        onMapCreated: (controller) {
+          mapController = controller;
+        },
       ),
     );
   }
