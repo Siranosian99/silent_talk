@@ -18,7 +18,6 @@ class _MapScreenState extends State<MapScreen> {
 
   LatLng? currentPosition;
   LatLng destination = LatLng(40.2010, 44.5500); // message location
-
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
 
@@ -37,15 +36,11 @@ class _MapScreenState extends State<MapScreen> {
     currentPosition = LatLng(position.latitude, position.longitude);
 
     setState(() {
-      markers.add(Marker(
-        markerId: MarkerId("start"),
-        position: currentPosition!,
-      ));
+      markers.add(
+        Marker(markerId: MarkerId("start"), position: currentPosition!),
+      );
 
-      markers.add(Marker(
-        markerId: MarkerId("end"),
-        position: destination,
-      ));
+      markers.add(Marker(markerId: MarkerId("end"), position: destination));
     });
 
     await getRoute();
@@ -69,12 +64,14 @@ class _MapScreenState extends State<MapScreen> {
     List<LatLng> routeCoords = decodePolyline(points);
 
     setState(() {
-      polylines.add(Polyline(
-        polylineId: PolylineId("route"),
-        points: routeCoords,
-        color: Colors.blue,
-        width: 5,
-      ));
+      polylines.add(
+        Polyline(
+          polylineId: PolylineId("route"),
+          points: routeCoords,
+          color: Colors.blue,
+          width: 5,
+        ),
+      );
     });
   }
 
@@ -113,19 +110,20 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: currentPosition == null
-          ? Center(child: CircularProgressIndicator())
-          : GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: currentPosition!,
-          zoom: 14,
-        ),
-        markers: markers,
-        polylines: polylines,
-        onMapCreated: (controller) {
-          mapController = controller;
-        },
-      ),
+      body:
+          currentPosition == null
+              ? Center(child: CircularProgressIndicator())
+              : GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: currentPosition!,
+                  zoom: 14,
+                ),
+                markers: markers,
+                polylines: polylines,
+                onMapCreated: (controller) {
+                  mapController = controller;
+                },
+              ),
     );
   }
 }

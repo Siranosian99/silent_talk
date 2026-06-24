@@ -1,14 +1,19 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:apple_maps_flutter/apple_maps_flutter.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
-import 'package:apple_maps_flutter/apple_maps_flutter.dart' as amaps;
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:location/location.dart';
+import 'package:location/location.dart'  hide LocationAccuracy;
 import 'package:silent_talk/core/utils/location/location_cache.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../constants/api_consts.dart';
 import '../../../features/auth/services/authenticator.dart';
 import '../../../features/chat/services/send_messages.dart';
 
@@ -30,40 +35,109 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   late final Location _location;
-  Set<gmaps.Marker> _gmarkers = {};
+  LatLng? currentPosition;
 
-  Set<Annotation>? _annotations;
-  late gmaps.CameraPosition _kGooglePlex;
-  late amaps.CameraPosition _kApplePlex;
-  gmaps.LatLng? _markerPosition;
-  amaps.LatLng? _amarkerPosition;
-  amaps.AppleMapController? mapController;
-  final Completer<gmaps.GoogleMapController> _controller =
-      Completer<gmaps.GoogleMapController>();
-
+  Set<Marker> markers = {};
+  Set<Polyline> polylines = {};
+  late CameraPosition _kGooglePlex;
+  // LatLng? _markerPosition;
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
+ late LatLng _markerPosition ;
   @override
   void initState() {
     super.initState();
     _location = Location();
-    _markerPosition = gmaps.LatLng(widget.latitude, widget.longitude);
-    _amarkerPosition = amaps.LatLng(widget.latitude, widget.longitude);
-    _asetMarker(_amarkerPosition!);
-    _gsetMarker(_markerPosition!);
-    _kApplePlex = amaps.CameraPosition(
-      target: _amarkerPosition!,
-      zoom: 14.4746,
-    );
-    _kGooglePlex = gmaps.CameraPosition(
-      target: _markerPosition!,
+    _markerPosition = LatLng(widget.latitude, widget.longitude);
+    _gsetMarker(_markerPosition);
+    _kGooglePlex = CameraPosition(
+      target: _markerPosition,
       zoom: 14.4746,
     );
   }
+  // 1. Current location
+  Future<void> getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
 
-  void _gsetMarker(gmaps.LatLng position) {
+    currentPosition = LatLng(position.latitude, position.longitude);
+
     setState(() {
-      _gmarkers = {
-        gmaps.Marker(
-          markerId: const gmaps.MarkerId('selected_location'),
+      markers.add(
+        Marker(markerId: MarkerId("start"), position: currentPosition!),
+      );
+
+      markers.add(Marker(markerId: MarkerId("end"), position: _markerPosition));
+    });
+
+    await getRoute();
+  }
+  // 2. Google Directions API
+  Future<void> getRoute() async {
+    final apiKey = Keys().googleMapKey;
+
+    final url =
+        "https://maps.googleapis.com/maps/api/directions/json?"
+        "origin=${currentPosition!.latitude},${currentPosition!.longitude}"
+        "&destination=${_markerPosition.latitude},${_markerPosition.longitude}"
+        "&key=$apiKey";
+
+    final response = await http.get(Uri.parse(url));
+    final data = jsonDecode(response.body);
+
+    final points = data["routes"][0]["overview_polyline"]["points"];
+
+    List<LatLng> routeCoords = decodePolyline(points);
+
+    setState(() {
+      polylines.add(
+        Polyline(
+          polylineId: PolylineId("route"),
+          points: routeCoords,
+          color: Colors.blue,
+          width: 5,
+        ),
+      );
+    });
+  }
+
+  // 3. Decode polyline
+  List<LatLng> decodePolyline(String encoded) {
+    List<LatLng> points = [];
+    int index = 0, len = encoded.length;
+    int lat = 0, lng = 0;
+
+    while (index < len) {
+      int b, shift = 0, result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lng += dlng;
+
+      points.add(LatLng(lat / 1E5, lng / 1E5));
+    }
+
+    return points;
+  }
+  void _gsetMarker(LatLng position) {
+    setState(() {
+      markers = {
+      Marker(
+          markerId: const MarkerId('selected_location'),
           position: position,
           draggable: true,
           onDragEnd: (newPosition) {
@@ -75,72 +149,26 @@ class MapSampleState extends State<MapSample> {
     });
   }
 
-  void _onMapTapped(gmaps.LatLng position) {
+  void _onMapTapped(LatLng position) {
     _markerPosition = position;
     _gsetMarker(position); // Update marker on map tap
-  }
-
-  ///////IOS
-  void _onMapCreated(amaps.AppleMapController controller) {
-    mapController = controller;
-  }
-
-  void _onAMapTapped(amaps.LatLng position) {
-    _amarkerPosition = position;
-    final uri = Uri.parse("maps://?q=${position.latitude},${position.longitude}");
-    launchUrl(uri);
-    _asetMarker(position);
-  }
-
-  void _asetMarker(amaps.LatLng position) {
-    setState(() {
-      _annotations = {
-        amaps.Annotation(
-          annotationId: amaps.AnnotationId('my_marker'),
-          position: position,
-          draggable: true,
-          onDragEnd: (newPosition) {
-            _amarkerPosition = newPosition;
-            _asetMarker(newPosition); // Update marker after drag
-          },
-          // optional: subtitle, image, etc.
-        ),
-      };
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-          Platform.isAndroid
-              ? gmaps.GoogleMap(
-            padding: EdgeInsets.only(top: 500),
-                markers: _gmarkers,
-                mapType: gmaps.MapType.hybrid,
-                initialCameraPosition: _kGooglePlex,
-                onMapCreated: (controller) => _controller.complete(controller),
-                onTap: _onMapTapped,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-            buildingsEnabled: true,
-            trafficEnabled: true,
-
-              )
-              : amaps.AppleMap(
-                mapType: amaps.MapType.hybrid,
-                onMapCreated: _onMapCreated,
-                myLocationEnabled: true,
-                trafficEnabled: true,
-                myLocationButtonEnabled: true,
-                pitchGesturesEnabled: true,
-                onTap: _onAMapTapped,
-                insetsLayoutMarginsFromSafeArea: true,
-                annotations:
-                  _annotations,
-                initialCameraPosition: _kApplePlex,
-              ),
-
+      body: GoogleMap(
+        padding: EdgeInsets.only(top: 500),
+        markers: markers,
+        mapType:MapType.hybrid,
+        initialCameraPosition: _kGooglePlex,
+        onMapCreated: (controller) => _controller.complete(controller),
+        onTap: _onMapTapped,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
+        buildingsEnabled: true,
+        trafficEnabled: true,
+      ),
 
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -155,112 +183,18 @@ class MapSampleState extends State<MapSample> {
 
   void _sendLocation(String receiverId) {
     if (_markerPosition != null) {
-      final appleMapsUrl =
-          'maps://?q=${_amarkerPosition!.latitude},${_amarkerPosition!.longitude}';
       final googleMapsUrl =
           "https://www.google.com/maps?q=${_markerPosition!.latitude},${_markerPosition!.longitude}";
-      MessageService()
-          .sendMessage(
-            Platform.isAndroid ? googleMapsUrl : appleMapsUrl,
-            Authenticator().user!.uid,
-            receiverId,
-        "location"
-          );
-      LocationCache.save(  Platform.isAndroid ? _markerPosition!.latitude:_amarkerPosition!.latitude,   Platform.isAndroid? _markerPosition!.longitude:_amarkerPosition!.longitude);
-      if(!context.mounted) return ;
+      MessageService().sendMessage(
+        googleMapsUrl,
+        Authenticator().user!.uid,
+        receiverId,
+        "location",
+      );
+      LocationCache.save(_markerPosition!.latitude, _markerPosition!.longitude);
+      if (!context.mounted) return;
       context.pop();
-
     }
   }
 }
-//
-// class AppleMapsExample extends StatelessWidget {
-//   AppleMapController mapController;
-//
-//   void _onMapCreated(AppleMapController controller) {
-//     mapController = controller;
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//       crossAxisAlignment: CrossAxisAlignment.stretch,
-//       children: <Widget>[
-//         Expanded(
-//           child: Container(
-//             child: AppleMap(
-//               onMapCreated: _onMapCreated,
-//               initialCameraPosition: const CameraPosition(
-//                 target: LatLng(0.0, 0.0),
-//               ),
-//             ),
-//           ),
-//         ),
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//           children: <Widget>[
-//             Column(
-//               children: <Widget>[
-//                 FlatButton(
-//                   onPressed: () {
-//                     mapController.moveCamera(
-//                       CameraUpdate.newCameraPosition(
-//                         const CameraPosition(
-//                           heading: 270.0,
-//                           target: LatLng(51.5160895, -0.1294527),
-//                           pitch: 30.0,
-//                           zoom: 17,
-//                         ),
-//                       ),
-//                     );
-//                   },
-//                   child: const Text('newCameraPosition'),
-//                 ),
-//                 FlatButton(
-//                   onPressed: () {
-//                     mapController.moveCamera(
-//                       CameraUpdate.newLatLngZoom(
-//                         const LatLng(37.4231613, -122.087159),
-//                         11.0,
-//                       ),
-//                     );
-//                   },
-//                   child: const Text('newLatLngZoom'),
-//                 ),
-//               ],
-//             ),
-//             Column(
-//               children: <Widget>[
-//                 FlatButton(
-//                   onPressed: () {
-//                     mapController.moveCamera(
-//                       CameraUpdate.zoomIn(),
-//                     );
-//                   },
-//                   child: const Text('zoomIn'),
-//                 ),
-//                 FlatButton(
-//                   onPressed: () {
-//                     mapController.moveCamera(
-//                       CameraUpdate.zoomOut(),
-//                     );
-//                   },
-//                   child: const Text('zoomOut'),
-//                 ),
-//                 FlatButton(
-//                   onPressed: () {
-//                     mapController.moveCamera(
-//                       CameraUpdate.zoomTo(16.0),
-//                     );
-//                   },
-//                   child: const Text('zoomTo'),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         )
-//       ],
-//     );
-//   }
-// }
+
