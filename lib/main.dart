@@ -22,7 +22,7 @@ import 'l10n/app_localizations.dart';
 import 'dart:io';
 
 void main() async {
-  final keys=Keys();
+  final keys = Keys();
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('theme');
@@ -35,8 +35,8 @@ void main() async {
   await Hive.openBox('location_cache');
   await Firebase.initializeApp(
     options: FirebaseOptions(
-      apiKey:keys.firebaseApiKey ,
-      appId: Platform.isAndroid ?keys.firebaseAndroid:keys.firebasaeIos,
+      apiKey: keys.firebaseApiKey,
+      appId: Platform.isAndroid ? keys.firebaseAndroid : keys.firebasaeIos,
       //1:156704193316:ios:8f808066187c855d3211b1  //1:156704193316:android:12088ea8a9934d143211b1
       messagingSenderId: "156704193316",
       projectId: "silenttalk-53850",
@@ -44,11 +44,10 @@ void main() async {
   );
   await NotificationHandler.initialize();
   // Handle background notifications (app running in the background)
-  FirebaseMessaging.onBackgroundMessage(NotificationHandler.firebaseMessagingBackgroundHandler);
-  await Supabase.initialize(
-    url: keys.supabaseUrl,
-    anonKey: keys.supabaseKey,
+  FirebaseMessaging.onBackgroundMessage(
+    NotificationHandler.firebaseMessagingBackgroundHandler,
   );
+  await Supabase.initialize(url: keys.supabaseUrl, anonKey: keys.supabaseKey);
   runApp(
     MultiProvider(
       providers: [
@@ -58,8 +57,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => AuthenticateProvider()),
         ChangeNotifierProvider(create: (_) => LastSeenProvider()),
-        ChangeNotifierProvider(create: (_) => AIbotApiService(),),
-        ChangeNotifierProvider(create: (_) => LoadingProvider(),),
+        ChangeNotifierProvider(create: (_) => AIbotApiService()),
+        ChangeNotifierProvider(create: (_) => LoadingProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
       child: const MyApp(),
@@ -113,9 +112,6 @@ class MyApp extends StatelessWidget {
 //     home: MainScreen(),
 //   );
 // }
-
-
-
 
 //import 'dart:io';
 // import 'package:flutter/material.dart';

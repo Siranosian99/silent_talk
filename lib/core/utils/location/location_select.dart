@@ -5,24 +5,7 @@ import 'package:location/location.dart';
 import 'location_cache.dart';
 
 Future<void> openMap(String receiverId, BuildContext context) async {
-  // final location = Location();
-  // bool serviceEnabled = await location.serviceEnabled();
-  // if (!serviceEnabled) {
-  //   serviceEnabled = await location.requestService();
-  //   if (!serviceEnabled) return;
-  // }
-  //
-  // PermissionStatus permissionGranted = await location.hasPermission();
-  // if (permissionGranted == PermissionStatus.denied) {
-  //   permissionGranted = await location.requestPermission();
-  //   if (permissionGranted != PermissionStatus.granted) return;
-  // }
-  //
-  // // ✅ Step 3: Now safely get the current location
-  // LocationData loc = await location.getLocation();
-  //
-  // final double? latitude = loc.latitude;
-  // final double? longitude = loc.longitude;
+
 
   double? lat = LocationCache.getLat();
   double? lng = LocationCache.getLng();
@@ -35,35 +18,35 @@ Future<void> openMap(String receiverId, BuildContext context) async {
         "receiverId": receiverId,
       },
     );
-    // print("📍 Location sent: $latitude,$longitude");
-    // print('maps://?q=$latitude,$longitude');
 
 }
 
-// import 'package:location/location.dart';
+//First, we get the current user's location and convert it into latitude and longitude coordinates. Then we get the destination coordinates from another user, backend, or message. We send both coordinates to the Google Directions API (or Routes API). The API calculates the route and returns an encoded polyline. We decode that polyline into a list of LatLng points and draw those points on the map using a Polyline widget.
 //
-// class LocationService {
-//   static final Location _location = Location();
+// Flow:
 //
-//   static Future<LocationData?> getCurrentLocation() async {
-//     bool serviceEnabled = await _location.serviceEnabled();
+// Current User Location
+//         ↓
+//      LatLng
 //
-//     if (!serviceEnabled) {
-//       serviceEnabled = await _location.requestService();
-//       if (!serviceEnabled) return null;
-//     }
+// Destination Location
+//         ↓
+//      LatLng
 //
-//     PermissionStatus permissionGranted =
-//     await _location.hasPermission();
+//         ↓
+//  Google Directions API
 //
-//     if (permissionGranted == PermissionStatus.denied) {
-//       permissionGranted = await _location.requestPermission();
+//         ↓
+//  Encoded Polyline
 //
-//       if (permissionGranted != PermissionStatus.granted) {
-//         return null;
-//       }
-//     }
+//         ↓
+//  Decode Polyline
 //
-//     return await _location.getLocation();
-//   }
-// }
+//         ↓
+//  List<LatLng>
+//
+//         ↓
+//  Polyline
+//
+//         ↓
+//  Route shown on map

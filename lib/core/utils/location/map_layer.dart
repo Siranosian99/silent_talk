@@ -40,7 +40,6 @@ class MapSampleState extends State<MapSample> {
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
   late CameraPosition _kGooglePlex;
-  // LatLng? _markerPosition;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
  late LatLng _markerPosition ;
@@ -182,19 +181,18 @@ class MapSampleState extends State<MapSample> {
   }
 
   void _sendLocation(String receiverId) {
-    if (_markerPosition != null) {
       final googleMapsUrl =
-          "https://www.google.com/maps?q=${_markerPosition!.latitude},${_markerPosition!.longitude}";
+          "https://www.google.com/maps?q=${_markerPosition.latitude},${_markerPosition.longitude}";
       MessageService().sendMessage(
         googleMapsUrl,
         Authenticator().user!.uid,
         receiverId,
         "location",
       );
-      LocationCache.save(_markerPosition!.latitude, _markerPosition!.longitude);
+      LocationCache.save(_markerPosition.latitude, _markerPosition.longitude);
       if (!context.mounted) return;
       context.pop();
     }
-  }
+
 }
 

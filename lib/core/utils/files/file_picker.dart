@@ -50,9 +50,5 @@ class FileHelper {
     return resultFile;
   }
 
-  // Future<String> readFileContent(String path) async {
-  //   final file = File(path);
-  //   final content = await file.readAsString();
-  //   return content;
-  // }
+
 }

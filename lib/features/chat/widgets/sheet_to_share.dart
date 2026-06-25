@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/core/permission/permission_handler.dart';
 
 import '../../../constants/sheets_const.dart';
 import '../../../core/utils/files/file_picker.dart';
@@ -13,11 +14,13 @@ import 'contact_shower_sheet.dart';
 void showCustomBottomSheet(
   BuildContext context,
   int index,
-  String receiverId,String senderId, {
+  String receiverId,
+  String senderId, {
   String? fileName,
 }) {
   final picker = Provider.of<Picker>(context, listen: false);
-  final filePicker=FileHelper();
+  final filePicker = FileHelper();
+  final permission = PermissionHandler();
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -31,33 +34,56 @@ void showCustomBottomSheet(
             spacing: 24,
             runSpacing: 24,
             children: [
-              _buildOption(Icons.photo, Sheets.instance.photo, () async{
-                await picker.galleryPicker();
-                if(!context.mounted) return;
+              _buildOption(Icons.photo, Sheets.instance.photo, () async {
+                final result = await permission.galleryPermission();
+                if (result == true) {
+                  await picker.galleryPicker();
+                }
+
+                if (!context.mounted) return;
                 Navigator.pop(context);
               }),
-              _buildOption(Icons.camera_alt, Sheets.instance.camera, ()async {
-                await picker.cameraPicker();
-                if(!context.mounted) return;
+              _buildOption(Icons.camera_alt, Sheets.instance.camera, () async {
+                final result = await permission.cameraPermission();
+                if (result == true) {
+                  await picker.cameraPicker();
+                }
+
+                if (!context.mounted) return;
                 Navigator.pop(context);
               }),
-              _buildOption(Icons.location_on, Sheets.instance.location, () async {
-              await openMap(receiverId, context);
-              //   context.goNamed('maps');
-              if(!context.mounted) return;
-              Navigator.pop(context);
-                // context.goNamed('mp');
-              }),
+              _buildOption(
+                Icons.location_on,
+                Sheets.instance.location,
+                () async {
+                  final result = await permission.locationPermission();
+                  if (result == true) {
+                    if (!context.mounted) return;
+                    await openMap(receiverId, context);
+                  }
+
+                  if (!context.mounted) return;
+                  Navigator.pop(context);
+                },
+              ),
               _buildOption(Icons.contacts, Sheets.instance.contact, () {
                 context.pushNamed(
                   'contact',
-                  extra: {"id": receiverId, "index": index}, // Passing index here
+                  extra: {
+                    "id": receiverId,
+                    "index": index,
+                  }, // Passing index here
                 );
               }),
-              _buildOption(Icons.insert_drive_file, Sheets.instance.document, () {
-                filePicker.pickTheFile(context,senderId,receiverId);
-                // pickDocumentFile(context, id);
-              }),
+              _buildOption(
+                Icons.insert_drive_file,
+                Sheets.instance.document,
+                () async {
+                  if (!context.mounted) return;
+                  await filePicker.pickTheFile(context, senderId, receiverId);
+
+                },
+              ),
               // _buildOption(Icons.event, 'Event', () {}),
               // _buildOption(Icons.poll, 'Poll', () {}),
               // _buildOption(FontAwesomeIcons.spotify, 'Spotify', () {}),
