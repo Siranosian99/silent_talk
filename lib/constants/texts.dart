@@ -52,4 +52,6 @@ class AppTexts {
   final String isAuth="No Auth Activated in Device";
   final String ai="Ai Chat Bot";
   final String contact="Add to contacts";
+  final String map="To get directions, tap the location marker and select Google Maps from the options below.";
+
 }

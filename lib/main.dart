@@ -56,7 +56,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => Picker()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => AuthenticateProvider()),
-        ChangeNotifierProvider(create: (_) => LastSeenProvider()),
+        ChangeNotifierProvider(create: (_)   => LastSeenProvider()),
         ChangeNotifierProvider(create: (_) => AIbotApiService()),
         ChangeNotifierProvider(create: (_) => LoadingProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),

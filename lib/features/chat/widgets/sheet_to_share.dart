@@ -3,12 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/core/permission/permission_handler.dart';
 
 import '../../../constants/sheets_const.dart';
 import '../../../core/utils/files/file_picker.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/location/location_select.dart';
+import '../../../core/widgets/location_dialog.dart';
 import 'contact_shower_sheet.dart';
 
 void showCustomBottomSheet(
@@ -52,20 +54,22 @@ void showCustomBottomSheet(
                 if (!context.mounted) return;
                 Navigator.pop(context);
               }),
-              _buildOption(
-                Icons.location_on,
-                Sheets.instance.location,
-                () async {
-                  final result = await permission.locationPermission();
-                  if (result == true) {
-                    if (!context.mounted) return;
-                    await openMap(receiverId, context);
-                  }
+                _buildOption(
+                  Icons.location_on,
+                  Sheets.instance.location,
+                  () async {
+                    final result = await permission.locationPermission();
+                    if (result == true) {
+                      if (!context.mounted) return;
+                      await ShowDialogLocation(context);
+                      if (!context.mounted) return;
+                      await openMap(receiverId, context);
+                    }
 
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                },
-              ),
+                    if (!context.mounted) return;
+                    Navigator.pop(context);
+                  },
+                ),
               _buildOption(Icons.contacts, Sheets.instance.contact, () {
                 context.pushNamed(
                   'contact',
@@ -81,7 +85,6 @@ void showCustomBottomSheet(
                 () async {
                   if (!context.mounted) return;
                   await filePicker.pickTheFile(context, senderId, receiverId);
-
                 },
               ),
               // _buildOption(Icons.event, 'Event', () {}),

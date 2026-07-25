@@ -22,6 +22,7 @@ import '../../../core/utils/files/documents.dart';
 import '../../../core/utils/files/file_picker.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/message_type/message_checker.dart';
+import '../../../core/widgets/location_dialog.dart';
 import '../../../providers/loading_provider.dart';
 import 'chat_image_bubble.dart';
 import 'text_viewer.dart';
@@ -50,8 +51,6 @@ class _MessageListState extends State<MessageList> {
 
   final messageService = MessageService();
 
-
-
   @override
   Widget build(BuildContext context) {
     final loadingProvider = Provider.of<LoadingProvider>(context);
@@ -67,6 +66,9 @@ class _MessageListState extends State<MessageList> {
             final coords = msg.split("q=").last;
             final parts = coords.split(",");
             if (type['type'] == 'location') {
+              if (!context.mounted) return;
+              await ShowDialogLocation(context);
+              if (!context.mounted) return;
               await context.pushNamed(
                 'mapLayer',
                 extra: {
@@ -132,10 +134,7 @@ class _MessageListState extends State<MessageList> {
                     type['type'] == 'contact'
                     ? Container(
                       width: 300,
-                      margin: EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white,
