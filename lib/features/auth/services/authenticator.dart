@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,6 +20,7 @@ class Authenticator {
   static FirebaseAuth auth = FirebaseAuth.instance;
   CollectionReference users = firestore.collection('users');
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  StreamSubscription<DocumentSnapshot>? _deviceListener;
   bool isLoggedOut = false;
 
   Future<void> createUser(
@@ -318,10 +320,11 @@ class Authenticator {
   // }
 
   void listenForAnotherDeviceLogin(BuildContext context, String deviceId) {
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    FirebaseFirestore.instance
+    _deviceListener= FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .snapshots()
@@ -340,5 +343,8 @@ class Authenticator {
             }
           }
         });
+  }
+  void disposeListener() {
+    _deviceListener?.cancel();
   }
 }

@@ -183,6 +183,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   // }
   @override
   void dispose() {
+    // _authenticator.disposeListener();
     WidgetsBinding.instance.removeObserver(this);
     messageController.dispose();
     searchController.dispose();
@@ -196,12 +197,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final lastProvider = Provider.of<LastSeenProvider>(context);
 
-    final reciever = getReceiver();
-    return Scaffold(
+    final receiver = getReceiver();
+    return  Scaffold(
       resizeToAvoidBottomInset: false,
       body:
-          _users.isEmpty
-              ? Center(child: CircularProgressIndicator())
+        _users.isEmpty ||  _authenticator.user?.uid == null
+              ? Center(child:CircularProgressIndicator())
               : Column(
                 children: [
                   Stack(
@@ -225,7 +226,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   backgroundColor: Colors.grey.shade300,
                                   child: ClipOval(
                                     child:
-                                        (reciever!.image.isEmpty)
+                                        (receiver!.image.isEmpty)
                                             ? Image.asset(
                                               'assets/images/noProfile.png',
                                               width: 70,
@@ -233,7 +234,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                               fit: BoxFit.cover,
                                             )
                                             : Image.network(
-                                              reciever.image,
+                                          receiver.image,
                                               width: 70,
                                               height: 70,
                                               fit: BoxFit.cover,
@@ -250,7 +251,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 ),
                                 CircleAvatar(
                                   backgroundColor:
-                                      reciever.isOnline
+                                  receiver.isOnline
                                           ? Colors.green
                                           : Colors.red,
                                   radius: 10,
@@ -263,7 +264,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  reciever.userName ?? "",
+                                  receiver.userName ?? "",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
@@ -271,7 +272,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 ),
                                 Text(
                                   lastProvider.isSeen
-                                      ? reciever.lastSeen
+                                      ? receiver.lastSeen
                                       : "  ",
                                   style: TextStyle(
                                     fontSize: 16,
@@ -331,7 +332,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   ? MessageList(
                                     messages: messages,
                                     id1: _authenticator.user!.uid,
-                                    id2: reciever.id,
+                                    id2: receiver.id,
                                     // photo: provider.imgPath ?? '',
                                   )
                                   : Center(
@@ -410,7 +411,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                     showCustomBottomSheet(
                                       context,
                                       21,
-                                      reciever.id,
+                                      receiver.id,
                                       _authenticator.user!.uid,
                                     );
                                   },
@@ -431,7 +432,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             await messageService.sendMessage(
                                               text,
                                               _authenticator.user!.uid,
-                                              reciever.id,
+                                                receiver.id,
                                               "text"
                                             );
                                             messageController.clear();
@@ -444,7 +445,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             .sendMessage(
                                               photoLink,
                                               _authenticator.user!.uid,
-                                              reciever.id,
+                                            receiver.id,
                                           "image"
                                             );
                                         String cloudinaryUpload =
@@ -455,7 +456,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                           await messageService.updateMessages(
                                             cloudinaryUpload,
                                             _authenticator.user!.uid,
-                                            reciever.id,
+                                            receiver.id,
                                             docId,
                                           );
                                         }
@@ -475,46 +476,279 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     );
   }
 }
-
-// onPressed: () async {
-//                                     final photoLink = provider.imgPath;
-//                                     final text = messageController.text.trim();
+// return Scaffold(
+//       resizeToAvoidBottomInset: false,
+//       body:
+//           _users.isEmpty
+//               ? Center(child:CircularProgressIndicator())
+//               : Column(
+//                 children: [
+//                   Stack(
+//                     alignment: Alignment.bottomLeft,
+//                     children: [
+//                       Container(
+//                         padding: EdgeInsets.only(left: 50, top: 20, right: 50),
+//                         width: double.infinity,
+//                         height: 110,
+//                         color: Color.fromRGBO(52, 136, 176, 0.91),
+//                         child: Row(
+//                           crossAxisAlignment: CrossAxisAlignment.center,
+//                           mainAxisAlignment: MainAxisAlignment.start,
+//                           spacing: 5,
+//                           children: [
+//                             Stack(
+//                               alignment: Alignment.bottomRight,
+//                               children: [
+//                                 CircleAvatar(
+//                                   radius: 35,
+//                                   backgroundColor: Colors.grey.shade300,
+//                                   child: ClipOval(
+//                                     child:
+//                                         (receiver!.image.isEmpty)
+//                                             ? Image.asset(
+//                                               'assets/images/noProfile.png',
+//                                               width: 70,
+//                                               height: 70,
+//                                               fit: BoxFit.cover,
+//                                             )
+//                                             : Image.network(
+//                                           receiver.image,
+//                                               width: 70,
+//                                               height: 70,
+//                                               fit: BoxFit.cover,
+//                                               errorBuilder: (_, __, ___) {
+//                                                 return Image.asset(
+//                                                   'assets/images/noProfile.png',
+//                                                   width: 70,
+//                                                   height: 70,
+//                                                   fit: BoxFit.cover,
+//                                                 );
+//                                               },
+//                                             ),
+//                                   ),
+//                                 ),
+//                                 CircleAvatar(
+//                                   backgroundColor:
+//                                   receiver.isOnline
+//                                           ? Colors.green
+//                                           : Colors.red,
+//                                   radius: 10,
+//                                 ),
+//                               ],
+//                             ),
+//                             SizedBox(height: 15),
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               mainAxisAlignment: MainAxisAlignment.center,
+//                               children: [
+//                                 Text(
+//                                   receiver.userName ?? "",
+//                                   style: TextStyle(
+//                                     fontWeight: FontWeight.bold,
+//                                     fontSize: 20,
+//                                   ),
+//                                 ),
+//                                 Text(
+//                                   lastProvider.isSeen
+//                                       ? receiver.lastSeen
+//                                       : "  ",
+//                                   style: TextStyle(
+//                                     fontSize: 16,
+//                                     color:
+//                                         Colors.grey[500], // silver-like color
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
 //
-//                                     // TEXT MESSAGE
-//                                     if (photoLink == null || photoLink.isEmpty) {
-//                                       if (text.isNotEmpty) {
-//                                         await messageService.sendMessage(
-//                                           text,
-//                                           Authenticator().user!.uid,
-//                                           reciever.id,
-//                                         );
-//                                       }
+//                             // Text(_users[widget.id!].lastSeen.toString()),
+//                           ],
+//                         ),
+//                       ),
+//                       IconButton(
+//                         onPressed: () {
+//                           context.goNamed('people');
+//                         },
+//                         icon:
+//                             isArabic
+//                                 ? Icon(Icons.navigate_next, size: 30)
+//                                 : Icon(Icons.navigate_before, size: 30),
+//                       ),
+//                     ],
+//                   ),
+//                   Expanded(
+//                     child: StreamBuilder<QuerySnapshot>(
+//                       stream:
+//                           FirebaseFirestore.instance
+//                               .collection('chats')
+//                               .doc(
+//                                 getChatId(
+//                                   _authenticator.user!.uid,
+//                                   widget.receiverId!,
+//                                 ),
+//                               )
+//                               .collection('messages')
+//                               .orderBy('messageTime', descending: false)
+//                               .snapshots(),
+//                       builder: (context, snapshot) {
+//                         // _messageChanger.notificationCheck(
+//                         //     _authenticator.user!.uid,
+//                         //     widget.receiverId!,
+//                         //   );
+//                         if (snapshot.hasError) {
+//                           return Center(child: Text('Error loading messages'));
+//                         }
+//                         if (snapshot.connectionState ==
+//                             ConnectionState.waiting) {
+//                           return Center(child: CircularProgressIndicator());
+//                         }
 //
-//                                       messageController.clear(); // ✔ burada
-//                                       return;
-//                                     }
-//
-//                                     // IMAGE MESSAGE
-//
-//                                     final docId = await messageService.sendMessage(
-//                                       photoLink,
-//                                       Authenticator().user!.uid,
-//                                       reciever.id,
+//                         final messages = snapshot.data!.docs;
+//                         return Expanded(
+//                           child:
+//                               messages.isNotEmpty
+//                                   ? MessageList(
+//                                     messages: messages,
+//                                     id1: _authenticator.user!.uid,
+//                                     id2: receiver.id,
+//                                     // photo: provider.imgPath ?? '',
+//                                   )
+//                                   : Center(
+//                                     child: Text(
+//                                       "No messages yet. Start the conversation!",
+//                                       style: TextStyle(
+//                                         fontSize: 17,
+//                                         fontWeight: FontWeight.w600,
+//                                         // Semi-bold
+//                                         color: Color.fromRGBO(97, 119, 138, 1),
+//                                         // Make it fully opaque
+//                                         fontStyle: FontStyle.italic,
+//                                         // Optional: gives it a stylish slant
+//                                         letterSpacing:
+//                                             0.3, // Slight spacing for polish
+//                                       ),
+//                                       textAlign: TextAlign.center,
+//                                     ),
+//                                   ),
+//                         );
+//                       },
+//                     ),
+//                   ),
+//                   Consumer<Picker>(
+//                     builder: (context, provider, child) {
+//                       return Stack(
+//                         children: [
+//                           Padding(
+//                             padding: const EdgeInsets.all(20),
+//                             child: TextFormField(
+//                               readOnly: provider.isImage,
+//                               controller: messageController,
+//                               decoration: InputDecoration(
+//                                 hint:
+//                                     provider.isImage
+//                                         ? Stack(
+//                                           children: [
+//                                             ClipRRect(
+//                                               borderRadius:
+//                                                   BorderRadius.circular(12),
+//                                               child: Image.file(
+//                                                 File(provider.imgPath ?? ''),
+//                                                 fit: BoxFit.cover,
+//                                                 width: 100,
+//                                                 height: 100,
+//                                               ),
+//                                             ),
+//                                             CircleAvatar(
+//                                               backgroundColor: Colors.black
+//                                                   .withOpacity(0.6),
+//                                               child: IconButton(
+//                                                 icon: Icon(
+//                                                   Icons.close,
+//                                                   color: Colors.white,
+//                                                 ),
+//                                                 onPressed: () {
+//                                                   provider.clearImage();
+//                                                 },
+//                                               ),
+//                                             ),
+//                                           ],
+//                                         )
+//                                         : Text(AppTexts.instance.typemsg),
+//                                 filled: true,
+//                                 contentPadding: const EdgeInsets.symmetric(
+//                                   vertical: 12,
+//                                   horizontal: 16,
+//                                 ),
+//                                 border: OutlineInputBorder(
+//                                   borderRadius: BorderRadius.circular(24),
+//                                   borderSide: BorderSide.none,
+//                                 ),
+//                                 prefixIcon: IconButton(
+//                                   icon: const Icon(Icons.attach_file),
+//                                   onPressed: () {
+//                                     showCustomBottomSheet(
+//                                       context,
+//                                       21,
+//                                       receiver.id,
+//                                       _authenticator.user!.uid,
 //                                     );
+//                                   },
+//                                 ),
+//                                 suffixIcon: Column(
+//                                   children: [
+//                                     IconButton(
+//                                       icon: const Icon(Icons.send),
+//                                       onPressed: () async {
+//                                         final photoLink = provider.imgPath;
+//                                         final text =
+//                                             messageController.text.trim();
 //
-//                                     messageController.clear(); // 🔥 BURAYA AL
-//
-//                                     final cloudUrl =
-//                                         await _picker.imgUploaderToServer(photoLink) ?? '';
-//
-//                                     if (cloudUrl.isNotEmpty) {
-//                                       await messageService.updateMessages(
-//                                         cloudUrl,
-//                                         Authenticator().user!.uid,
-//                                         reciever.id,
-//                                         docId,
-//                                       );
-//                                     }
-//
-//                                     provider.clearImage();
-//                                   }
+//                                         //normal Message
+//                                         if (photoLink == null ||
+//                                             photoLink.isEmpty) {
+//                                           if (text.isNotEmpty) {
+//                                             await messageService.sendMessage(
+//                                               text,
+//                                               _authenticator.user!.uid,
+//                                                 receiver.id,
+//                                               "text"
+//                                             );
+//                                             messageController.clear();
+//                                           }
+//                                           return;
+//                                         }
+//                                         messageController.clear();
+//                                         provider.clearImage();
+//                                         final docId = await messageService
+//                                             .sendMessage(
+//                                               photoLink,
+//                                               _authenticator.user!.uid,
+//                                             receiver.id,
+//                                           "image"
+//                                             );
+//                                         String cloudinaryUpload =
+//                                             await _picker.imgUploaderToServer(
+//                                               photoLink,) ??
+//                                             '';
+//                                         if (cloudinaryUpload.isNotEmpty) {
+//                                           await messageService.updateMessages(
+//                                             cloudinaryUpload,
+//                                             _authenticator.user!.uid,
+//                                             receiver.id,
+//                                             docId,
+//                                           );
+//                                         }
+//                                       },
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       );
+//                     },
+//                   ),
+//                 ],
+//               ),
+//     );
