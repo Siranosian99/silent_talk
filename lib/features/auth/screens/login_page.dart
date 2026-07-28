@@ -18,20 +18,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
-  final Authenticator _authenticator=Authenticator();
   late final bool boolValue;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // @override
-  //   void initState() {
-  //   requestPermission();
-  //     super.initState();
-  //   }
-  //   Future<void>requestPermission ()async{
-  //     await FileSaver.checkAndRequestStoragePermission();
-  //   }
 
 
 
@@ -42,11 +32,11 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
-            key: _formKey, // ✅ Add Form widget
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // App Title
+
                 Text(
                   AppLocalizations.of(context)!.appName,
                   style: TextStyle(
@@ -56,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                   ),
                 ),
                 SizedBox(height: 40),
-                // Email Field
+
                 LoginSignupTextfields(
                   controller: _emailController,
                   icon: Icon(Icons.email),
@@ -120,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                       }
                     }
                     catch(e){
+                      if(!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(

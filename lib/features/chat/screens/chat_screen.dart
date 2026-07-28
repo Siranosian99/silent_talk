@@ -84,6 +84,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         final deviceId = await DeviceIdHelper().getDeviceId();
         // if(!context.mounted) return;
         _authenticator.listenForAnotherDeviceLogin(context, deviceId);
+
       }
     });
     // loadIsAuth();
@@ -170,20 +171,18 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   //   }
   // }
 
-  // void scrollToBottom() {
-  //   Future.delayed(const Duration(milliseconds: 100), () {
-  //     if (_scrollController.hasClients) {
-  //       _scrollController.animateTo(
-  //         _scrollController.position.maxScrollExtent,
-  //         duration: const Duration(milliseconds: 300),
-  //         curve: Curves.easeOut,
-  //       );
-  //     }
-  //   });
-  // }
+
+  void scrollToBottom() {
+    if (!_scrollController.hasClients) return;
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
   @override
   void dispose() {
-    // _authenticator.disposeListener();
+    _authenticator.disposeListener();
     WidgetsBinding.instance.removeObserver(this);
     messageController.dispose();
     searchController.dispose();
@@ -298,64 +297,70 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream:
-                          FirebaseFirestore.instance
-                              .collection('chats')
-                              .doc(
-                                getChatId(
-                                  _authenticator.user!.uid,
-                                  widget.receiverId!,
-                                ),
-                              )
-                              .collection('messages')
-                              .orderBy('messageTime', descending: false)
-                              .snapshots(),
-                      builder: (context, snapshot) {
-                        // _messageChanger.notificationCheck(
-                        //     _authenticator.user!.uid,
-                        //     widget.receiverId!,
-                        //   );
-                        if (snapshot.hasError) {
-                          return Center(child: Text('Error loading messages'));
-                        }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        }
+                  StreamBuilder<QuerySnapshot>(
+                    stream:
+                        FirebaseFirestore.instance
+                            .collection('chats')
+                            .doc(
+                              getChatId(
+                                _authenticator.user!.uid,
+                                widget.receiverId!,
+                              ),
+                            )
+                            .collection('messages')
+                            .orderBy('messageTime', descending: false)
+                            .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error loading messages'));
+                      }
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
 
-                        final messages = snapshot.data!.docs;
-                        return Expanded(
-                          child:
-                              messages.isNotEmpty
-                                  ? MessageList(
-                                    messages: messages,
-                                    id1: _authenticator.user!.uid,
-                                    id2: receiver.id,
-                                    // photo: provider.imgPath ?? '',
-                                  )
-                                  : Center(
-                                    child: Text(
-                                      "No messages yet. Start the conversation!",
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w600,
-                                        // Semi-bold
-                                        color: Color.fromRGBO(97, 119, 138, 1),
-                                        // Make it fully opaque
-                                        fontStyle: FontStyle.italic,
-                                        // Optional: gives it a stylish slant
-                                        letterSpacing:
-                                            0.3, // Slight spacing for polish
-                                      ),
-                                      textAlign: TextAlign.center,
+                      final messages = snapshot.data!.docs;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        scrollToBottom();
+                      });
+                      return Expanded(
+                        child:
+                            messages.isNotEmpty
+                                ? MessageList(
+                              controller: _scrollController,
+                                  messages: messages,
+                                  id1: _authenticator.user!.uid,
+                                  id2: receiver.id,
+                                  // photo: provider.imgPath ?? '',
+                                )
+                                : Center(
+                                  child: Text(
+                                    "No messages yet. Start the conversation!",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600,
+                                      // Semi-bold
+                                      color: Color.fromRGBO(97, 119, 138, 1),
+                                      // Make it fully opaque
+                                      fontStyle: FontStyle.italic,
+                                      // Optional: gives it a stylish slant
+                                      letterSpacing:
+                                          0.3, // Slight spacing for polish
                                     ),
+                                    textAlign: TextAlign.center,
                                   ),
-                        );
-                      },
-                    ),
+                                ),
+                      );
+                    },
                   ),
+
+
+
+
+
+
+
+
                   Consumer<Picker>(
                     builder: (context, provider, child) {
                       return Stack(

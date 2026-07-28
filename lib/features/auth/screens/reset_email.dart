@@ -3,24 +3,22 @@ import 'package:silent_talk/constants/texts.dart';
 
 import '../services/authenticator.dart';
 
-class ResetEmailScreen extends StatefulWidget {
-  const ResetEmailScreen({Key? key}) : super(key: key);
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<ResetEmailScreen> createState() => _ResetEmailScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _ResetEmailScreenState extends State<ResetEmailScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _emailController = TextEditingController();
-  final _passwordController=TextEditingController();
-  final _userId=Authenticator().user?.uid;
   final _formKey = GlobalKey<FormState>();
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppTexts.instance.changeEmail)),
+      appBar: AppBar(title: Text(AppTexts.instance.forgetPass)),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(

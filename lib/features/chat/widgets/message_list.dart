@@ -34,11 +34,13 @@ class MessageList extends StatefulWidget {
     required this.messages,
     required this.id1,
     required this.id2,
+    required this.controller,
   });
 
   final List<QueryDocumentSnapshot<Object?>> messages;
   final String id1;
   final String id2;
+  final ScrollController controller;
 
   @override
   State<MessageList> createState() => _MessageListState();
@@ -57,6 +59,7 @@ class _MessageListState extends State<MessageList> {
 
     // final provider = Provider.of<Picker>(context);
     return ListView.builder(
+      controller: widget.controller,
       itemBuilder: (context, index) {
         final msg = widget.messages[index]['message'];
         final type = widget.messages[index].data() as Map<String, dynamic>;

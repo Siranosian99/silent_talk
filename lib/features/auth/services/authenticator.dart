@@ -320,7 +320,7 @@ class Authenticator {
   // }
 
   void listenForAnotherDeviceLogin(BuildContext context, String deviceId) {
-
+    _deviceListener?.cancel();
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 

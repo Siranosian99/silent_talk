@@ -6,7 +6,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/services/authenticator.dart';
 
 class UpdateEmailScreen extends StatefulWidget {
-  const UpdateEmailScreen({Key? key}) : super(key: key);
+  const UpdateEmailScreen({super.key});
 
   @override
   State<UpdateEmailScreen> createState() => _UpdateEmailScreenState();
