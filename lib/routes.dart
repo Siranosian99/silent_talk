@@ -10,7 +10,7 @@ import 'package:silent_talk/features/chat/screens/chat_screen.dart';
 import 'package:silent_talk/features/auth/screens/login_page.dart';
 import 'package:silent_talk/features/user/screens/people_screen.dart';
 import 'package:silent_talk/features/chat/screens/request_screen.dart';
-import 'package:silent_talk/features/auth/screens/reset_email.dart';
+import 'package:silent_talk/features/auth/screens/reset_password.dart';
 import 'package:silent_talk/features/profile/screens/reset_password_inside.dart';
 import 'package:silent_talk/features/profile/screens/settings_screen.dart';
 import 'package:silent_talk/features/auth/screens/sign_up_page.dart';

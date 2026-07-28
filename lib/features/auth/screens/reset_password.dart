@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
 
 import '../services/authenticator.dart';
@@ -18,7 +19,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppTexts.instance.forgetPass)),
+      appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          context.goNamed("login");
+        }, icon: Icon(Icons.arrow_back_ios_rounded)),
+          title: Text(AppTexts.instance.forgetPass)),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
