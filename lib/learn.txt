@@ -1,0 +1,142 @@
+MVC
+-------------------------
+Model:this is Model of Data will come or use Like String name ,String surname;
+View: this is the widget to show Data
+Controller: this is doing action like login button function ...
+
+
+example
+------------------------
+models/
+
+user.dart
+
+controllers/
+
+login_controller.dart
+
+views/
+
+login_page.dart
+
+
+we use this for small project if there is much controllers to can control the code
+
+Kullanıcı
+    │
+    ▼
+View (LoginPage)
+    │
+    ▼
+Controller
+    │
+    ▼
+Repository
+    │
+    ▼
+API
+    │
+    ▼
+Repository
+    │
+    ▼
+Controller
+    │
+    ▼
+    View
+ ↓
+    Model
+
+MVVM
+------------------------
+Model: same as the MVC model
+View: same as the MVC View
+ViewModel: ex: ApiRepository call it in ViewModel and use login method like repository.login and get parametrs
+
+                 MVVM
+                  |
+              ViewModel
+                  |
+       -----------------------
+       |          |          |
+   Provider    Bloc     Riverpod
+
+-------------------------
+
+   LoginPage
+
+   sadece UI
+
+
+   LoginViewModel
+
+   validation
+   state
+
+
+   AuthRepository
+
+   API
+
+
+   AuthService
+
+   Firebase
+
+
+ ex:
+ ----------------------------
+ lib
+
+ models
+  |
+  Todo.dart
+
+
+ views
+  |
+  todo_page.dart
+
+
+ viewmodels
+  |
+  todo_viewmodel.dart
+
+
+ repositories
+  |
+  todo_repository.dart
+
+
+ services
+  |
+  api_service.dart
+
+
+
+
+
+Kullanıcı
+    │
+    ▼
+View
+    │
+    ▼
+ViewModel
+    │
+    ▼
+Repository
+    │
+    ▼
+API
+    │
+    ▼
+Repository
+    │
+    ▼
+ViewModel
+    │
+ notifyListeners()
+    │
+    ▼
+View
