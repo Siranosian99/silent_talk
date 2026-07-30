@@ -22,7 +22,7 @@ login_page.dart
 
 we use this for small project if there is much controllers to can control the code
 
-Kullanıcı
+USER
     │
     ▼
 View (LoginPage)
@@ -116,7 +116,7 @@ ViewModel: ex: ApiRepository call it in ViewModel and use login method like repo
 
 
 
-Kullanıcı
+User
     │
     ▼
 View
