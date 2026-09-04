@@ -3,9 +3,9 @@ class Keys {
       "Bearer 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";
   final endPoint = '/chat/completions';
   final baseUrl = "https://openrouter.ai/api/v1";
-  final modelName = "poolside/laguna-m.1:free";
+  final modelName = "inclusionai/ling-3.0-flash-fin:free";
   final firebaseApiKey = "AIzaSyAwMCb9JOyl-8RCA6iPxnGlVw89AajFilc";
-  final firebasaeIos = "1:156704193316:ios:8f808066187c855d3211b1";
+  final firebaseIos = "1:156704193316:ios:8f808066187c855d3211b1";
   final firebaseAndroid = "1:156704193316:android:12088ea8a9934d143211b1";
 
   // final supabaseUrl='https://qvcdgtjxkmmtmklgffyk.supabase.co';

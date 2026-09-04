@@ -36,7 +36,7 @@ void main() async {
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: keys.firebaseApiKey,
-      appId: Platform.isAndroid ? keys.firebaseAndroid : keys.firebasaeIos,
+      appId: Platform.isAndroid ? keys.firebaseAndroid : keys.firebaseIos,
       //1:156704193316:ios:8f808066187c855d3211b1  //1:156704193316:android:12088ea8a9934d143211b1
       messagingSenderId: "156704193316",
       projectId: "silenttalk-53850",

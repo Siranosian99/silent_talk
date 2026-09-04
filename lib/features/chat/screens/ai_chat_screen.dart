@@ -17,7 +17,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AIbotApiService>(context);
-    final aiMessages = provider.ai_reply;
+    final aiMessages = [];
 
     return Scaffold(
       appBar: AppBar(
