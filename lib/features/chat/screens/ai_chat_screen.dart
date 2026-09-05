@@ -16,7 +16,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AIbotApiService>(context);
+    final provider = Provider.of<AiBotApiService>(context);
     final aiMessages = [];
 
     return Scaffold(
@@ -34,13 +34,12 @@ class _AiChatScreenState extends State<AiChatScreen> {
       ),
       body: Column(
         children: [
-          // --- Chat messages ---
-          provider.isFinished
+          provider.isLoading
               ? Expanded(
                 child:
                     aiMessages.isEmpty
                         ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
@@ -110,22 +109,21 @@ class _AiChatScreenState extends State<AiChatScreen> {
             child: TextFormField(
               controller: searchController,
               decoration: InputDecoration(
-                enabled: provider.isFinished,
+                enabled: provider.isLoading,
                 hintText:
-                    provider.isFinished ? 'Chat with AI BOT' : 'Loading...',
+                    provider.isLoading ? 'Chat with AI BOT' : 'Loading...',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 suffixIcon: IconButton(
                   icon:
-                      provider.isFinished
+                      provider.isLoading
                           ? Icon(Icons.send)
-                          : CircularProgressIndicator(),
+                          : Icon(Icons.stop),
                   onPressed: () {
                     if (searchController.text.trim().isNotEmpty) {
                       provider.getData(searchController.text.trim());
                       searchController.clear();
-                      provider.isFinihsedChanger();
                     }
                   },
                 ),
