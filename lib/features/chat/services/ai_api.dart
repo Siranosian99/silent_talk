@@ -82,30 +82,29 @@ class AiBotApiService with ChangeNotifier {
         print("Status Code: $statusCode");
         print("Message: ${e.message}");
         print("Response: ${e.response?.data}");
-        if (e.type == DioExceptionType.connectionTimeout) {
+        if (e.type == DioExceptionType.connectionError) {
+          errorMessage = "No internet connection. Please check your network.";
+        } else if (e.type == DioExceptionType.connectionTimeout) {
           errorMessage = "Unable to connect to the server.";
         } else if (e.type == DioExceptionType.sendTimeout) {
           errorMessage = "The request could not be sent. Please try again.";
         } else if (e.type == DioExceptionType.receiveTimeout) {
           errorMessage = "The server took too long to respond.";
-        } else if (e.type == DioExceptionType.connectionError) {
-          errorMessage = "No internet connection. Please check your network.";
         }
-
+        if(statusCode != null){
         if (statusCode == 400) {
           debugPrint("❌ 400 - Bad Request");
-          errorMessage ="Too many requests were sent. Rate limit exceeded";
+          errorMessage = "Too many requests were sent. Rate limit exceeded";
           debugPrint("The request sent is invalid.");
           break;
         } else if (statusCode == 401) {
           debugPrint("❌ 401 - Unauthorized");
-          errorMessage =" Token is invalid or missing.";
-
+          errorMessage = " Token is invalid or missing.";
           debugPrint("The API Key / Token is invalid or missing.");
           break;
         } else if (statusCode == 403) {
           debugPrint("❌ 403 - Forbidden");
-          errorMessage="You do not have permission to perform this action.";
+          errorMessage = "You do not have permission to perform this action.";
           debugPrint("You do not have permission to perform this action.");
           break;
         } else if (statusCode == 404) {
@@ -118,7 +117,7 @@ class AiBotApiService with ChangeNotifier {
           break;
         } else if (statusCode == 408) {
           debugPrint("❌ 408 - Request Timeout");
-          errorMessage="The request timed out.";
+          errorMessage = "The request timed out.";
           debugPrint("The request timed out.");
           break;
         } else if (statusCode == 409) {
@@ -128,12 +127,12 @@ class AiBotApiService with ChangeNotifier {
         } else if (statusCode == 422) {
           debugPrint("❌ 422 - Unprocessable Entity");
           debugPrint("The data sent cannot be processed.");
-          errorMessage="The data sent cannot be processed.";
+          errorMessage = "The data sent cannot be processed.";
           break;
         } else if (statusCode == 429) {
-          errorMessage ="Too many requests were sent. Rate limit exceeded";
+          errorMessage = "Too many requests were sent. Rate limit exceeded";
           debugPrint("❌ 429 - Too Many Requests");
-          errorMessage="Too many requests were sent. Rate limit exceeded.";
+          errorMessage = "Too many requests were sent. Rate limit exceeded.";
           debugPrint("Too many requests were sent. Rate limit exceeded.");
           break;
         } else if (statusCode == 500) {
@@ -142,7 +141,7 @@ class AiBotApiService with ChangeNotifier {
         } else if (statusCode == 502) {
           debugPrint("❌ 502 - Bad Gateway");
           debugPrint("There is a problem with the gateway or proxy.");
-          errorMessage="There is a problem with the gateway or proxy.";
+          errorMessage = "There is a problem with the gateway or proxy.";
         } else if (statusCode == 503) {
           debugPrint("❌ 503 - Service Unavailable");
           debugPrint("The API is currently unavailable.");
@@ -154,7 +153,7 @@ class AiBotApiService with ChangeNotifier {
           debugPrint("❌ Unknown HTTP error: $statusCode");
           errorMessage = "Something went wrong.";
           break;
-        }
+        }}
         if (!shouldRetry) {
           break;
         }
