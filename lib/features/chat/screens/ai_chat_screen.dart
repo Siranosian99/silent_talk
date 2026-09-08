@@ -16,9 +16,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AiBotApiService>(context);
-    final aiMessages = [];
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -32,106 +29,135 @@ class _AiChatScreenState extends State<AiChatScreen> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          provider.isLoading
-              ? Expanded(
-                child:
-                    aiMessages.isEmpty
-                        ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/ai-assistant.png',
-                              scale: 3,
-                            ),
-                            Text(
-                              'AI BOT',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        )
-                        : ListView.separated(
-                          padding: const EdgeInsets.all(12),
-                          itemCount: aiMessages.length,
-                          separatorBuilder:
-                              (_, __) => const SizedBox(height: 8),
-                          itemBuilder: (context, index) {
-                            final msg = aiMessages[index];
-                            final isUser = msg.role == 'user';
-
-                            return Align(
-                              alignment:
-                                  isUser
-                                      ? Alignment.centerRight
-                                      : Alignment.centerLeft,
-                              child: Container(
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color:
-                                      isUser
-                                          ? Colors.blueAccent
-                                          : Colors.grey.shade300,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: const Radius.circular(18),
-                                    topRight: const Radius.circular(18),
-                                    bottomLeft: Radius.circular(
-                                      isUser ? 18 : 0,
-                                    ),
-                                    bottomRight: Radius.circular(
-                                      isUser ? 0 : 18,
-                                    ),
-                                  ),
-                                ),
-                                child: Text(
-                                  msg.content!,
-                                  style: TextStyle(
-                                    color:
-                                        isUser ? Colors.white : Colors.black87,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+      body: Consumer<AiBotApiService>( builder: (context, provider, child){
+        return Column(
+          children: [
+                 Expanded(
+              child:
+              provider.aiReply.isEmpty
+                  ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/icons/ai-assistant.png',
+                    scale: 3,
+                  ),
+                  Text(
+                    'AI BOT',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               )
-              : Expanded(
-                child: Center(
-                  child: Text("Getting Data Please Wait A Mommnet..."),
-                ),
-              ),
+                  : ListView.separated(
+                padding: const EdgeInsets.all(12),
+                itemCount: provider.aiReply.length,
+                separatorBuilder:
+                    (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final msg = provider.aiReply[index];
+                  final isUser = msg.role == 'user';
 
-          // --- Input field ---
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextFormField(
-              controller: searchController,
-              decoration: InputDecoration(
-                enabled: provider.isLoading,
-                hintText:
-                    provider.isLoading ? 'Chat with AI BOT' : 'Loading...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                suffixIcon: IconButton(
-                  icon:
-                      provider.isLoading
-                          ? Icon(Icons.send)
-                          : Icon(Icons.stop),
-                  onPressed: () {
-                    if (searchController.text.trim().isNotEmpty) {
-                      provider.getData(searchController.text.trim());
-                      searchController.clear();
-                    }
-                  },
+                  return Align(
+                    alignment:
+                    isUser
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color:
+                        isUser
+                            ? Colors.blueAccent
+                            : Colors.grey.shade300,
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(18),
+                          topRight: const Radius.circular(18),
+                          bottomLeft: Radius.circular(
+                            isUser ? 18 : 0,
+                          ),
+                          bottomRight: Radius.circular(
+                            isUser ? 0 : 18,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        msg.content!,
+                        style: TextStyle(
+                          color:
+                          isUser ? Colors.white : Colors.black87,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+             Padding(
+              padding: EdgeInsets.only(
+                bottom: 8,
+              ),
+              child: Row(
+                mainAxisAlignment:
+                MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 16),
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child:
+                    provider.isLoading?
+                    CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ):null
+                  ),
+                  SizedBox(width: 10),
+                  provider.isLoading?  Text(
+                    'AI is thinking...',
+                  ): Text(''),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  enabled: !provider.isLoading,
+                  hintText:
+                  !provider.isLoading ? 'Chat with AI BOT' : 'Loading...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  suffixIcon: IconButton(
+                    icon:
+                    provider.isLoading
+                       ? Icon(Icons.stop)  : Icon(Icons.send),
+                    onPressed: () async{
+                      final query= searchController.text.trim();
+                      if (query.isNotEmpty) {
+                        await provider.getData(searchController.text.trim());
+                        searchController.clear();
+                        if(!context.mounted){ return ;}
+                        if(provider.errorMessage.isNotEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(provider.errorMessage),
+                            backgroundColor: Colors.red,
+                            behavior: SnackBarBehavior.floating,
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
+                      }}
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      })
     );
-  }
-}
+
+}}

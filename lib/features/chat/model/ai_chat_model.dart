@@ -14,11 +14,11 @@ class AiChatModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['role'] = this.role;
-    data['content'] = this.content;
-    data['refusal'] = this.refusal;
-    data['reasoning'] = this.reasoning;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['role'] = role;
+    data['content'] = content;
+    data['refusal'] = refusal;
+    data['reasoning'] = reasoning;
     return data;
   }
   @override
