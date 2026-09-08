@@ -27,7 +27,7 @@ List<AiChatModel> ai_reply = [];
 
 void isFinihsedChanger() {
   isFinished = !isFinished;
-  notifyListeners();
+  notifyListeners();git
 }
 
 Future<List<AiChatModel>> getData(String query) async {
