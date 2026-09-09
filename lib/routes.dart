@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:silent_talk/features/chat/screens/ai_chat_screen.dart';
 import 'package:silent_talk/features/chat/screens/chat_screen.dart';
 import 'package:silent_talk/features/auth/screens/login_page.dart';
+import 'package:silent_talk/features/chat/screens/previous_ai_chats.dart';
 import 'package:silent_talk/features/user/screens/people_screen.dart';
 import 'package:silent_talk/features/chat/screens/request_screen.dart';
 import 'package:silent_talk/features/auth/screens/reset_password.dart';
@@ -161,6 +162,11 @@ final GoRouter router = GoRouter(
       path: '/ai',
       name: 'ai',
       builder: (context, state) => AiChatScreen(),
+    ),
+    GoRoute(
+      path: '/previousAi',
+      name: 'previousAi',
+      builder: (context, state) => const PreviousAiChatsScreen(),
     ),
     GoRoute(
       path: '/mapLayer',

@@ -133,4 +133,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ai => 'AI Chat Bot';
+
+  @override
+  String get ai_history => 'Old Conversations';
 }

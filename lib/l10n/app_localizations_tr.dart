@@ -133,4 +133,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get ai => 'Yapay Zeka Sohbet Botu';
+
+  @override
+  String get ai_history => 'Eski Konuşmalar';
 }

@@ -350,6 +350,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI Chat Bot'**
   String get ai;
+
+  /// No description provided for @ai_history.
+  ///
+  /// In en, this message translates to:
+  /// **'Old Conversations'**
+  String get ai_history;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

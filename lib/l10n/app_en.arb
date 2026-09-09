@@ -41,5 +41,6 @@
   "gallery": "Gallery",
   "typemsg": "Type a message",
   "isAuth": "No Auth Activated in Device",
-  "ai": "AI Chat Bot"
+  "ai": "AI Chat Bot",
+  "ai_history":"Old Conversations"
 }

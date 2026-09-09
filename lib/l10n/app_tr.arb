@@ -41,5 +41,6 @@
   "gallery": "Galeri",
   "typemsg": "Mesaj yazın",
   "isAuth": "Cihazda kimlik doğrulama etkinleştirilmedi",
-  "ai": "Yapay Zeka Sohbet Botu"
+  "ai": "Yapay Zeka Sohbet Botu",
+  "ai_history":"Eski Konuşmalar"
 }

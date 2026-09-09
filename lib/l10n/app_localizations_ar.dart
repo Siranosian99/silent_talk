@@ -133,4 +133,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ai => 'روبوت الدردشة الذكي';
+
+  @override
+  String get ai_history => 'المحادثات القديم';
 }

@@ -133,4 +133,7 @@ class AppLocalizationsHy extends AppLocalizations {
 
   @override
   String get ai => 'Արհեստական բանականության զրուցաբան';
+
+  @override
+  String get ai_history => 'Հին զրույցներ';
 }
