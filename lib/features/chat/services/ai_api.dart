@@ -1,13 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:silent_talk/features/auth/services/ai_backend.dart';
 import 'package:silent_talk/features/chat/model/ai_chat_model.dart';
 import '../../../constants/api_consts.dart';
+import '../ai_chat_history_model.dart';
 
 class AiBotApiService with ChangeNotifier {
   final _keys = Keys();
   bool isLoading = false;
   late String errorMessage;
+  final AiBackend _aiBackend=AiBackend();
 
+  AiBotApiService(){
+    getMessageById("MReMRdcH5hPSjNx64AQEswyz8No1");
+  }
   late final Dio _dio = Dio(
     BaseOptions(
       baseUrl: _keys.baseUrl,
@@ -18,11 +24,11 @@ class AiBotApiService with ChangeNotifier {
   );
 
   List<AiChatModel> aiReply = [];
-
+  List<ChatHistoryModel> aiPrevious = [];
   Future<List<AiChatModel>> getData(String query) async {
     isLoading = true;
     notifyListeners();
-    int maxRetry = 5;
+    int maxRetry = 1;
     for (int i = 0; i < maxRetry; i++) {
       final delay = Duration(seconds: 1 * (1 << i));
       try {
@@ -167,7 +173,10 @@ class AiBotApiService with ChangeNotifier {
     }
     return aiReply;
   }
-
+  Future<List<ChatHistoryModel>> getMessageById(String userId)async{
+    aiPrevious = await _aiBackend.getMessageById(userId);
+    return aiPrevious;
+  }
   // Future<List<AiChatModel>> getDataWithId(AiChatModel chat) async {
   //   isLoading = true;
   //   notifyListeners();

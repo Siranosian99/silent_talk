@@ -1,23 +1,16 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_contacts/src/model/contact.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/texts.dart';
-import 'package:silent_talk/core/utils/location/location_select.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
-import 'package:silent_talk/features/auth/services/request_check.dart';
-import 'package:silent_talk/features/chat/services/get_messages.dart';
 import 'package:silent_talk/features/chat/services/send_messages.dart';
 
 import 'package:silent_talk/features/user/service/users_service.dart';
 
-import '../../../core/notification/message_detecter.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/last_seen/last_seen_provider.dart';
 import '../../../core/utils/time_format/time_convertor.dart';
@@ -82,9 +75,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final deviceId = await DeviceIdHelper().getDeviceId();
-        // if(!context.mounted) return;
+        if(!context.mounted) return;
         _authenticator.listenForAnotherDeviceLogin(context, deviceId);
-
       }
     });
     // loadIsAuth();
@@ -171,7 +163,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   //   }
   // }
 
-
   void scrollToBottom() {
     if (!_scrollController.hasClients) return;
     _scrollController.animateTo(
@@ -180,6 +171,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       curve: Curves.easeOut,
     );
   }
+
   @override
   void dispose() {
     _authenticator.disposeListener();
@@ -197,11 +189,11 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     final lastProvider = Provider.of<LastSeenProvider>(context);
 
     final receiver = getReceiver();
-    return  Scaffold(
+    return Scaffold(
       resizeToAvoidBottomInset: false,
       body:
-        _users.isEmpty ||  _authenticator.user?.uid == null
-              ? Center(child:CircularProgressIndicator())
+          _users.isEmpty || _authenticator.user?.uid == null
+              ? Center(child: CircularProgressIndicator())
               : Column(
                 children: [
                   Stack(
@@ -233,7 +225,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                               fit: BoxFit.cover,
                                             )
                                             : Image.network(
-                                          receiver.image,
+                                              receiver.image,
                                               width: 70,
                                               height: 70,
                                               fit: BoxFit.cover,
@@ -250,7 +242,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 ),
                                 CircleAvatar(
                                   backgroundColor:
-                                  receiver.isOnline
+                                      receiver.isOnline
                                           ? Colors.green
                                           : Colors.red,
                                   radius: 10,
@@ -263,7 +255,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  receiver.userName ?? "",
+                                  receiver.userName ,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
@@ -314,8 +306,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       if (snapshot.hasError) {
                         return Center(child: Text('Error loading messages'));
                       }
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
 
@@ -327,7 +318,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         child:
                             messages.isNotEmpty
                                 ? MessageList(
-                              controller: _scrollController,
+                                  controller: _scrollController,
                                   messages: messages,
                                   id1: _authenticator.user!.uid,
                                   id2: receiver.id,
@@ -353,13 +344,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       );
                     },
                   ),
-
-
-
-
-
-
-
 
                   Consumer<Picker>(
                     builder: (context, provider, child) {
@@ -387,7 +371,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             ),
                                             CircleAvatar(
                                               backgroundColor: Colors.black
-                                                  .withOpacity(0.6),
+                                                  .withValues(alpha: 0.6),
                                               child: IconButton(
                                                 icon: Icon(
                                                   Icons.close,
@@ -437,8 +421,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             await messageService.sendMessage(
                                               text,
                                               _authenticator.user!.uid,
-                                                receiver.id,
-                                              "text"
+                                              receiver.id,
+                                              "text",
                                             );
                                             messageController.clear();
                                           }
@@ -450,12 +434,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                             .sendMessage(
                                               photoLink,
                                               _authenticator.user!.uid,
-                                            receiver.id,
-                                          "image"
+                                              receiver.id,
+                                              "image",
                                             );
                                         String cloudinaryUpload =
                                             await _picker.imgUploaderToServer(
-                                              photoLink,) ??
+                                              photoLink,
+                                            ) ??
                                             '';
                                         if (cloudinaryUpload.isNotEmpty) {
                                           await messageService.updateMessages(
@@ -481,6 +466,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     );
   }
 }
+
 // return Scaffold(
 //       resizeToAvoidBottomInset: false,
 //       body:

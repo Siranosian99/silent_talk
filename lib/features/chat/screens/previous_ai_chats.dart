@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/features/chat/model/ai_chat_model.dart';
 import '../../../l10n/app_localizations.dart';
@@ -14,6 +15,12 @@ class PreviousAiChatsScreen extends StatefulWidget {
 
 class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
   final TextEditingController searchController = TextEditingController();
+  final AiBackend _aiBackend =AiBackend();
+  @override
+  void initState() {
+    _aiBackend.getMessageById('MReMRdcH5hPSjNx64AQEswyz8No1');
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +45,7 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
             children: [
               Expanded(
                 child:
-                provider.aiReply.isEmpty
+                provider.aiPrevious.isEmpty
                     ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,44 +63,53 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
                 )
                     : ListView.separated(
                   padding: const EdgeInsets.all(12),
-                  itemCount: provider.aiReply.length,
+                  itemCount: provider.aiPrevious.length,
                   separatorBuilder:
                       (_, __) => const SizedBox(height: 8),
                   itemBuilder: (context, index) {
-                    final msg = provider.aiReply[index];
-                    final isUser = msg.role == 'user';
 
-                    return Align(
-                      alignment:
-                      isUser
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color:
-                          isUser
-                              ? Colors.blueAccent
-                              : Colors.grey.shade300,
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(18),
-                            topRight: const Radius.circular(18),
-                            bottomLeft: Radius.circular(
-                              isUser ? 18 : 0,
-                            ),
-                            bottomRight: Radius.circular(
-                              isUser ? 0 : 18,
-                            ),
+
+                    return Card(
+                      elevation: 0,
+                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        leading: Container(
+                          width: 46,
+                          height: 46,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Icon(
+                            Icons.smart_toy_outlined,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
-                        child: Text(
-                          msg.content!,
+                        title:  Text(
+                          provider.aiPrevious[index].title,
                           style: TextStyle(
-                            color:
-                            isUser ? Colors.white : Colors.black87,
-                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
                           ),
                         ),
+                        subtitle:  Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Text(
+                            provider.aiPrevious[index].createdAt.hour.toString(),
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                        trailing: const Icon(Icons.chevron_right_rounded),
+                        onTap: () {
+                          context.goNamed("ai");
+                        },
                       ),
                     );
                   },

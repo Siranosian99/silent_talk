@@ -1,6 +1,8 @@
-  import 'package:flutter/material.dart';
+  import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
   import 'package:provider/provider.dart';
+import 'package:silent_talk/features/auth/services/authenticator.dart';
   import 'package:silent_talk/features/chat/model/ai_chat_model.dart';
   import '../../../l10n/app_localizations.dart';
   import '../../auth/services/ai_backend.dart';
@@ -15,6 +17,7 @@ import 'package:go_router/go_router.dart';
 
   class _AiChatScreenState extends State<AiChatScreen> {
     final TextEditingController searchController = TextEditingController();
+    final Authenticator _authenticator=Authenticator();
 
     @override
     Widget build(BuildContext context) {
@@ -140,10 +143,9 @@ import 'package:go_router/go_router.dart';
                         onPressed: () async {
                           final query = searchController.text.trim();
                           if (query.isNotEmpty) {
-
-
                             await provider.getData(searchController.text.trim());
-                            AiBackend().sendAiMessage('ai Message test',"user Id test","userMessage test");
+                            final msg = provider.aiReply[0].content ??'';
+                            AiBackend().sendAiMessage(msg,_authenticator.getUserId(),query);
                             searchController.clear();
                             if (!context.mounted) {
                               return;

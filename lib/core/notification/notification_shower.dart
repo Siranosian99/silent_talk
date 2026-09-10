@@ -25,7 +25,7 @@ class NotificationHandler {
       print('here notification');
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(Authenticator().user?.uid)
+          .doc(Authenticator().getUserId())
           .update({
         'token': newToken,
         'updatedAt': FieldValue.serverTimestamp(),

@@ -1,4 +1,5 @@
 class ChatHistoryModel {
+  final String userId;
   final String id;
   final String title;
   final String userMessage;
@@ -6,6 +7,7 @@ class ChatHistoryModel {
   final DateTime createdAt;
 
   ChatHistoryModel({
+    required this.userId,
     required this.id,
     required this.title,
     required this.userMessage,

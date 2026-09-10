@@ -23,6 +23,14 @@ class Authenticator {
   StreamSubscription<DocumentSnapshot>? _deviceListener;
   bool isLoggedOut = false;
 
+  String getUserId(){
+    final user = FirebaseAuth.instance.currentUser;
+    if(user == null){
+      return '';
+    }
+    final id=user.uid;
+    return id;
+  }
   Future<void> createUser(
     String name,
     String userName,
@@ -321,12 +329,10 @@ class Authenticator {
 
   void listenForAnotherDeviceLogin(BuildContext context, String deviceId) {
     _deviceListener?.cancel();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
 
     _deviceListener= FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(getUserId())
         .snapshots()
         .listen((snapshot) async {
           if (!snapshot.exists) return;
