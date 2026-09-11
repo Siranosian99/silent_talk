@@ -27,6 +27,7 @@ import 'core/utils/biometric/auth_provider.dart';
 import 'core/utils/location/map_layer.dart';
 import 'core/utils/location/ss.dart';
 import 'core/global_key.dart';
+import 'features/chat/screens/detailed_previous_ai_screen.dart';
 import 'features/chat/widgets/map_bubble.dart';
 
 final GoRouter router = GoRouter(
@@ -188,6 +189,11 @@ final GoRouter router = GoRouter(
       path: '/mp',
       name: 'mp',
       builder: (context, state) => AppleMapsExample(),
+    ),
+    GoRoute(
+      path: '/detailedPreviousAi',
+      name: 'detailedPreviousAi',
+      builder: (context, state) => PreviousAiScreenDetailed(),
     ),
     // GoRoute(
     //   path: '/maps',
