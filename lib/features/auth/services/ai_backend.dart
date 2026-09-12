@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
-import 'package:silent_talk/features/chat/ai_chat_history_model.dart';
+import 'package:silent_talk/features/chat/model/ai_message_model.dart';
 
 class AiBackend {
   final Authenticator _authenticator = Authenticator();
+  // String? conversationId;
+  String? chatId;
 
   Future<String> sendAiMessage(
     String aiMessage,
@@ -11,12 +13,15 @@ class AiBackend {
     String userMessage,
   ) async {
     try {
-      // final now = DateTime.now();
-      final chatId = uId1;
+      // conversationId ??=
+      //     FirebaseFirestore.instance.collection('ai_chats').doc().id;
+      chatId ??= '${uId1}_${DateTime.now().millisecondsSinceEpoch}';
       final messages = FirebaseFirestore.instance
           .collection("ai_chats")
           .doc(chatId)
-          .collection("messages");
+          .collection('messages')
+          .doc(chatId)
+          .collection('conversations');
 
       final docRef = messages.doc();
       await docRef.set({
@@ -24,6 +29,7 @@ class AiBackend {
         "id": docRef.id,
         "title": 'title',
         "userMessage": userMessage,
+        "conversationId": chatId,
         "aiResponse": aiMessage,
         "createdAt": FieldValue.serverTimestamp(),
       });
@@ -40,12 +46,13 @@ class AiBackend {
       CollectionReference chats = FirebaseFirestore.instance
           .collection('ai_chats')
           .doc(userId)
-          .collection('messages');
+          .collection('messages').doc("MReMRdcH5hPSjNx64AQEswyz8No1_1789233402569").collection("conversations");
       QuerySnapshot snapshot =
-          await chats.orderBy('createdAt', descending: true).get();
+          await chats.where("conversationId",isEqualTo:"MReMRdcH5hPSjNx64AQEswyz8No1_1789233402569" ).get();
       final data =
           snapshot.docs.map((doc) {
             return ChatHistoryModel(
+              conversationId: doc['conversationId'],
               userId: doc['userId'],
               id: doc['id'],
               title: doc['title'],
@@ -63,20 +70,21 @@ class AiBackend {
     }
   }
 
-  Future<ChatHistoryModel?> getMessageById( String docId) async {
+  Future<ChatHistoryModel?> getMessageById() async {
     try {
       final doc =
           await FirebaseFirestore.instance
               .collection('ai_chats')
               .doc(_authenticator.getUserId())
               .collection('messages')
-              .doc(docId)
+              .doc('docId')
               .get();
       if (!doc.exists) return null;
 
       final data = doc.data()!;
 
       return ChatHistoryModel(
+        conversationId: data['conversationId'],
         userId: data['userId'],
         id: data['id'],
         title: data['title'],
@@ -84,13 +92,24 @@ class AiBackend {
         aiResponse: data['aiResponse'],
         createdAt: (data['createdAt'] as Timestamp).toDate(),
       );
-
     } catch (e) {
       print('Errssor fetching messages by id: $e');
       return null;
     }
   }
 
-  // Future<String> getMessages()async{
-  // }
+
 }
+
+//ai_chats
+// └── userId
+//     └── chats
+//         └── chatId
+//             ├── title
+//             ├── createdAt
+//             ├── updatedAt
+//             └── messages
+//                 └── messageId
+//                     ├── userMessage
+//                     ├── aiResponse
+//                     └── createdAt

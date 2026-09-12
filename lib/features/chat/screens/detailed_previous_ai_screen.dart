@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
-import 'package:silent_talk/features/chat/model/ai_chat_model.dart';
+import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/ai_backend.dart';
 import '../services/ai_api.dart';

@@ -2,19 +2,20 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:silent_talk/features/auth/services/ai_backend.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
-import 'package:silent_talk/features/chat/model/ai_chat_model.dart';
+import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import '../../../constants/api_consts.dart';
-import '../ai_chat_history_model.dart';
+import '../model/ai_message_model.dart';
 
 class AiBotApiService with ChangeNotifier {
   final _keys = Keys();
   bool isLoading = false;
   late String errorMessage;
-  final AiBackend _aiBackend=AiBackend();
-  final Authenticator _authenticator=Authenticator();
-  List<AiChatModel> aiReply = [];
+  final AiBackend _aiBackend = AiBackend();
+  final Authenticator _authenticator = Authenticator();
+  List<AiResponseModel> aiReply = [];
   List<ChatHistoryModel> aiPreviousList = [];
-   late ChatHistoryModel aiPrevious ;
+  late ChatHistoryModel aiPrevious;
+
   late final Dio _dio = Dio(
     BaseOptions(
       baseUrl: _keys.baseUrl,
@@ -24,8 +25,7 @@ class AiBotApiService with ChangeNotifier {
     ),
   );
 
-
-  Future<List<AiChatModel>> getData(String query) async {
+  Future<List<AiResponseModel>> getData(String query) async {
     isLoading = true;
     notifyListeners();
     int maxRetry = 1;
@@ -52,12 +52,12 @@ class AiBotApiService with ChangeNotifier {
         );
 
         notifyListeners();
-        aiReply.add(AiChatModel(role: 'user', content: query));
+        aiReply.add(AiResponseModel(role: 'user', content: query));
         if (response.statusCode == 200) {
           isLoading = false;
           final msg = response.data['choices'][0]['message'];
           print("-------$msg");
-          final data = AiChatModel(
+          final data = AiResponseModel(
             role: msg['role'],
             reasoning: msg['reasoning'],
             refusal: msg['refusal'],
@@ -97,69 +97,70 @@ class AiBotApiService with ChangeNotifier {
         } else if (e.type == DioExceptionType.receiveTimeout) {
           errorMessage = "The server took too long to respond.";
         }
-        if(statusCode != null){
-        if (statusCode == 400) {
-          debugPrint("❌ 400 - Bad Request");
-          errorMessage = "Too many requests were sent. Rate limit exceeded";
-          debugPrint("The request sent is invalid.");
-          break;
-        } else if (statusCode == 401) {
-          debugPrint("❌ 401 - Unauthorized");
-          errorMessage = " Token is invalid or missing.";
-          debugPrint("The API Key / Token is invalid or missing.");
-          break;
-        } else if (statusCode == 403) {
-          debugPrint("❌ 403 - Forbidden");
-          errorMessage = "You do not have permission to perform this action.";
-          debugPrint("You do not have permission to perform this action.");
-          break;
-        } else if (statusCode == 404) {
-          debugPrint("❌ 404 - Not Found");
-          debugPrint("The endpoint or requested resource was not found.");
-          break;
-        } else if (statusCode == 405) {
-          debugPrint("❌ 405 - Method Not Allowed");
-          debugPrint("The HTTP method used is not allowed.");
-          break;
-        } else if (statusCode == 408) {
-          debugPrint("❌ 408 - Request Timeout");
-          errorMessage = "The request timed out.";
-          debugPrint("The request timed out.");
-          break;
-        } else if (statusCode == 409) {
-          debugPrint("❌ 409 - Conflict");
-          debugPrint("The request conflicts with the current state.");
-          break;
-        } else if (statusCode == 422) {
-          debugPrint("❌ 422 - Unprocessable Entity");
-          debugPrint("The data sent cannot be processed.");
-          errorMessage = "The data sent cannot be processed.";
-          break;
-        } else if (statusCode == 429) {
-          errorMessage = "Too many requests were sent. Rate limit exceeded";
-          debugPrint("❌ 429 - Too Many Requests");
-          errorMessage = "Too many requests were sent. Rate limit exceeded.";
-          debugPrint("Too many requests were sent. Rate limit exceeded.");
-          break;
-        } else if (statusCode == 500) {
-          debugPrint("❌ 500 - Internal Server Error");
-          debugPrint("An error occurred on the API server.");
-        } else if (statusCode == 502) {
-          debugPrint("❌ 502 - Bad Gateway");
-          debugPrint("There is a problem with the gateway or proxy.");
-          errorMessage = "There is a problem with the gateway or proxy.";
-        } else if (statusCode == 503) {
-          debugPrint("❌ 503 - Service Unavailable");
-          debugPrint("The API is currently unavailable.");
-        } else if (statusCode == 504) {
-          debugPrint("❌ 504 - Gateway Timeout");
-          debugPrint("The server did not respond in time.");
-          errorMessage = "The server did not respond in time.";
-        } else {
-          debugPrint("❌ Unknown HTTP error: $statusCode");
-          errorMessage = "Something went wrong.";
-          break;
-        }}
+        if (statusCode != null) {
+          if (statusCode == 400) {
+            debugPrint("❌ 400 - Bad Request");
+            errorMessage = "Too many requests were sent. Rate limit exceeded";
+            debugPrint("The request sent is invalid.");
+            break;
+          } else if (statusCode == 401) {
+            debugPrint("❌ 401 - Unauthorized");
+            errorMessage = " Token is invalid or missing.";
+            debugPrint("The API Key / Token is invalid or missing.");
+            break;
+          } else if (statusCode == 403) {
+            debugPrint("❌ 403 - Forbidden");
+            errorMessage = "You do not have permission to perform this action.";
+            debugPrint("You do not have permission to perform this action.");
+            break;
+          } else if (statusCode == 404) {
+            debugPrint("❌ 404 - Not Found");
+            debugPrint("The endpoint or requested resource was not found.");
+            break;
+          } else if (statusCode == 405) {
+            debugPrint("❌ 405 - Method Not Allowed");
+            debugPrint("The HTTP method used is not allowed.");
+            break;
+          } else if (statusCode == 408) {
+            debugPrint("❌ 408 - Request Timeout");
+            errorMessage = "The request timed out.";
+            debugPrint("The request timed out.");
+            break;
+          } else if (statusCode == 409) {
+            debugPrint("❌ 409 - Conflict");
+            debugPrint("The request conflicts with the current state.");
+            break;
+          } else if (statusCode == 422) {
+            debugPrint("❌ 422 - Unprocessable Entity");
+            debugPrint("The data sent cannot be processed.");
+            errorMessage = "The data sent cannot be processed.";
+            break;
+          } else if (statusCode == 429) {
+            errorMessage = "Too many requests were sent. Rate limit exceeded";
+            debugPrint("❌ 429 - Too Many Requests");
+            errorMessage = "Too many requests were sent. Rate limit exceeded.";
+            debugPrint("Too many requests were sent. Rate limit exceeded.");
+            break;
+          } else if (statusCode == 500) {
+            debugPrint("❌ 500 - Internal Server Error");
+            debugPrint("An error occurred on the API server.");
+          } else if (statusCode == 502) {
+            debugPrint("❌ 502 - Bad Gateway");
+            debugPrint("There is a problem with the gateway or proxy.");
+            errorMessage = "There is a problem with the gateway or proxy.";
+          } else if (statusCode == 503) {
+            debugPrint("❌ 503 - Service Unavailable");
+            debugPrint("The API is currently unavailable.");
+          } else if (statusCode == 504) {
+            debugPrint("❌ 504 - Gateway Timeout");
+            debugPrint("The server did not respond in time.");
+            errorMessage = "The server did not respond in time.";
+          } else {
+            debugPrint("❌ Unknown HTTP error: $statusCode");
+            errorMessage = "Something went wrong.";
+            break;
+          }
+        }
         if (!shouldRetry) {
           break;
         }
@@ -173,16 +174,22 @@ class AiBotApiService with ChangeNotifier {
     }
     return aiReply;
   }
-  Future<List<ChatHistoryModel>> getMessagesById(String userId)async{
-    aiPreviousList = await _aiBackend.getMessagesById(_authenticator.getUserId());
+
+  Future<List<ChatHistoryModel>> getMessagesById(String userId) async {
+    aiPreviousList = await _aiBackend.getMessagesById(
+      _authenticator.getUserId(),
+    );
+    notifyListeners();
     return aiPreviousList;
   }
-  Future<ChatHistoryModel> getMessageById(String docId)async{
-    final message = await _aiBackend.getMessageById(docId);
+
+  Future<ChatHistoryModel> getMessageById() async {
+    final message = await _aiBackend.getMessageById();
     if (message == null) {
       throw Exception('Message not found');
     }
-    aiPrevious=message;
+    aiPrevious = message;
+    notifyListeners();
     return aiPrevious;
   }
   // Future<List<AiChatModel>> getDataWithId(AiChatModel chat) async {

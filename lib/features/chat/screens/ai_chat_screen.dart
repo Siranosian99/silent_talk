@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
   import 'package:provider/provider.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
-  import 'package:silent_talk/features/chat/model/ai_chat_model.dart';
+  import 'package:silent_talk/features/chat/model/ai_response_model.dart';
   import '../../../l10n/app_localizations.dart';
   import '../../auth/services/ai_backend.dart';
   import '../services/ai_api.dart';
@@ -18,6 +18,7 @@ import 'package:silent_talk/features/auth/services/authenticator.dart';
   class _AiChatScreenState extends State<AiChatScreen> {
     final TextEditingController searchController = TextEditingController();
     final Authenticator _authenticator=Authenticator();
+    final AiBackend _aiBackend =AiBackend();
 
     @override
     Widget build(BuildContext context) {
@@ -145,7 +146,7 @@ import 'package:silent_talk/features/auth/services/authenticator.dart';
                           if (query.isNotEmpty) {
                             await provider.getData(searchController.text.trim());
                             final msg = provider.aiReply[0].content ??'';
-                            AiBackend().sendAiMessage(msg,_authenticator.getUserId(),query);
+                            _aiBackend.sendAiMessage(msg,_authenticator.getUserId(),query);
                             searchController.clear();
                             if (!context.mounted) {
                               return;

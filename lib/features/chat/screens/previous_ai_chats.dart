@@ -1,7 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:silent_talk/features/chat/model/ai_chat_model.dart';
+import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/ai_backend.dart';
 import '../services/ai_api.dart';
@@ -15,13 +17,15 @@ class PreviousAiChatsScreen extends StatefulWidget {
 
 class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
   final TextEditingController searchController = TextEditingController();
-  final AiBackend _aiBackend = AiBackend();
 
   @override
   void initState() {
-    _aiBackend.getMessagesById('MReMRdcH5hPSjNx64AQEswyz8No1');
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AiBotApiService>().getMessagesById('MReMRdcH5hPSjNx64AQEswyz8No1');
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +103,8 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
                                   ),
                                 ),
                                 title: Text(
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   provider.aiPreviousList[index].userMessage,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
@@ -111,10 +117,14 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        provider.aiPreviousList[index].aiResponse,
-                                        style: TextStyle(fontSize: 12),
+                                      Expanded(
+                                        child: Text(maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          provider.aiPreviousList[index].aiResponse,
+                                          style: TextStyle(fontSize: 12),
+                                        ),
                                       ),
+                                      const SizedBox(height: 8,),
                                       Text(
                                         '${provider.aiPreviousList[index].createdAt.day.toString().padLeft(2, '0')}.'
                                         '${provider.aiPreviousList[index].createdAt.month.toString().padLeft(2, '0')}.'

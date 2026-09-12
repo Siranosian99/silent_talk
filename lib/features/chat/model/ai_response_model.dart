@@ -1,16 +1,18 @@
-class AiChatModel {
+class AiResponseModel {
+  String? conversationId;
   String? role;
   String? content;
   String? refusal;
   String? reasoning;
 
-  AiChatModel({this.role, this.content, this.refusal, this.reasoning});
+  AiResponseModel({this.role, this.content, this.refusal, this.reasoning,this.conversationId});
 
-  AiChatModel.fromJson(Map<String, dynamic> json) {
+  AiResponseModel.fromJson(Map<String, dynamic> json) {
     role = json['role'];
     content = json['content'];
     refusal = json['refusal'];
     reasoning = json['reasoning'];
+    conversationId = json['conversationId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -19,10 +21,11 @@ class AiChatModel {
     data['content'] = content;
     data['refusal'] = refusal;
     data['reasoning'] = reasoning;
+    data['conversationId'] = conversationId;
     return data;
   }
   @override
   String toString() {
-    return 'AiChatModel(role: $role, content: $content, refusal: $refusal, reasoning: $reasoning)';
+    return 'AiResponseModel(role: $role, content: $content, refusal: $refusal, reasoning: $reasoning,conversationId:$conversationId)';
   }
 }
