@@ -1,47 +1,48 @@
-// class ChatModel {
-//   String docId;
-//   String chatId;
-//   String senderId;
-//   String receiverId;
-//   bool senderAccept;
-//   bool receiverAccept;
-//   String message;
-//   String messageTime;
-//
-//   ChatModel({
-//     required this.docId,
-//     required this.chatId,
-//     required this.senderId,
-//     required this.receiverId,
-//     required this.senderAccept,
-//     required this.receiverAccept,
-//     required this.message,
-//     required this.messageTime,
-//   });
-//
-//   factory ChatModel.fromMap(Map<String, dynamic> map) {
-//     return ChatModel(
-//       docId: map['docId'],
-//       chatId: map['chatId'],
-//       senderId: map['senderId'],
-//       receiverId: map['receiverId'],
-//       senderAccept: map['senderAccept'],
-//       receiverAccept: map['receiverAccept'],
-//       message: map['message'],
-//       messageTime: map['messageTime'],
-//     );
-//   }
-//
-//   Map<String, dynamic> toMap() {
-//     return {
-//       'docId':docId,
-//       'chatId': chatId,
-//       'senderId': senderId,
-//       'receiverId': receiverId,
-//       'senderAccept':senderAccept,
-//       'receiverAccept':receiverAccept,
-//       'message': message,
-//       'messageTime': messageTime,
-//     };
-//   }
-// }
+import 'ai_message_model.dart';
+
+class ChatModel {
+  final String userId;
+  final String id;
+  final String title;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final List<MessageModel> messages;
+
+  ChatModel({
+    required this.userId,
+    required this.id,
+    required this.title,
+    required this.createdAt,
+    required this.updatedAt,
+    this.messages = const [],
+  });
+
+  ChatModel copyWith({
+    String? id,
+    String? title,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    List<MessageModel>? messages,
+  }) {
+    return ChatModel(
+      userId: userId,
+      id: id ?? this.id,
+      title: title ?? this.title,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      messages: messages ?? this.messages,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'ChatModel('
+        'userId: $userId, '
+        'id: $id, '
+        'title: $title, '
+        'createdAt: $createdAt, '
+        'updatedAt: $updatedAt, '
+        'messages: $messages'
+        ')';
+  }
+}

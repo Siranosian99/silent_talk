@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:silent_talk/features/auth/services/ai_backend.dart';
 import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/chat/model/ai_response_model.dart';
+import 'package:silent_talk/features/chat/model/chat_model.dart';
 import '../../../constants/api_consts.dart';
 import '../model/ai_message_model.dart';
 
@@ -13,8 +14,8 @@ class AiBotApiService with ChangeNotifier {
   final AiBackend _aiBackend = AiBackend();
   final Authenticator _authenticator = Authenticator();
   List<AiResponseModel> aiReply = [];
-  List<ChatHistoryModel> aiPreviousList = [];
-  late ChatHistoryModel aiPrevious;
+  List<ChatModel> aiPreviousList = [];
+  late ChatModel aiPrevious;
 
   late final Dio _dio = Dio(
     BaseOptions(
@@ -175,7 +176,7 @@ class AiBotApiService with ChangeNotifier {
     return aiReply;
   }
 
-  Future<List<ChatHistoryModel>> getMessagesById(String userId) async {
+  Future<List<ChatModel>> getMessagesById(String userId) async {
     aiPreviousList = await _aiBackend.getMessagesById(
       _authenticator.getUserId(),
     );
@@ -183,15 +184,16 @@ class AiBotApiService with ChangeNotifier {
     return aiPreviousList;
   }
 
-  Future<ChatHistoryModel> getMessageById() async {
-    final message = await _aiBackend.getMessageById();
-    if (message == null) {
-      throw Exception('Message not found');
-    }
-    aiPrevious = message;
-    notifyListeners();
-    return aiPrevious;
-  }
+  // Future<ChatHistoryModel> getMessageById() async {
+  //   final message = await _aiBackend.getMessageById();
+  //   if (message == null) {
+  //     throw Exception('Message not found');
+  //   }
+  //   aiPrevious = message;
+  //   notifyListeners();
+  //   return aiPrevious;
+  // }
+
   // Future<List<AiChatModel>> getDataWithId(AiChatModel chat) async {
   //   isLoading = true;
   //   notifyListeners();

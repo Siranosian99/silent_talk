@@ -105,7 +105,7 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
                                 title: Text(
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  provider.aiPreviousList[index].userMessage,
+                                  provider.aiPreviousList[index].messages[index].text,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 15,
@@ -120,7 +120,7 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
                                       Expanded(
                                         child: Text(maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          provider.aiPreviousList[index].aiResponse,
+                                          provider.aiPreviousList[index].messages[index].text,
                                           style: TextStyle(fontSize: 12),
                                         ),
                                       ),
