@@ -193,7 +193,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/detailedPreviousAi',
       name: 'detailedPreviousAi',
-      builder: (context, state) => PreviousAiScreenDetailed(),
+
+      builder: (context, state) {
+        final docId=state.extra as String;
+        return  PreviousAiScreenDetailed(docId: docId,);
+      },
     ),
     // GoRoute(
     //   path: '/maps',

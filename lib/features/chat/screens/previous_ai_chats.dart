@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/ai_backend.dart';
@@ -17,12 +18,12 @@ class PreviousAiChatsScreen extends StatefulWidget {
 
 class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
   final TextEditingController searchController = TextEditingController();
-
+  final Authenticator _authenticator =Authenticator();
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AiBotApiService>().getMessagesById('MReMRdcH5hPSjNx64AQEswyz8No1');
+      context.read<AiBotApiService>().getMessagesById(_authenticator.getUserId());
     });
   }
 
@@ -140,7 +141,7 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
                                   Icons.chevron_right_rounded,
                                 ),
                                 onTap: () {
-                                  context.goNamed("detailedPreviousAi");
+                                  context.goNamed("detailedPreviousAi",extra:provider.aiPreviousList[index].id );
                                 },
                               ),
                             );

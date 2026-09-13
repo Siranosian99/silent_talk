@@ -15,7 +15,7 @@ class AiBotApiService with ChangeNotifier {
   final Authenticator _authenticator = Authenticator();
   List<AiResponseModel> aiReply = [];
   List<ChatModel> aiPreviousList = [];
-  late ChatModel aiPrevious;
+  List<ChatModel> aiPrevious=[];
 
   late final Dio _dio = Dio(
     BaseOptions(
@@ -184,15 +184,15 @@ class AiBotApiService with ChangeNotifier {
     return aiPreviousList;
   }
 
-  // Future<ChatHistoryModel> getMessageById() async {
-  //   final message = await _aiBackend.getMessageById();
-  //   if (message == null) {
-  //     throw Exception('Message not found');
-  //   }
-  //   aiPrevious = message;
-  //   notifyListeners();
-  //   return aiPrevious;
-  // }
+  Future<List<ChatModel>> getMessageById(String docId) async {
+    final message = await _aiBackend.getMessageById(docId);
+    if (message == null) {
+      throw Exception('Message not found');
+    }
+    aiPrevious = message;
+    notifyListeners();
+    return aiPrevious;
+  }
 
   // Future<List<AiChatModel>> getDataWithId(AiChatModel chat) async {
   //   isLoading = true;

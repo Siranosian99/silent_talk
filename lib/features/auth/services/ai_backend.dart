@@ -52,41 +52,6 @@ class AiBackend {
       return '';
     }
   }
-
-  //
-  // Future<List<ChatModel>> getMessagesById(String userId) async {
-  //   try {
-  //     CollectionReference chats = FirebaseFirestore.instance
-  //         .collection('ai_chats').where("userId",is)
-  //         .doc(userId)
-  //         .collection('messages')
-  //         .doc("MReMRdcH5hPSjNx64AQEswyz8No1_1789233402569")
-  //         .collection("conversations");
-  //     QuerySnapshot snapshot =
-  //         await chats
-  //             .where(
-  //               "conversationId",
-  //               isEqualTo: "MReMRdcH5hPSjNx64AQEswyz8No1_1789233402569",
-  //             )
-  //             .get();
-  //     final data =
-  //         snapshot.docs.map((doc) {
-  //           return ChatModel(
-  //             userId: doc['userId'],
-  //             id: doc['id'],
-  //             title: doc['title'],
-  //             createdAt: (doc['createdAt'] as Timestamp).toDate(),
-  //             updatedAt: (doc['updatedAt'] as Timestamp).toDate(),
-  //           );
-  //         }).toList();
-  //
-  //     print("------------$data");
-  //     return data;
-  //   } catch (e) {
-  //     print('Errssor fetching messages by id: $e');
-  //     return [];
-  //   }
-  // }
   Future<List<ChatModel>> getMessagesById(String userId) async {
     try {
       List<ChatModel> allData = [];
@@ -97,20 +62,20 @@ class AiBackend {
 
       for (var doc in snapshot.docs) {
         final data =
-            await doc.reference
-                .collection('messages')
-                .orderBy('createdAt')
-                .get();
+        await doc.reference
+            .collection('messages')
+            .orderBy('createdAt')
+            .get();
         final message =
-            data.docs.map((messageDoc) {
-              final messageData = messageDoc.data();
+        data.docs.map((messageDoc) {
+          final messageData = messageDoc.data();
 
-              return MessageModel(
-                role: messageData['role'],
-                text: messageData['text'],
-                createdAt: (messageData['createdAt'] as Timestamp).toDate(),
-              );
-            }).toList();
+          return MessageModel(
+            role: messageData['role'],
+            text: messageData['text'],
+            createdAt: (messageData['createdAt'] as Timestamp).toDate(),
+          );
+        }).toList();
 
         allData.add(ChatModel( userId: doc['userId'],
           id: doc['id'],
@@ -120,11 +85,8 @@ class AiBackend {
           messages: message,)
 
         );
-        print(data);
 
       }
-
-      print("------------$allData");
       return allData;
     } catch (e) {
       print('Errssor fetching messages by id: $e');
@@ -132,33 +94,49 @@ class AiBackend {
     }
   }
 
-  // Future<ChatModel?> getMessageById() async {
-  //   try {
-  //     final doc =
-  //         await FirebaseFirestore.instance
-  //             .collection('ai_chats')
-  //             .doc(_authenticator.getUserId())
-  //             .collection('messages')
-  //             .doc('docId')
-  //             .get();
-  //     if (!doc.exists) return null;
-  //
-  //     final data = doc.data()!;
-  //
-  //     return AiMess(
-  //       conversationId: data['conversationId'],
-  //       userId: data['userId'],
-  //       id: data['id'],
-  //       title: data['title'],
-  //       userMessage: data['userMessage'],
-  //       aiResponse: data['aiResponse'],
-  //       createdAt: (data['createdAt'] as Timestamp).toDate(),
-  //     );
-  //   } catch (e) {
-  //     print('Errssor fetching messages by id: $e');
-  //     return null;
-  //   }
-  // }
+  Future<List<ChatModel>> getMessageById(String docId) async {
+    try {
+      List<ChatModel> allData = [];
+      final chats = FirebaseFirestore.instance
+          .collection('ai_chats')
+          .where("id", isEqualTo: docId);
+      QuerySnapshot snapshot = await chats.get();
+
+      for (var doc in snapshot.docs) {
+        final data =
+        await doc.reference
+            .collection('messages')
+            .orderBy('createdAt')
+            .get();
+        final message =
+        data.docs.map((messageDoc) {
+          final messageData = messageDoc.data();
+
+          return MessageModel(
+            role: messageData['role'],
+            text: messageData['text'],
+            createdAt: (messageData['createdAt'] as Timestamp).toDate(),
+          );
+        }).toList();
+
+        allData.add(ChatModel( userId: doc['userId'],
+          id: doc['id'],
+          title: doc['title'],
+          createdAt: (doc['createdAt'] as Timestamp).toDate(),
+          updatedAt: (doc['updatedAt'] as Timestamp).toDate(),
+          messages: message,)
+
+        );
+
+      }
+      return allData;
+    } catch (e) {
+      print('Errssor fetching messages by id: $e');
+      return [];
+    }
+  }
+
+
 }
 
 //Collection all Data of ai_chats after that we called all ai_chats that include userId
