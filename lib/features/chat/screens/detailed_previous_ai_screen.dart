@@ -47,12 +47,57 @@ class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> {
       ),
       body: Consumer<AiBotApiService>(
         builder: (context, provider, child) {
-          return Center(child: Text(provider.aiPrevious[0].messages[1].text));
+          return
+            ListView(
+              padding: const EdgeInsets.all(12),
+              children: provider.aiPrevious.expand((chat) {
+                return chat.messages.map((msg) {
+                  final isUser = msg.role == 'user';
+
+                  return Align(
+                    alignment: isUser
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: isUser
+                            ? Colors.blueAccent
+                            : Colors.grey.shade300,
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(18),
+                          topRight: const Radius.circular(18),
+                          bottomLeft: Radius.circular(
+                            isUser ? 18 : 0,
+                          ),
+                          bottomRight: Radius.circular(
+                            isUser ? 0 : 18,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        msg.text,
+                        style: TextStyle(
+                          color: isUser
+                              ? Colors.white
+                              : Colors.black87,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  );
+                });
+              }).toList(),
+            );
         },
       ),
     );
   }
 }
+//Center(child: Text(provider.aiPrevious[0].messages[1].text));
+
+
 // Column(
 //             children: [
 //               Expanded(
