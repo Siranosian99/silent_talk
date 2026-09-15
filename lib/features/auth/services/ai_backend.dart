@@ -52,6 +52,48 @@ class AiBackend {
       return '';
     }
   }
+  Future<String?> sendAiMessageWithId(
+      String aiMessage,
+      String uId1,
+      String userMessage,
+      String chatId
+      // MessageModel message,
+      ) async {
+    try {
+      // conversationId ??=
+      //     FirebaseFirestore.instance.collection('ai_chats').doc().id;
+      final chatsCollection = FirebaseFirestore.instance
+          .collection("ai_chats")
+          .doc(chatId);
+      final messageDoc = chatsCollection.collection('messages');
+      //
+      // final docRef = messageDoc.doc();
+      await chatsCollection.set({
+        "userId": _authenticator.getUserId(),
+        "id": chatId,
+        "title": userMessage,
+        "createdAt": FieldValue.serverTimestamp(),
+        "updatedAt": FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      await messageDoc.add({
+        "role": 'user',
+        "text": userMessage,
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+      await messageDoc.add({
+        "role": 'assistant',
+        "text": aiMessage,
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+
+      await chatsCollection.update({'updatedAt': FieldValue.serverTimestamp()});
+      print("save");
+      return chatId;
+    } catch (e) {
+      print("Message Didnt Send");
+      return '';
+    }
+  }
   Future<List<ChatModel>> getMessagesById(String userId) async {
     try {
       List<ChatModel> allData = [];

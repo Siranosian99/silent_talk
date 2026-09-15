@@ -149,8 +149,8 @@ import 'package:silent_talk/features/text/text_formater.dart';
                           if (query.isNotEmpty) {
                             await provider.getData(searchController.text.trim());
                             final msg = provider.aiReply[1].content ??'';
-                            print("-----------${provider.aiReply}");
-                            print('-----------========$msg');
+                            print("aiReply:-----------${provider.aiReply}");
+                            print('aiReply[1].content-----------========$msg');
                             _aiBackend.sendAiMessage(cleanMarkdown(msg),_authenticator.getUserId(),query);
                             searchController.clear();
                             if (!context.mounted) {

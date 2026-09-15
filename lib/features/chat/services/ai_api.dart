@@ -15,7 +15,7 @@ class AiBotApiService with ChangeNotifier {
   final Authenticator _authenticator = Authenticator();
   List<AiResponseModel> aiReply = [];
   List<ChatModel> aiPreviousList = [];
-  List<ChatModel> aiPrevious=[];
+  List<ChatModel> aiPrevious = [];
 
   late final Dio _dio = Dio(
     BaseOptions(
@@ -57,7 +57,6 @@ class AiBotApiService with ChangeNotifier {
         if (response.statusCode == 200) {
           isLoading = false;
           final msg = response.data['choices'][0]['message'];
-          print("-------$msg");
           final data = AiResponseModel(
             role: msg['role'],
             reasoning: msg['reasoning'],
@@ -68,10 +67,6 @@ class AiBotApiService with ChangeNotifier {
 
           notifyListeners();
           debugPrint("✅ AI response added: ${data.content}");
-          print(
-            "------------------------------------------------------"
-            "$aiReply",
-          );
         }
       } on DioException catch (e) {
         final statusCode = e.response?.statusCode;
@@ -186,14 +181,27 @@ class AiBotApiService with ChangeNotifier {
 
   Future<List<ChatModel>> getMessageById(String docId) async {
     final message = await _aiBackend.getMessageById(docId);
-    if (message == null) {
-      throw Exception('Message not found');
-    }
     aiPrevious = message;
     notifyListeners();
     return aiPrevious;
   }
 
+  Future<String?> sendMessageWithId(
+      String aiMessage,
+      String uId1,
+      String docId,
+      String chatId,
+      ) async {
+    final message = await _aiBackend.sendAiMessageWithId(
+      aiMessage,
+      uId1,
+      docId,
+      chatId,
+    );
+    getMessageById(docId);
+
+    return message;
+  }
   // Future<List<AiChatModel>> getDataWithId(AiChatModel chat) async {
   //   isLoading = true;
   //   notifyListeners();
