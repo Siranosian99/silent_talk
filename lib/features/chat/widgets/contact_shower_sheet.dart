@@ -7,11 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:silent_talk/features/user/service/authenticator.dart';
 
 import '../../../core/utils/contact/send_contact.dart';
-import '../../auth/services/authenticator.dart';
+import '../../user/models/user_model.dart';
+import '../../user/repository/authenticator_repository.dart';
 import '../services/send_messages.dart';
-import '../../user/model/user_model.dart';
 import '../../user/service/users_service.dart';
 
 import 'contact_send_dialog.dart';
@@ -134,7 +135,7 @@ class _ContactScreenState extends State<ContactScreen> {
 }
 
 class _ContactItem extends StatelessWidget {
-  const _ContactItem({
+   _ContactItem({
     super.key,
     required this.contact,
     required this.index,
@@ -146,7 +147,7 @@ class _ContactItem extends StatelessWidget {
   final Contact contact;
   final int index;
   final String id;
-
+   final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
   @override
   Widget build(BuildContext context) {
     final phones = contact.phones.map((e) => e.number).join(', ');
@@ -189,7 +190,7 @@ class _ContactItem extends StatelessWidget {
               );
               MessageService().sendMessage(
                 contactDetails(contact),
-                Authenticator().user!.uid,
+                  _authenticator.getUserId(),
                 id,
                 "contact"
               );

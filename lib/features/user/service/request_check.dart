@@ -1,9 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:silent_talk/features/user/widgets/requests_dialog.dart';
-
-import '../../user/service/get_userIds.dart';
-import '../../chat/model/request_model.dart';
+import 'get_userIds.dart';
 import 'authenticator.dart';
 
 class RequestsChats {

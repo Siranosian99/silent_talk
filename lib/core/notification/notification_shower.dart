@@ -6,7 +6,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
+import 'package:silent_talk/features/user/repository/authenticator_repository.dart';
+import 'package:silent_talk/features/user/service/authenticator.dart';
 
 
 import '../global_key.dart';
@@ -17,6 +18,7 @@ import 'notification_helper.dart';
 class NotificationHandler {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   static final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  static final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
 
   static Future<void> initialize() async {
     // Initialize Firebase
@@ -25,7 +27,7 @@ class NotificationHandler {
       print('here notification');
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(Authenticator().getUserId())
+          .doc(_authenticator.getUserId())
           .update({
         'token': newToken,
         'updatedAt': FieldValue.serverTimestamp(),

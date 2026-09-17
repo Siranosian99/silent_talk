@@ -19,14 +19,13 @@ import '../../../core/utils/contact/send_contact.dart';
 
 import '../../../core/utils/files/file_service.dart';
 import '../../../core/utils/files/documents.dart';
-import '../../../core/utils/files/file_picker.dart';
-import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/message_type/message_checker.dart';
 import '../../../core/widgets/location_dialog.dart';
 import '../../../providers/loading_provider.dart';
+import '../../user/repository/authenticator_repository.dart';
+import '../../user/service/authenticator.dart';
+import '../screens/detailed_previous_ai_screen.dart';
 import 'chat_image_bubble.dart';
-import 'text_viewer.dart';
-import '../../auth/services/authenticator.dart';
 
 class MessageList extends StatefulWidget {
   const MessageList({
@@ -47,7 +46,9 @@ class MessageList extends StatefulWidget {
 }
 
 class _MessageListState extends State<MessageList> {
-  final authenticator = Authenticator();
+  final AuthenticatorRepository _authenticator = AuthenticatorRepository(
+    AuthenticatorService(),
+  );
 
   final storageService = StorageService();
 
@@ -100,7 +101,7 @@ class _MessageListState extends State<MessageList> {
           },
           child: Align(
             alignment:
-                widget.messages[index]['senderId'] == authenticator.user?.uid
+                widget.messages[index]['senderId'] == _authenticator.getUserId()
                     ? Alignment.topRight
                     : Alignment.topLeft,
 
@@ -131,7 +132,7 @@ class _MessageListState extends State<MessageList> {
                       imageUrl: msg,
                       isMe:
                           widget.messages[index]['senderId'] ==
-                          authenticator.user?.uid,
+                          _authenticator.getUserId(),
                     )
                     : // here contacts
                     type['type'] == 'contact'
@@ -238,7 +239,7 @@ class _MessageListState extends State<MessageList> {
                       decoration: BoxDecoration(
                         color:
                             widget.messages[index]['senderId'] ==
-                                    authenticator.user?.uid
+                                    _authenticator.getUserId()
                                 ? Color.fromRGBO(24, 85, 115, 0.91)
                                 : Color.fromRGBO(40, 174, 39, 0.91),
                         borderRadius: const BorderRadius.only(

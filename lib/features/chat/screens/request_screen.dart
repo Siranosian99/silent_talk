@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/user/service/get_userIds.dart';
 
-import '../../auth/services/request_check.dart';
 
+import '../../user/repository/authenticator_repository.dart';
+import '../../user/service/authenticator.dart';
+import '../../user/service/request_check.dart';
 import '../../user/service/users_service.dart';
 
 class RequestScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _RequestScreenState extends State<RequestScreen> {
   // Map<String, dynamic>? data;
   final UsersService _usersService = UsersService();
   final RequestsChats _requestsChats = RequestsChats();
-  final Authenticator _authenticator = Authenticator();
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _RequestScreenState extends State<RequestScreen> {
             FirebaseFirestore.instance
                 .collection('requests') // Chat ID
                 // .where('requestReceiverId', isEqualTo: _authenticator.user?.uid)
-                .where('participants', arrayContains: _authenticator.user!.uid)
+                .where('participants', arrayContains: _authenticator.getUserId())
                 .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -58,7 +59,7 @@ class _RequestScreenState extends State<RequestScreen> {
                 data['requestReceiverId'],
               );
               final isSender =
-                  data['requestSenderId'] == _authenticator.user!.uid;
+                  data['requestSenderId'] == _authenticator.getUserId();
               final otherUserId =
                   isSender
                       ? data['requestReceiverId']

@@ -2,10 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/services/ai_backend.dart';
+import '../../user/repository/authenticator_repository.dart';
+import '../services/ai_backend.dart';
+import '../../user/service/authenticator.dart';
 import '../../text/text_formater.dart';
 import '../services/ai_api.dart';
 
@@ -21,16 +22,16 @@ class PreviousAiScreenDetailed extends StatefulWidget {
 
 class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> {
   final TextEditingController searchController = TextEditingController();
-  final Authenticator _authenticator = Authenticator();
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
 final AiBackend _aiBackend =AiBackend();
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = context.read<AiBotApiService>();
+    WidgetsBinding.instance.addPostFrameCallback((_)async {
+      final provider = context.read<AiBotApiProvider>();
 
       provider.clearList();
-      provider.getMessageById(widget.docId);});
+    await provider.getMessageById(widget.docId);});
   }
 
   @override
@@ -60,7 +61,7 @@ final AiBackend _aiBackend =AiBackend();
           ],
         ),
       ),
-      body: Consumer<AiBotApiService>(
+      body: Consumer<AiBotApiProvider>(
         builder: (context, provider, child) {
           return Column(
             children: [
@@ -180,71 +181,3 @@ final AiBackend _aiBackend =AiBackend();
   }
 }
 
-// Column(
-//             children: [
-//               Expanded(
-//                 child:
-//                 provider.aiReply.isEmpty
-//                     ? Column(
-//                   crossAxisAlignment: CrossAxisAlignment.center,
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     Image.asset(
-//                       'assets/icons/ai-assistant.png',
-//                       scale: 3,
-//                     ),
-//                     Text(
-//                       'AI BOT\nHow i can help you',
-//                       textAlign:TextAlign.center,
-//                       style: TextStyle(fontWeight: FontWeight.bold,),
-//                     ),
-//                   ],
-//                 )
-//                     : ListView.separated(
-//                   padding: const EdgeInsets.all(12),
-//                   itemCount: provider.aiReply.length,
-//                   separatorBuilder:
-//                       (_, __) => const SizedBox(height: 8),
-//                   itemBuilder: (context, index) {
-//                     final msg = provider.aiReply[index];
-//                     final isUser = msg.role == 'user';
-//
-//                     return Align(
-//                       alignment:
-//                       isUser
-//                           ? Alignment.centerRight
-//                           : Alignment.centerLeft,
-//                       child: Container(
-//                         padding: const EdgeInsets.all(14),
-//                         decoration: BoxDecoration(
-//                           color:
-//                           isUser
-//                               ? Colors.blueAccent
-//                               : Colors.grey.shade300,
-//                           borderRadius: BorderRadius.only(
-//                             topLeft: const Radius.circular(18),
-//                             topRight: const Radius.circular(18),
-//                             bottomLeft: Radius.circular(
-//                               isUser ? 18 : 0,
-//                             ),
-//                             bottomRight: Radius.circular(
-//                               isUser ? 0 : 18,
-//                             ),
-//                           ),
-//                         ),
-//                         child: Text(
-//                           msg.content!,
-//                           style: TextStyle(
-//                             color:
-//                             isUser ? Colors.white : Colors.black87,
-//                             fontSize: 16,
-//                           ),
-//                         ),
-//                       ),
-//                     );
-//                   },
-//                 ),
-//               ),
-//
-//             ],
-//           );

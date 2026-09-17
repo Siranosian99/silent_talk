@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/auth/widgets/login_signUp_textFields.dart';
 import 'package:silent_talk/features/user/service/user_account.dart';
 

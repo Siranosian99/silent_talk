@@ -2,12 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
   import 'package:provider/provider.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/chat/model/ai_message_model.dart';
   import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import 'package:silent_talk/features/text/text_formater.dart';
   import '../../../l10n/app_localizations.dart';
-  import '../../auth/services/ai_backend.dart';
+  import '../../user/repository/authenticator_repository.dart';
+import '../services/ai_backend.dart';
+import '../../user/service/authenticator.dart';
   import '../services/ai_api.dart';
 
   class AiChatScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ import 'package:silent_talk/features/text/text_formater.dart';
 
   class _AiChatScreenState extends State<AiChatScreen> {
     final TextEditingController searchController = TextEditingController();
-    final Authenticator _authenticator=Authenticator();
+    final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
     final AiBackend _aiBackend =AiBackend();
 
     @override
@@ -46,7 +47,7 @@ import 'package:silent_talk/features/text/text_formater.dart';
             ],
           ),
         ),
-        body: Consumer<AiBotApiService>(
+        body: Consumer<AiBotApiProvider>(
           builder: (context, provider, child) {
             return Column(
               children: [

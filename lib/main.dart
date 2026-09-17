@@ -5,6 +5,8 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/api_consts.dart';
 import 'package:silent_talk/core/notification/notification_switch.dart';
+import 'package:silent_talk/features/chat/repository/ai_chat_repository.dart';
+import 'package:silent_talk/features/chat/services/ai_backend.dart';
 import 'package:silent_talk/providers/loading_provider.dart';
 import 'package:silent_talk/routes.dart';
 import 'package:silent_talk/features/chat/services/ai_api.dart';
@@ -57,7 +59,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => AuthenticateProvider()),
         ChangeNotifierProvider(create: (_)   => LastSeenProvider()),
-        ChangeNotifierProvider(create: (_) => AiBotApiService()),
+        ChangeNotifierProvider(create: (_) => AiBotApiProvider(repository: AiChatRepository(AiBackend()))),
         ChangeNotifierProvider(create: (_) => LoadingProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],

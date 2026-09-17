@@ -1,16 +1,163 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:silent_talk/features/chat/model/ai_message_model.dart';
 
-import '../../chat/model/chat_model.dart';
+import '../../../constants/api_consts.dart';
+import '../../user/repository/authenticator_repository.dart';
+import '../model/ai_response_model.dart';
+import '../model/chat_model.dart';
+import '../../user/service/authenticator.dart';
+
 
 class AiBackend {
-  final Authenticator _authenticator = Authenticator();
-
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
+  final _keys = Keys();
   // String? conversationId;
   String? chatId;
+  late final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: _keys.baseUrl,
+      connectTimeout: Duration(seconds: 10),
+      sendTimeout: Duration(seconds: 10),
+      receiveTimeout: Duration(seconds: 60),
+    ),
+  );
 
-  Future<String?> sendAiMessage(
+  Future<List<AiResponseModel>> getData(String query) async {
+    const int maxRetry = 2;
+
+    for (int i = 0; i < maxRetry; i++) {
+      final delay = Duration(seconds: 1 * (1 << i));
+
+      try {
+        final response = await _dio.post(
+          _keys.endPoint,
+          data: {
+            "model": _keys.modelName,
+            "messages": [
+              {
+                "role": "user",
+                "content": query,
+              },
+            ],
+          },
+          options: Options(
+            headers: {
+              "Authorization": _keys.apiKey,
+              "Content-Type": "application/json",
+            },
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          final msg = response.data['choices'][0]['message'];
+
+          final userMessage = AiResponseModel(
+            role: 'user',
+            content: query,
+          );
+
+          final aiMessage = AiResponseModel(
+            role: msg['role'],
+            reasoning: msg['reasoning'],
+            refusal: msg['refusal'],
+            content: msg['content'],
+          );
+
+          debugPrint("AI response added: ${aiMessage.content}");
+
+          return [
+            userMessage,
+            aiMessage,
+          ];
+        }
+
+        throw Exception(
+          "Unexpected status code: ${response.statusCode}",
+        );
+      } on DioException catch (e) {
+        final statusCode = e.response?.statusCode;
+
+        debugPrint("DioException");
+        debugPrint("Status Code: $statusCode");
+        debugPrint("Message: ${e.message}");
+        debugPrint("Response: ${e.response?.data}");
+
+        final bool shouldRetry =
+            e.type == DioExceptionType.connectionTimeout ||
+                e.type == DioExceptionType.sendTimeout ||
+                e.type == DioExceptionType.receiveTimeout ||
+                e.type == DioExceptionType.connectionError ||
+                statusCode == 500 ||
+                statusCode == 502 ||
+                statusCode == 503 ||
+                statusCode == 504;
+
+        if (!shouldRetry || i == maxRetry - 1) {
+          throw Exception(_getErrorMessage(e));
+        }
+
+        await Future.delayed(delay);
+      } catch (e) {
+        debugPrint("Unexpected error: $e");
+        throw Exception("Something went wrong.");
+      }
+    }
+
+    throw Exception("Something went wrong.");
+  }
+
+  String _getErrorMessage(DioException e) {
+    final statusCode = e.response?.statusCode;
+
+    if (e.type == DioExceptionType.connectionError) {
+      return "No internet connection. Please check your network.";
+    }
+
+    if (e.type == DioExceptionType.connectionTimeout) {
+      return "Unable to connect to the server.";
+    }
+
+    if (e.type == DioExceptionType.sendTimeout) {
+      return "The request could not be sent. Please try again.";
+    }
+
+    if (e.type == DioExceptionType.receiveTimeout) {
+      return "The server took too long to respond.";
+    }
+
+    switch (statusCode) {
+      case 400:
+        return "Bad request.";
+      case 401:
+        return "Token is invalid or missing.";
+      case 403:
+        return "You do not have permission to perform this action.";
+      case 404:
+        return "The endpoint or requested resource was not found.";
+      case 405:
+        return "The HTTP method used is not allowed.";
+      case 408:
+        return "The request timed out.";
+      case 409:
+        return "The request conflicts with the current state.";
+      case 422:
+        return "The data sent cannot be processed.";
+      case 429:
+        return "Too many requests were sent. Rate limit exceeded.";
+      case 500:
+        return "An error occurred on the API server.";
+      case 502:
+        return "There is a problem with the gateway or proxy.";
+      case 503:
+        return "The API is currently unavailable.";
+      case 504:
+        return "The server did not respond in time.";
+      default:
+        return "Something went wrong.";
+    }
+  }  Future<String?> sendAiMessage(
     String aiMessage,
     String uId1,
     String userMessage,

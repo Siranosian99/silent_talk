@@ -4,7 +4,6 @@ import 'package:silent_talk/constants/texts.dart';
 import 'package:silent_talk/features/user/service/user_account.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../auth/services/authenticator.dart';
 
 class UpdateUserNameScreen extends StatefulWidget {
   const UpdateUserNameScreen({Key? key}) : super(key: key);

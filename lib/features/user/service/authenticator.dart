@@ -7,13 +7,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/notification/get_token.dart';
-import '../../../core/utils/time_format/time_convertor.dart';
-import '../../user/service/get_userIds.dart';
-import '../../user/model/user_model.dart';
+import '../../../../../core/notification/get_token.dart';
+import '../../../../../core/utils/time_format/time_convertor.dart';
+
+import '../models/user_model.dart';
 import 'get_deviceId.dart';
 
-class Authenticator {
+class AuthenticatorService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final user = FirebaseAuth.instance.currentUser;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -90,6 +90,7 @@ class Authenticator {
           .signInWithEmailAndPassword(email: email, password: password);
       await FirebaseAuth.instance.currentUser?.reload();
       if (!userCredential.user!.emailVerified) {
+        if(!ctx.mounted) return;
         ScaffoldMessenger.of(
           ctx,
         ).showSnackBar(SnackBar(content: Text('Verify Email')));

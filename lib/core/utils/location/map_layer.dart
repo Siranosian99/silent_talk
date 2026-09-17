@@ -11,10 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart'  hide LocationAccuracy;
 import 'package:silent_talk/core/utils/location/location_cache.dart';
+import 'package:silent_talk/features/user/repository/authenticator_repository.dart';
+import 'package:silent_talk/features/user/service/authenticator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants/api_consts.dart';
-import '../../../features/auth/services/authenticator.dart';
 import '../../../features/chat/services/send_messages.dart';
 
 class MapSample extends StatefulWidget {
@@ -36,7 +37,7 @@ class MapSample extends StatefulWidget {
 class MapSampleState extends State<MapSample> {
   late final Location _location;
   LatLng? currentPosition;
-
+  final AuthenticatorRepository _authenticatorRepository=AuthenticatorRepository(AuthenticatorService());
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
   late CameraPosition _kGooglePlex;
@@ -185,7 +186,7 @@ class MapSampleState extends State<MapSample> {
           "https://www.google.com/maps?q=${_markerPosition.latitude},${_markerPosition.longitude}";
       MessageService().sendMessage(
         googleMapsUrl,
-        Authenticator().user!.uid,
+        _authenticatorRepository.getUserId(),
         receiverId,
         "location",
       );

@@ -8,7 +8,6 @@ import 'package:silent_talk/features/user/service/user_account.dart';
 import '../../../constants/texts.dart';
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/services/authenticator.dart';
 
 Future<void> showImageSourceDialog(BuildContext context) async {
   final picker = Provider.of<Picker>(context, listen: false);

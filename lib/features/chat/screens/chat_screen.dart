@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:silent_talk/constants/texts.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/chat/services/send_messages.dart';
 
 import 'package:silent_talk/features/user/service/users_service.dart';
@@ -15,9 +14,11 @@ import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../core/utils/last_seen/last_seen_provider.dart';
 import '../../../core/utils/time_format/time_convertor.dart';
 
-import '../../auth/services/get_deviceId.dart';
+import '../../user/models/user_model.dart';
+import '../../user/repository/authenticator_repository.dart';
+import '../../user/service/authenticator.dart';
+import '../../user/service/get_deviceId.dart';
 import '../../user/service/get_userIds.dart';
-import '../../user/model/user_model.dart';
 import '../widgets/message_list.dart';
 import '../widgets/sheet_to_share.dart';
 
@@ -48,7 +49,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   // final _messageChanger=MessageChanger();
   List<Users> _users = [];
-  late final Authenticator _authenticator;
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
   final Picker _picker = Picker();
 
   // String? photoLink;
@@ -69,7 +70,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    _authenticator = Authenticator();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final user = FirebaseAuth.instance.currentUser;
@@ -96,24 +96,20 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   //   return isAuthActive;
   // }
   void setOnlineStatus() async {
-    if (_authenticator.user?.uid != null) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_authenticator.user?.uid)
-          .update({'isOnline': true});
-    }
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_authenticator.getUserId())
+        .update({'isOnline': true});
   }
 
   void setOfflineStatus() async {
-    if (_authenticator.user?.uid != null) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_authenticator.user?.uid)
-          .update({
-            'isOnline': false,
-            'lastSeen': lastSeenFormat(DateTime.now()),
-          });
-    }
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_authenticator.getUserId())
+        .update({
+          'isOnline': false,
+          'lastSeen': lastSeenFormat(DateTime.now()),
+        });
   }
 
   @override
@@ -145,9 +141,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if (_authenticator.user?.uid != null) {
-        setOnlineStatus();
-      }
+      setOnlineStatus();
     } else {
       setOfflineStatus();
     }
@@ -192,7 +186,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body:
-          _users.isEmpty || _authenticator.user?.uid == null
+          _users.isEmpty
               ? Center(child: CircularProgressIndicator())
               : Column(
                 children: [
@@ -295,7 +289,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             .collection('chats')
                             .doc(
                               getChatId(
-                                _authenticator.user!.uid,
+                                _authenticator.getUserId(),
                                 widget.receiverId!,
                               ),
                             )
@@ -320,7 +314,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                 ? MessageList(
                                   controller: _scrollController,
                                   messages: messages,
-                                  id1: _authenticator.user!.uid,
+                                  id1: _authenticator.getUserId(),
                                   id2: receiver.id,
                                   // photo: provider.imgPath ?? '',
                                 )
@@ -401,7 +395,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                       context,
                                       21,
                                       receiver.id,
-                                      _authenticator.user!.uid,
+                                      _authenticator.getUserId(),
                                     );
                                   },
                                 ),
@@ -420,7 +414,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                           if (text.isNotEmpty) {
                                             await messageService.sendMessage(
                                               text,
-                                              _authenticator.user!.uid,
+                                              _authenticator.getUserId(),
                                               receiver.id,
                                               "text",
                                             );
@@ -433,7 +427,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                         final docId = await messageService
                                             .sendMessage(
                                               photoLink,
-                                              _authenticator.user!.uid,
+                                          _authenticator.getUserId(),
                                               receiver.id,
                                               "image",
                                             );
@@ -445,7 +439,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                         if (cloudinaryUpload.isNotEmpty) {
                                           await messageService.updateMessages(
                                             cloudinaryUpload,
-                                            _authenticator.user!.uid,
+                                            _authenticator.getUserId(),
                                             receiver.id,
                                             docId,
                                           );

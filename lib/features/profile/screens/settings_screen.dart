@@ -8,7 +8,8 @@ import '../../../core/utils/last_seen/last_seen_provider.dart';
 import '../../../core/utils/theme/theme_provider.dart';
 import '../../../core/widgets/language_dropDown.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/services/authenticator.dart';
+import '../../user/repository/authenticator_repository.dart';
+import '../../user/service/authenticator.dart';
 import '../../chat/widgets/delete_dialog.dart';
 import '../../user/service/users_service.dart';
 
@@ -28,6 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Map<String, dynamic>? data;
   String img = '';
   bool? isAuth;
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
 
   Future<void> callUserData() async {
     final user = await _usersService.getUserData();
@@ -204,7 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     leading: const Icon(Icons.logout, color: Colors.red),
                     title: Text(AppLocalizations.of(context)!.logOut),
                     onTap: ()async{
-                     await Authenticator().signOut(context);
+                     await _authenticator.signOut(context);
                     },
                   ),
                   SettingsListtile(
@@ -214,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     title: Text(AppLocalizations.of(context)!.deleteAccount),
                     onTap: () {
-                      showDeleteAccountDialog(context);
+                      showDeleteAccountDialog(context,_authenticator);
                     },
                   ),
 

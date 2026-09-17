@@ -1,18 +1,20 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:googleapis/servicecontrol/v2.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:silent_talk/features/user/repository/authenticator_repository.dart';
 import 'package:silent_talk/providers/loading_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../features/auth/services/authenticator.dart';
+import '../../../features/user/service/authenticator.dart';
 
 class StorageService {
   final supabase = Supabase.instance.client;
-  final authenticator = Authenticator();
+  final authenticator = AuthenticatorRepository(AuthenticatorService());
 
   Future<String?> uploadFile(String filePath) async {
 
@@ -26,7 +28,7 @@ class StorageService {
       final fileName = file.path.split('/').last;
 
       final path =
-          '${authenticator.user?.uid}/chat_files/${DateTime.now().millisecondsSinceEpoch}_$fileName';
+          '${authenticator.getUserId()}/chat_files/${DateTime.now().millisecondsSinceEpoch}_$fileName';
 
       await supabase.storage.from('documents').upload(path, file);
 

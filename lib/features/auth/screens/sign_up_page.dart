@@ -1,22 +1,22 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:silent_talk/constants/texts.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/auth/widgets/login_signUp_textFields.dart';
 
 import '../../../core/utils/image_picker/image_picker.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../user/repository/authenticator_repository.dart';
+import '../../user/service/authenticator.dart';
 
 class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final Authenticator auth = Authenticator();
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
   String? photoLink;
   String? photoServer;
   final imgLink =
@@ -115,7 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       photoServer = await picker.imgUploaderToServer(
                         photoLink.toString(),
                       );
-                      await auth.createUser(
+                      await _authenticator.createUser(
                         _nameController.text,
                         _userNameController.text,
                         _emailController.text,
@@ -130,7 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       );
                     } else {
                       photoServer = imgLink;
-                      await auth.createUser(
+                      await _authenticator.createUser(
                         _nameController.text,
                         _userNameController.text,
                         _emailController.text,

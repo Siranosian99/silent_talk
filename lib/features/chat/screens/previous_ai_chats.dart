@@ -3,10 +3,10 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/services/ai_backend.dart';
+import '../../user/repository/authenticator_repository.dart';
+import '../../user/service/authenticator.dart';
 import '../services/ai_api.dart';
 
 class PreviousAiChatsScreen extends StatefulWidget {
@@ -18,12 +18,12 @@ class PreviousAiChatsScreen extends StatefulWidget {
 
 class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
   final TextEditingController searchController = TextEditingController();
-  final Authenticator _authenticator =Authenticator();
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AiBotApiService>().getMessagesById(_authenticator.getUserId());
+      context.read<AiBotApiProvider>().getMessagesById(_authenticator.getUserId());
     });
   }
 
@@ -44,7 +44,7 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
           ],
         ),
       ),
-      body: Consumer<AiBotApiService>(
+      body: Consumer<AiBotApiProvider>(
         builder: (context, provider, child) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

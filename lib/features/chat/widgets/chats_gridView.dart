@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
-import 'package:silent_talk/features/user/model/user_model.dart';
+import 'package:googleapis/servicecontrol/v2.dart';
+import 'package:silent_talk/features/user/service/authenticator.dart';
 
+import '../../user/models/user_model.dart';
+import '../../user/repository/authenticator_repository.dart';
 import '../../user/service/users_service.dart';
 
 class ChatsGridView extends StatefulWidget {
@@ -16,7 +18,7 @@ class _ChatsGridViewState extends State<ChatsGridView> {
 
   late List<Users> users = [];
   final UsersService _usersService = UsersService();
-
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
   Future<void> callUsers() async {
     users = await _usersService.fetchAllUsers('') ?? [];
     setState(() {
@@ -51,7 +53,7 @@ class _ChatsGridViewState extends State<ChatsGridView> {
                   'chat',
                   extra: {
                     'id': user.id,
-                    'senderId': Authenticator().user?.uid,
+                    'senderId':_authenticator.getUserId(),
                     'receiverId': user.id,
                   },
                 );

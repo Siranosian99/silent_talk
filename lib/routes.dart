@@ -18,9 +18,9 @@ import 'package:silent_talk/features/auth/screens/sign_up_page.dart';
 import 'package:silent_talk/features/splash/screen/splash_screen.dart';
 import 'package:silent_talk/features/profile/screens/update_email_screen.dart';
 import 'package:silent_talk/features/profile/screens/userName_update.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 
 import 'package:silent_talk/features/chat/widgets/contact_shower_sheet.dart';
+import 'package:silent_talk/features/user/service/authenticator.dart';
 
 import 'core/utils/biometric/auth.dart';
 import 'core/utils/biometric/auth_provider.dart';
@@ -39,7 +39,7 @@ final GoRouter router = GoRouter(
       name: 'splash',
       builder: (context, state) => SplashScreen(),
       redirect: (context, state) async {
-        final authenticator = Authenticator();
+        final authenticator = AuthenticatorService();
         final authService = AuthService();
         final boolValue = authenticator.isLoggedOut;
         authService.checkAvailable(context);

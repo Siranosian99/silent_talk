@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
+import 'package:silent_talk/features/user/repository/authenticator_repository.dart';
+import 'package:silent_talk/features/user/service/authenticator.dart';
 
-void showDeleteAccountDialog(BuildContext context) {
+void showDeleteAccountDialog(BuildContext context,AuthenticatorRepository authenticator) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -36,7 +37,7 @@ void showDeleteAccountDialog(BuildContext context) {
                     vertical: 12,
                   ),),
                 onPressed: () async{
-                  await Authenticator().deleteAccount(context);
+                  await authenticator.deleteAccount(context);
                   if (!context.mounted) return;
                   context.pop();
                   context.goNamed('login');

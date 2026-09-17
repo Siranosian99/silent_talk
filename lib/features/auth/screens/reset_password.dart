@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:silent_talk/constants/texts.dart';
+import 'package:silent_talk/features/user/service/authenticator.dart';
 
-import '../services/authenticator.dart';
+import '../../user/repository/authenticator_repository.dart';
+
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -14,7 +16,7 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               SizedBox(height: 30),
               ElevatedButton.icon(
                onPressed: (){
-                 Authenticator().resetPassword(_emailController.text,);
+                 _authenticator.resetPassword(_emailController.text,);
                },
                 icon: Icon(Icons.send),
                 label: Text("Send Reset Link"),

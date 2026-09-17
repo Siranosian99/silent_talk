@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:silent_talk/features/chat/services/ai_api.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/user/service/get_userIds.dart';
 
 import 'package:silent_talk/features/user/service/users_service.dart';
@@ -12,8 +10,10 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../core/utils/theme/theme_data.dart';
 import '../../../core/utils/theme/theme_provider.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/services/request_check.dart';
-import '../model/user_model.dart';
+import '../models/user_model.dart';
+import '../repository/authenticator_repository.dart';
+import '../service/authenticator.dart';
+import '../service/request_check.dart';
 
 import '../../chat/widgets/chats_searchBar.dart';
 
@@ -46,7 +46,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
   final UsersService _usersService = UsersService();
   final RequestsChats _requestsChats = RequestsChats();
-  final Authenticator _authenticator = Authenticator();
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
 
   Future<void> callUsers(String query) async {
     setState(() => isLoading = true);
@@ -64,7 +64,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
   }
 
   void checkRequestStatus(String docId) async {
-    String id = getChatId(_authenticator.user!.uid, docId);
+    String id = getChatId(_authenticator.getUserId(), docId);
 
     bool? status = await _requestsChats.getRequestStatus(id);
 
@@ -132,7 +132,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                       InkWell(
                         onTap: () async {
                           String id = getChatId(
-                            _authenticator.user!.uid,
+                            _authenticator.getUserId(),
                             user.id,
                           );
 
@@ -141,7 +141,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
                               false;
                           final message = await _requestsChats.sendRequest(
                             status,
-                            _authenticator.user!.uid,
+                            _authenticator.getUserId(),
                             user.id,
                           );
                           if (!context.mounted) return;
@@ -155,14 +155,14 @@ class _PeopleScreenState extends State<PeopleScreen> {
                               'chat',
                               extra: {
                                 'id': user.id,
-                                'senderId': _authenticator.user?.uid,
+                                'senderId':_authenticator.getUserId(),
                                 'receiverId': user.id,
                               },
                             );
                           } else {
                             RequestsChats().sendRequest(
                               false,
-                              _authenticator.user!.uid,
+                              _authenticator.getUserId(),
                               user.id,
                             );
                           }

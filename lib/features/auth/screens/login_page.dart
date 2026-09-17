@@ -1,18 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:googleapis/servicecontrol/v2.dart';
-import 'package:silent_talk/constants/texts.dart';
-import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/auth/widgets/login_signUp_textFields.dart';
+import 'package:silent_talk/features/user/repository/authenticator_repository.dart';
+import 'package:silent_talk/features/user/service/authenticator.dart';
 
 import '../../../core/mixins/navigator_mixins.dart';
 import '../../../core/widgets/language_dropDown.dart';
 import '../../../l10n/app_localizations.dart';
 
-import '../services/get_deviceId.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -22,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
 
 
 
@@ -97,11 +97,12 @@ class _LoginScreenState extends State<LoginScreen> with NavigatorMixin {
                     // context.goNamed('people');
                     try{
                       if (_formKey.currentState!.validate()) {
-                    await    Authenticator().login(
+                    await   _authenticator.login(
                           _emailController.text.trim(),
                           _passwordController.text.trim(),
                           context,
                         );
+                    if(!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Login successfully'),
