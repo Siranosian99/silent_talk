@@ -52,7 +52,6 @@ class AiBotApiService with ChangeNotifier {
           ),
         );
 
-        notifyListeners();
         aiReply.add(AiResponseModel(role: 'user', content: query));
         if (response.statusCode == 200) {
           isLoading = false;
@@ -182,25 +181,30 @@ class AiBotApiService with ChangeNotifier {
   Future<List<ChatModel>> getMessageById(String docId) async {
     final message = await _aiBackend.getMessageById(docId);
     aiPrevious = message;
+    print("--------- aiPrevious is here:$aiPrevious");
     notifyListeners();
     return aiPrevious;
   }
 
   Future<String?> sendMessageWithId(
-      String aiMessage,
-      String uId1,
-      String docId,
-      String chatId,
-      ) async {
+    String aiMessage,
+    String uId1,
+    String docId,
+    String chatId,
+  ) async {
     final message = await _aiBackend.sendAiMessageWithId(
       aiMessage,
       uId1,
       docId,
       chatId,
     );
-    getMessageById(docId);
-
+    await getMessageById(docId);
     return message;
+  }
+
+  void clearList() {
+    aiReply.clear();
+    notifyListeners();
   }
   // Future<List<AiChatModel>> getDataWithId(AiChatModel chat) async {
   //   isLoading = true;

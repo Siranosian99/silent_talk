@@ -6,6 +6,7 @@ import 'package:silent_talk/features/auth/services/authenticator.dart';
 import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/services/ai_backend.dart';
+import '../../text/text_formater.dart';
 import '../services/ai_api.dart';
 
 class PreviousAiScreenDetailed extends StatefulWidget {
@@ -26,10 +27,17 @@ final AiBackend _aiBackend =AiBackend();
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AiBotApiService>().getMessageById(widget.docId);
-    });
+      final provider = context.read<AiBotApiService>();
+
+      provider.clearList();
+      provider.getMessageById(widget.docId);});
   }
 
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,11 +144,11 @@ final AiBackend _aiBackend =AiBackend();
                         final query = searchController.text.trim();
                         if (query.isNotEmpty) {
                           await provider.getData(searchController.text.trim());
-                          final msg = provider.aiReply[1] ?? '';
+                          final msg = provider.aiReply[1].content ?? '';
                           print("message in Detailed previous chat:======$msg");
-                         provider.sendMessageWithId(
-                            "msg",
-                            _authenticator.getUserId(),
+                        await provider.sendMessageWithId(
+                             cleanMarkdown( msg),
+                             _authenticator.getUserId(),
                             query,
                            widget.docId
                           );

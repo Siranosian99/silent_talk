@@ -23,6 +23,11 @@ import 'package:silent_talk/features/text/text_formater.dart';
     final AiBackend _aiBackend =AiBackend();
 
     @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+    @override
     Widget build(BuildContext context) {
       return Scaffold(
         appBar: AppBar(
@@ -151,7 +156,7 @@ import 'package:silent_talk/features/text/text_formater.dart';
                             final msg = provider.aiReply[1].content ??'';
                             print("aiReply:-----------${provider.aiReply}");
                             print('aiReply[1].content-----------========$msg');
-                            _aiBackend.sendAiMessage(cleanMarkdown(msg),_authenticator.getUserId(),query);
+                           await _aiBackend.sendAiMessage(cleanMarkdown(msg),_authenticator.getUserId(),query);
                             searchController.clear();
                             if (!context.mounted) {
                               return;

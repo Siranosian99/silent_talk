@@ -130,9 +130,10 @@ class AiBackend {
 
       }
       return allData;
-    } catch (e) {
-      print('Errssor fetching messages by id: $e');
-      return [];
+    } catch (e, stackTrace) {
+      print('ERROR getMessageById: $e');
+      print(stackTrace);
+      rethrow;
     }
   }
 
