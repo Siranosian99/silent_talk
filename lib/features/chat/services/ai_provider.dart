@@ -62,16 +62,16 @@ class AiBotApiProvider with ChangeNotifier {
   }
 
   Future<String?> sendMessageWithId(
-    String aiMessage,
-    String uId1,
-    String docId,
-    String chatId,
+      String userId,
+      String docId,
+      String userMessage,
+      String aiMessage
   ) async {
     final message = await repository.sendAiMessageWithId(
-      aiMessage,
-      uId1,
+      userId,
       docId,
-      chatId,
+      userMessage,
+      aiMessage,
     );
     await getMessageById(docId);
     clearList();

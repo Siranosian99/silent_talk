@@ -22,22 +22,20 @@ class AiChatRepository {
     return   await _aiBackend.getMessageById(docId);}
 
   Future<String?> sendAiMessageWithId(
-      String aiMessage,
-      String uId1,
+      String userId,
       String docId,
-      String chatId,
+      String userMessage,
+      String aiMessage
       ) async {
     final message = await _aiBackend.sendAiMessageWithId(
-      aiMessage,
-      uId1,
+      userId,
       docId,
-      chatId,
+      userMessage,
+      aiMessage,
     );
     await getMessageById(docId);
     return message;
   }
-void clearList(){
 
-}
 
 }

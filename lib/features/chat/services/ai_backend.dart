@@ -200,10 +200,10 @@ class AiBackend {
     }
   }
   Future<String?> sendAiMessageWithId(
-      String aiMessage,
-      String uId1,
+      String userId,
+      String docId,
       String userMessage,
-      String chatId
+      String aiMessage
       // MessageModel message,
       ) async {
     try {
@@ -211,13 +211,13 @@ class AiBackend {
       //     FirebaseFirestore.instance.collection('ai_chats').doc().id;
       final chatsCollection = FirebaseFirestore.instance
           .collection("ai_chats")
-          .doc(chatId);
+          .doc(docId);
       final messageDoc = chatsCollection.collection('messages');
       //
       // final docRef = messageDoc.doc();
       await chatsCollection.set({
         "userId": _authenticator.getUserId(),
-        "id": chatId,
+        "id": docId,
         "title": userMessage,
         "createdAt": FieldValue.serverTimestamp(),
         "updatedAt": FieldValue.serverTimestamp(),

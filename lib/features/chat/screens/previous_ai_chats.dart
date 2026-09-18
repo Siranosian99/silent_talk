@@ -7,7 +7,7 @@ import 'package:silent_talk/features/chat/model/ai_response_model.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../user/repository/authenticator_repository.dart';
 import '../../user/service/authenticator.dart';
-import '../services/ai_api.dart';
+import '../services/ai_provider.dart';
 
 class PreviousAiChatsScreen extends StatefulWidget {
   const PreviousAiChatsScreen({super.key});

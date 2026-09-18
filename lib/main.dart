@@ -9,7 +9,7 @@ import 'package:silent_talk/features/chat/repository/ai_chat_repository.dart';
 import 'package:silent_talk/features/chat/services/ai_backend.dart';
 import 'package:silent_talk/providers/loading_provider.dart';
 import 'package:silent_talk/routes.dart';
-import 'package:silent_talk/features/chat/services/ai_api.dart';
+import 'package:silent_talk/features/chat/services/ai_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/notification/notification_shower.dart';

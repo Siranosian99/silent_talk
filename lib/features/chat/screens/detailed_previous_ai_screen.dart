@@ -8,7 +8,7 @@ import '../../user/repository/authenticator_repository.dart';
 import '../services/ai_backend.dart';
 import '../../user/service/authenticator.dart';
 import '../../text/text_formater.dart';
-import '../services/ai_api.dart';
+import '../services/ai_provider.dart';
 
 class PreviousAiScreenDetailed extends StatefulWidget {
   final String docId;
@@ -20,25 +20,42 @@ class PreviousAiScreenDetailed extends StatefulWidget {
       _PreviousAiScreenDetailedState();
 }
 
-class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> {
+class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> with WidgetsBindingObserver{
   final TextEditingController searchController = TextEditingController();
-  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
-final AiBackend _aiBackend =AiBackend();
+  final ScrollController _scrollController = ScrollController();
+  final AuthenticatorRepository _authenticator = AuthenticatorRepository(
+    AuthenticatorService(),
+  );
+  void scrollToBottom() {
+    if (!_scrollController.hasClients) return;
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_)async {
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollToBottom();
+      });
       final provider = context.read<AiBotApiProvider>();
-
       provider.clearList();
-    await provider.getMessageById(widget.docId);});
+      await provider.getMessageById(widget.docId);
+    });
   }
 
   @override
   void dispose() {
     searchController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +84,7 @@ final AiBackend _aiBackend =AiBackend();
             children: [
               Expanded(
                 child: ListView(
+                  controller: _scrollController,
                   padding: const EdgeInsets.all(12),
                   children:
                       provider.aiPrevious.expand((chat) {
@@ -147,13 +165,15 @@ final AiBackend _aiBackend =AiBackend();
                           await provider.getData(searchController.text.trim());
                           final msg = provider.aiReply[1].content ?? '';
                           print("message in Detailed previous chat:======$msg");
-                        await provider.sendMessageWithId(
-                             cleanMarkdown( msg),
-                             _authenticator.getUserId(),
+                          await provider.sendMessageWithId(
+                            _authenticator.getUserId(),
                             widget.docId,
-                           widget.docId
+                            query,
+                            cleanMarkdown(msg),
                           );
-
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            scrollToBottom();
+                          });
                           searchController.clear();
                           if (!context.mounted) {
                             return;
@@ -181,4 +201,3 @@ final AiBackend _aiBackend =AiBackend();
     );
   }
 }
-

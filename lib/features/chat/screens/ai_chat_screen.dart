@@ -9,7 +9,7 @@ import 'package:silent_talk/features/text/text_formater.dart';
   import '../../user/repository/authenticator_repository.dart';
 import '../services/ai_backend.dart';
 import '../../user/service/authenticator.dart';
-  import '../services/ai_api.dart';
+  import '../services/ai_provider.dart';
 
   class AiChatScreen extends StatefulWidget {
     const AiChatScreen({super.key});
