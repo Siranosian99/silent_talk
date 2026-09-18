@@ -32,6 +32,7 @@ import '../../user/service/authenticator.dart';
     Widget build(BuildContext context) {
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(onPressed: (){context.goNamed('people');}, icon: Icon(Icons.arrow_back_ios_rounded)),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

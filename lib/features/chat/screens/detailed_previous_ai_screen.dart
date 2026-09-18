@@ -30,7 +30,7 @@ class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> wit
     if (!_scrollController.hasClients) return;
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 2),
       curve: Curves.easeOut,
     );
   }
@@ -39,12 +39,15 @@ class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> wit
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        scrollToBottom();
-      });
+
       final provider = context.read<AiBotApiProvider>();
       provider.clearList();
       await provider.getMessageById(widget.docId);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          scrollToBottom();
+        }
+      });
     });
   }
 
@@ -60,6 +63,9 @@ class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> wit
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          context.goNamed("previousAi");
+        }, icon: Icon(Icons.arrow_back_ios_rounded)),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

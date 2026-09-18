@@ -32,7 +32,10 @@ class _PreviousAiChatsScreenState extends State<PreviousAiChatsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        leading: IconButton(onPressed: (){
+          context.goNamed("ai");
+        }, icon: Icon(Icons.arrow_back_ios_rounded)),
+          title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const CircleAvatar(
