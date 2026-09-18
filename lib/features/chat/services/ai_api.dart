@@ -34,7 +34,6 @@ class AiBotApiProvider with ChangeNotifier {
       //     content: query,
       //   ),
       // );
-
       return aiReply;
     } catch (e) {
       errorMessage = e.toString();
@@ -75,11 +74,13 @@ class AiBotApiProvider with ChangeNotifier {
       chatId,
     );
     await getMessageById(docId);
+    clearList();
     return message;
   }
 
   void clearList() {
     aiReply.clear();
+    print("list cleared:$aiReply");
     notifyListeners();
   }
   // Future<List<AiChatModel>> getDataWithId(AiChatModel chat) async {

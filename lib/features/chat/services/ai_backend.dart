@@ -25,7 +25,7 @@ class AiBackend {
   );
 
   Future<List<AiResponseModel>> getData(String query) async {
-    const int maxRetry = 2;
+    const int maxRetry = 1;
 
     for (int i = 0; i < maxRetry; i++) {
       final delay = Duration(seconds: 1 * (1 << i));

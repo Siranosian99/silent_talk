@@ -36,6 +36,8 @@ class AiChatRepository {
     await getMessageById(docId);
     return message;
   }
+void clearList(){
 
+}
 
 }

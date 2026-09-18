@@ -150,9 +150,10 @@ final AiBackend _aiBackend =AiBackend();
                         await provider.sendMessageWithId(
                              cleanMarkdown( msg),
                              _authenticator.getUserId(),
-                            query,
+                            widget.docId,
                            widget.docId
                           );
+
                           searchController.clear();
                           if (!context.mounted) {
                             return;
