@@ -9,10 +9,12 @@ import '../model/ai_response_model.dart';
 import '../model/chat_model.dart';
 import '../../user/service/authenticator.dart';
 
-
 class AiBackend {
-  final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());
+  final AuthenticatorRepository _authenticator = AuthenticatorRepository(
+    AuthenticatorService(),
+  );
   final _keys = Keys();
+
   // String? conversationId;
   String? chatId;
   late final Dio _dio = Dio(
@@ -36,10 +38,7 @@ class AiBackend {
           data: {
             "model": _keys.modelName,
             "messages": [
-              {
-                "role": "user",
-                "content": query,
-              },
+              {"role": "user", "content": query},
             ],
           },
           options: Options(
@@ -53,10 +52,7 @@ class AiBackend {
         if (response.statusCode == 200) {
           final msg = response.data['choices'][0]['message'];
 
-          final userMessage = AiResponseModel(
-            role: 'user',
-            content: query,
-          );
+          final userMessage = AiResponseModel(role: 'user', content: query);
 
           final aiMessage = AiResponseModel(
             role: msg['role'],
@@ -67,15 +63,10 @@ class AiBackend {
 
           debugPrint("AI response added: ${aiMessage.content}");
 
-          return [
-            userMessage,
-            aiMessage,
-          ];
+          return [userMessage, aiMessage];
         }
 
-        throw Exception(
-          "Unexpected status code: ${response.statusCode}",
-        );
+        throw Exception("Unexpected status code: ${response.statusCode}");
       } on DioException catch (e) {
         final statusCode = e.response?.statusCode;
 
@@ -86,13 +77,13 @@ class AiBackend {
 
         final bool shouldRetry =
             e.type == DioExceptionType.connectionTimeout ||
-                e.type == DioExceptionType.sendTimeout ||
-                e.type == DioExceptionType.receiveTimeout ||
-                e.type == DioExceptionType.connectionError ||
-                statusCode == 500 ||
-                statusCode == 502 ||
-                statusCode == 503 ||
-                statusCode == 504;
+            e.type == DioExceptionType.sendTimeout ||
+            e.type == DioExceptionType.receiveTimeout ||
+            e.type == DioExceptionType.connectionError ||
+            statusCode == 500 ||
+            statusCode == 502 ||
+            statusCode == 503 ||
+            statusCode == 504;
 
         if (!shouldRetry || i == maxRetry - 1) {
           throw Exception(_getErrorMessage(e));
@@ -157,7 +148,9 @@ class AiBackend {
       default:
         return "Something went wrong.";
     }
-  }  Future<String?> sendAiMessage(
+  }
+
+  Future<String?> sendAiMessage(
     String aiMessage,
     String uId1,
     String userMessage,
@@ -199,13 +192,14 @@ class AiBackend {
       return '';
     }
   }
+
   Future<String?> sendAiMessageWithId(
-      String userId,
-      String docId,
-      String userMessage,
-      String aiMessage
-      // MessageModel message,
-      ) async {
+    String userId,
+    String docId,
+    String userMessage,
+    String aiMessage,
+    // MessageModel message,
+  ) async {
     try {
       // conversationId ??=
       //     FirebaseFirestore.instance.collection('ai_chats').doc().id;
@@ -241,6 +235,7 @@ class AiBackend {
       return '';
     }
   }
+
   Future<List<ChatModel>> getMessagesById(String userId) async {
     try {
       List<ChatModel> allData = [];
@@ -251,30 +246,31 @@ class AiBackend {
 
       for (var doc in snapshot.docs) {
         final data =
-        await doc.reference
-            .collection('messages')
-            .orderBy('createdAt')
-            .get();
+            await doc.reference
+                .collection('messages')
+                .orderBy('createdAt')
+                .get();
         final message =
-        data.docs.map((messageDoc) {
-          final messageData = messageDoc.data();
+            data.docs.map((messageDoc) {
+              final messageData = messageDoc.data();
 
-          return MessageModel(
-            role: messageData['role'],
-            text: messageData['text'],
-            createdAt: (messageData['createdAt'] as Timestamp).toDate(),
-          );
-        }).toList();
+              return MessageModel(
+                role: messageData['role'],
+                text: messageData['text'],
+                createdAt: (messageData['createdAt'] as Timestamp).toDate(),
+              );
+            }).toList();
 
-        allData.add(ChatModel( userId: doc['userId'],
-          id: doc['id'],
-          title: doc['title'],
-          createdAt: (doc['createdAt'] as Timestamp).toDate(),
-          updatedAt: (doc['updatedAt'] as Timestamp).toDate(),
-          messages: message,)
-
+        allData.add(
+          ChatModel(
+            userId: doc['userId'],
+            id: doc['id'],
+            title: doc['title'],
+            createdAt: (doc['createdAt'] as Timestamp).toDate(),
+            updatedAt: (doc['updatedAt'] as Timestamp).toDate(),
+            messages: message,
+          ),
         );
-
       }
       return allData;
     } catch (e, stackTrace) {
@@ -294,30 +290,31 @@ class AiBackend {
 
       for (var doc in snapshot.docs) {
         final data =
-        await doc.reference
-            .collection('messages')
-            .orderBy('createdAt')
-            .get();
+            await doc.reference
+                .collection('messages')
+                .orderBy('createdAt')
+                .get();
         final message =
-        data.docs.map((messageDoc) {
-          final messageData = messageDoc.data();
+            data.docs.map((messageDoc) {
+              final messageData = messageDoc.data();
 
-          return MessageModel(
-            role: messageData['role'],
-            text: messageData['text'],
-            createdAt: (messageData['createdAt'] as Timestamp).toDate(),
-          );
-        }).toList();
+              return MessageModel(
+                role: messageData['role'],
+                text: messageData['text'],
+                createdAt: (messageData['createdAt'] as Timestamp).toDate(),
+              );
+            }).toList();
 
-        allData.add(ChatModel( userId: doc['userId'],
-          id: doc['id'],
-          title: doc['title'],
-          createdAt: (doc['createdAt'] as Timestamp).toDate(),
-          updatedAt: (doc['updatedAt'] as Timestamp).toDate(),
-          messages: message,)
-
+        allData.add(
+          ChatModel(
+            userId: doc['userId'],
+            id: doc['id'],
+            title: doc['title'],
+            createdAt: (doc['createdAt'] as Timestamp).toDate(),
+            updatedAt: (doc['updatedAt'] as Timestamp).toDate(),
+            messages: message,
+          ),
         );
-
       }
       return allData;
     } catch (e) {
@@ -325,8 +322,6 @@ class AiBackend {
       return [];
     }
   }
-
-
 }
 
 //Collection all Data of ai_chats after that we called all ai_chats that include userId

@@ -15,10 +15,10 @@ class RequestScreen extends StatefulWidget {
   @override
   State<RequestScreen> createState() => _RequestScreenState();
 }
-
+// late List<Users> users = [];
+// Map<String, dynamic>? data;
 class _RequestScreenState extends State<RequestScreen> {
-  // late List<Users> users = [];
-  // Map<String, dynamic>? data;
+
   final UsersService _usersService = UsersService();
   final RequestsChats _requestsChats = RequestsChats();
   final AuthenticatorRepository _authenticator =AuthenticatorRepository(AuthenticatorService());

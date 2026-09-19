@@ -6,19 +6,19 @@ class LastSeenProvider extends ChangeNotifier {
   bool isSeen = false;
 
   LastSeenProvider(){
-    loadlastSeen();
+    loadLastSeen();
   }
 
   void lastSeenSwitch() {
     isSeen = !isSeen;
-    savelastSeen();
+    saveLastSeen();
     notifyListeners();
   }
-  void savelastSeen() {
+  void saveLastSeen() {
     box.put('lastSeen', isSeen);
     notifyListeners();
   }
-  void loadlastSeen() {
+  void loadLastSeen() {
     isSeen= box.get('lastSeen', defaultValue: false);
     notifyListeners();
   }

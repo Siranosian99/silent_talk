@@ -152,6 +152,7 @@ import '../../user/service/authenticator.dart';
                                 ? Icon(Icons.stop)
                                 : Icon(Icons.send),
                         onPressed: () async {
+                          provider.setLoading(true);
                           final query = searchController.text.trim();
                           if (query.isNotEmpty) {
                             await provider.getData(searchController.text.trim());
@@ -160,9 +161,11 @@ import '../../user/service/authenticator.dart';
                             print('aiReply[1].content-----------========$msg');
                            await _aiBackend.sendAiMessage(cleanMarkdown(msg),_authenticator.getUserId(),query);
                             searchController.clear();
+                            provider.setLoading(false);
                             if (!context.mounted) {
                               return;
                             }
+
                             if (provider.errorMessage.isNotEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

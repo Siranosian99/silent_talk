@@ -166,6 +166,7 @@ class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> wit
                               ? Icon(Icons.stop)
                               : Icon(Icons.send),
                       onPressed: () async {
+                        provider.setLoading(true);
                         final query = searchController.text.trim();
                         if (query.isNotEmpty) {
                           await provider.getData(searchController.text.trim());
@@ -181,6 +182,7 @@ class _PreviousAiScreenDetailedState extends State<PreviousAiScreenDetailed> wit
                             scrollToBottom();
                           });
                           searchController.clear();
+                          provider.setLoading(false);
                           if (!context.mounted) {
                             return;
                           }
